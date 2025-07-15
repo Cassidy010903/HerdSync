@@ -1,0 +1,12 @@
+wwwroot\app.css
+wwwroot\bootstrap\bootstrap.min.css
+wwwroot\bootstrap\bootstrap.min.css.map
+wwwroot\cow.png
+wwwroot\cow2.png
+wwwroot\Gertruida.png
+wwwroot\happy-brown-baby-cow-jumping-free-vector.png
+wwwroot\Images\HappyCow.ico
+C:\HerdSync\HerdSync\wwwroot\app.css
+C:\HerdSync\HerdSync\wwwroot\bootstrap\bootstrap.min.css
+C:\HerdSync\HerdSync\wwwroot\bootstrap\bootstrap.min.css.map
+C:\HerdSync\HerdSync\wwwroot\Images\HappyCow.ico

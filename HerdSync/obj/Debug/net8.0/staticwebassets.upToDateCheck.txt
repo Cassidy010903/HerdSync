@@ -1,0 +1,8 @@
+wwwroot\app.css
+wwwroot\bootstrap\bootstrap.min.css
+wwwroot\bootstrap\bootstrap.min.css.map
+wwwroot\cow.png
+wwwroot\cow2.png
+wwwroot\Gertruida.png
+wwwroot\happy-brown-baby-cow-jumping-free-vector.png
+wwwroot\Images\HappyCow.ico

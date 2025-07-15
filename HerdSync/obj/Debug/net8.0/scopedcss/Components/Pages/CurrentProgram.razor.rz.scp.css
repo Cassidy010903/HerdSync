@@ -1,0 +1,39 @@
+body[b-rzk3aq3vgz] {
+    margin-top: 20px;
+
+}
+
+.card[b-rzk3aq3vgz] {
+    box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
+}
+
+.avatar.sm[b-rzk3aq3vgz] {
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: .818125rem;
+}
+
+.table-nowrap .table td[b-rzk3aq3vgz],
+.table-nowrap .table th[b-rzk3aq3vgz] {
+    white-space: nowrap;
+
+}
+
+.table > :not(caption) > * > *[b-rzk3aq3vgz] {
+    padding: 0.75rem 1.25rem;
+    border-bottom-width: 1px;
+}
+
+table th[b-rzk3aq3vgz] {
+    font-weight: 600;
+    background-color: #90b499;
+    color: white;
+}
+
+.fa-arrow-up[b-rzk3aq3vgz] {
+    color: #00CED1;
+}
+
+.fa-arrow-down[b-rzk3aq3vgz] {
+    color: #FF00FF;
+}

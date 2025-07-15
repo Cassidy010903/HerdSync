@@ -1,0 +1,17 @@
+﻿<MudDialog>
+    <DialogContent>
+        <MudTextField ShrinkLabel @bind-Value="Number" Label="Cow Number" Variant="Variant.Outlined" Adornment="Adornment.Start" AdornmentText="#" AdornmentColor="Color.Primary"></MudTextField>
+        <MudTextField ShrinkLabel @bind-Value="Colour" Label="Colour" Variant="Variant.Outlined"></MudTextField>
+        <MudSelect T="int" Label="Age" @bind-Value="Age" Variant="Variant.Outlined">
+            @foreach (var item in cows)
+            {
+                <MudSelectItem Value="@item.ID">@item.Name</MudSelectItem>
+            }
+        </MudSelect>
+        <MudTextField ShrinkLabel @bind-Value="Weight" Label="Weight" Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentText="Kg" AdornmentColor="Color.Info"></MudTextField>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Style="@($"color:{Colors.Teal.Lighten2}; background:{Colors.Teal.Lighten5};")" OnClick="Submit">OK</MudButton>
+    </DialogActions>
+</MudDialog>

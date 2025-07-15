@@ -1,0 +1,80 @@
+﻿@page "/currentprogram"
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<div class="pa-4">
+    <MudText Typo="Typo.h4">Currently Active Program</MudText>
+    <MudText Typo="Typo.caption">Annual Rabies</MudText>
+</div>
+    
+<div class="container">
+    <div class="row">
+        <div class="col-12 mb-3 mb-lg-5">
+            <div class="position-relative card table-nowrap table-card">
+                <div class="card-header align-items-center">
+                    <h5 class="mb-0">Treated Cows</h5>
+                    <p class="mb-0 small text-muted">1 Pending</p>
+                </div>
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead class="small text-uppercase bg-body text-muted">
+                            <tr>
+                                <th>Cow ID</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="align-middle">
+                                <td>
+                                    #57473829
+                                </td>
+                                <td>
+                                    <span class="badge fs-6 fw-normal bg-tint-success text-success">Completed</span>
+                                </td>
+                            </tr>
+                            <tr class="align-middle">
+                                <td>
+                                    #012458780
+                                </td>
+                                <td>
+                                    <span class="badge fs-6 fw-normal bg-tint-warning text-warning">Pending</span>
+                                </td>
+                            </tr>
+                            <tr class="align-middle">
+                                <td>
+                                    #76444326
+                                </td>
+                                <td>
+                                    <span class="badge fs-6 fw-normal bg-tint-success text-success">Completed</span>
+                                </td>
+                            </tr>
+                            <tr class="align-middle">
+                                <td>
+                                    #12498745
+                                </td>
+                                <td>
+                                    <span class="badge fs-6 fw-normal bg-tint-success text-success">Completed</span>
+                                </td>
+                            </tr>
+                            <tr class="align-middle">
+                                <td>
+                                    #87444654
+                                </td>
+                                <td>
+                                    <span class="badge fs-6 fw-normal bg-tint-success text-success">Completed</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer text-end">
+                    Please click on cow to edit treatment options.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+}
