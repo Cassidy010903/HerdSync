@@ -1,0 +1,15 @@
+C:\HerdSync\DAL\bin\Debug\net9.0\DAL.deps.json
+C:\HerdSync\DAL\bin\Debug\net9.0\DAL.runtimeconfig.json
+C:\HerdSync\DAL\bin\Debug\net9.0\DAL.dll
+C:\HerdSync\DAL\bin\Debug\net9.0\DAL.pdb
+C:\HerdSync\DAL\obj\Debug\net9.0\DAL.csproj.AssemblyReference.cache
+C:\HerdSync\DAL\obj\Debug\net9.0\DAL.GeneratedMSBuildEditorConfig.editorconfig
+C:\HerdSync\DAL\obj\Debug\net9.0\DAL.AssemblyInfoInputs.cache
+C:\HerdSync\DAL\obj\Debug\net9.0\DAL.AssemblyInfo.cs
+C:\HerdSync\DAL\obj\Debug\net9.0\DAL.csproj.CoreCompileInputs.cache
+C:\HerdSync\DAL\obj\Debug\net9.0\DAL.sourcelink.json
+C:\HerdSync\DAL\obj\Debug\net9.0\DAL.dll
+C:\HerdSync\DAL\obj\Debug\net9.0\refint\DAL.dll
+C:\HerdSync\DAL\obj\Debug\net9.0\DAL.pdb
+C:\HerdSync\DAL\obj\Debug\net9.0\DAL.genruntimeconfig.cache
+C:\HerdSync\DAL\obj\Debug\net9.0\ref\DAL.dll

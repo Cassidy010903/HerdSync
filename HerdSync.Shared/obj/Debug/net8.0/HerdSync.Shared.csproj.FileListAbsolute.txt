@@ -1,0 +1,12 @@
+C:\HerdSync\HerdSync.Shared\bin\Debug\net8.0\HerdSync.Shared.deps.json
+C:\HerdSync\HerdSync.Shared\bin\Debug\net8.0\HerdSync.Shared.dll
+C:\HerdSync\HerdSync.Shared\bin\Debug\net8.0\HerdSync.Shared.pdb
+C:\HerdSync\HerdSync.Shared\obj\Debug\net8.0\HerdSync.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\HerdSync\HerdSync.Shared\obj\Debug\net8.0\HerdSync.Shared.AssemblyInfoInputs.cache
+C:\HerdSync\HerdSync.Shared\obj\Debug\net8.0\HerdSync.Shared.AssemblyInfo.cs
+C:\HerdSync\HerdSync.Shared\obj\Debug\net8.0\HerdSync.Shared.csproj.CoreCompileInputs.cache
+C:\HerdSync\HerdSync.Shared\obj\Debug\net8.0\HerdSync.Shared.sourcelink.json
+C:\HerdSync\HerdSync.Shared\obj\Debug\net8.0\HerdSync.Shared.dll
+C:\HerdSync\HerdSync.Shared\obj\Debug\net8.0\refint\HerdSync.Shared.dll
+C:\HerdSync\HerdSync.Shared\obj\Debug\net8.0\HerdSync.Shared.pdb
+C:\HerdSync\HerdSync.Shared\obj\Debug\net8.0\ref\HerdSync.Shared.dll

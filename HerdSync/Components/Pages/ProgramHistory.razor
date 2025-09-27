@@ -1,0 +1,30 @@
+﻿@page "/programhistory"
+
+<div class="container">
+    <div class="text-center mb-5">
+        <h3>Program History</h3>
+        <p class="lead">Previously run programs and their data</p>
+    </div>
+    @foreach (var program in ProgramList)
+    {
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="d-flex flex-column flex-lg-row">
+                    <span class="avatar avatar-text rounded-3 me-4 mb-2">PRG</span>
+                    <div class="row flex-fill">
+                        <div class="col-sm-5">
+                            <h4 class="h5">@program.Name</h4>
+                            <span class="badge bg-secondary">@program.Additions</span> <span class="badge bg-success">@program.TreatGroup</span>
+                        </div>
+                        <div class="col-sm-4 py-2">
+                            <span class="badge bg-secondary">@program.Date</span>
+                        </div>
+                        <div class="col-sm-3 text-lg-end">
+                            <a href="#" class="btn btn-primary stretched-link">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+</div>

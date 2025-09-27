@@ -1,0 +1,34 @@
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: true))
+
+<MudPaper Width="250px" Class="py-3" Elevation="0">
+    <MudNavMenu Rounded="true" Margin="Margin.Dense" Color="Color.Primary" Class="pa-2">
+        <MudSwitch @bind-Value="_isCowsMode" Label="@(_isCowsMode ? "Cows" : "Farmer")" Color="@(_isCowsMode ? Color.Primary : Color.Secondary)" />
+        @if (_isCowsMode)
+        {
+            <MudNavLink Href="/">Dashboard (Cows)</MudNavLink>
+            <MudNavLink Href="/herd" Match="NavLinkMatch.Prefix">Herd</MudNavLink>
+            <MudNavGroup Title="Settings" Expanded="false">
+                <MudNavLink Href="/newprogram">New Program</MudNavLink>
+                <MudNavLink Href="/existingprograms">Existing Program</MudNavLink>
+                <MudNavLink Href="/programhistory">Program History</MudNavLink>
+            </MudNavGroup>
+            <MudNavLink Href="/about">About</MudNavLink>
+        }
+        else 
+        {
+            <MudNavLink Href="/farmer-dashboard">Farmer Dashboard</MudNavLink>
+            <MudNavLink Href="/fields" Match="NavLinkMatch.Prefix">Calendar</MudNavLink>
+            <MudNavGroup Title="Reporting" Expanded="false">
+                <MudNavLink Href="/crop-planning">Upcoming events</MudNavLink>
+                <MudNavLink Href="/machinery">Inventory</MudNavLink>
+                <MudNavLink Href="/sales">Custom reporting</MudNavLink>
+            </MudNavGroup>
+            <MudNavLink Href="/farmer-profile">My Farmer Profile</MudNavLink>
+        }
+    </MudNavMenu>
+</MudPaper>
+
+@code {
+
+    private bool _isCowsMode = true;
+}

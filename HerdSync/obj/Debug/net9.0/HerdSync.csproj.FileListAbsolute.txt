@@ -1,0 +1,8 @@
+C:\HerdSync\HerdSync\obj\Debug\net9.0\HerdSync.csproj.AssemblyReference.cache
+C:\HerdSync\HerdSync\obj\Debug\net9.0\rpswa.dswa.cache.json
+C:\HerdSync\HerdSync\obj\Debug\net9.0\HerdSync.GeneratedMSBuildEditorConfig.editorconfig
+C:\HerdSync\HerdSync\obj\Debug\net9.0\HerdSync.AssemblyInfoInputs.cache
+C:\HerdSync\HerdSync\obj\Debug\net9.0\HerdSync.AssemblyInfo.cs
+C:\HerdSync\HerdSync\obj\Debug\net9.0\HerdSync.csproj.CoreCompileInputs.cache
+C:\HerdSync\HerdSync\obj\Debug\net9.0\HerdSync.MvcApplicationPartsAssemblyInfo.cache
+C:\HerdSync\HerdSync\obj\Debug\net9.0\HerdSync.sourcelink.json

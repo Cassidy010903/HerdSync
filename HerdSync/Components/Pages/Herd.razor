@@ -1,0 +1,76 @@
+﻿@page "/herd"
+@using HerdSync.Shared.Enums.Data
+@inject IDialogService DialogService
+@rendermode @(new InteractiveServerRenderMode(prerender: true))
+
+<PageTitle>Herd</PageTitle>
+
+<div class="container">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <h5 class="card-title">Cow List <span class="text-muted fw-normal ms-2">@CowCount</span></h5>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mb-3">
+                <div>
+                    <MudButton Onclick="@OpenDialogAsync" Variant="Variant.Outlined" Color="Color.Secondary"><i class="bx bx-plus me-1"></i> Add Cow</MudButton>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="">
+                <div class="table-responsive">
+                    <table class="table project-list-table table-nowrap align-middle table-borderless">
+                        <thead>
+                            <tr>
+                                <th scope="col">Number</th>
+                                <th scope="col">Colour</th>
+                                <th scope="col">Age</th>
+                                <th scope="col">Weight est</th>
+                                <th scope="col" style="width: 200px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var cow in HerdList)
+                            {
+                                <tr>
+                                    <td><img src="/cow2.png" alt="" class="avatar-sm rounded-circle me-2" /><a href="#" class="text-body">#@cow.spd_Number</a></td>
+                                    <td><span class="@(cow.spd_Tag_Colour == ColourEnum.Green ? "badge badge-soft-success mb-0" : "badge badge-soft-info mb-0")">@cow.spd_Tag_Colour</span></td>
+                                    <td>@cow.spd_Age</td>
+                                    <td>@cow.spd_Weight</td>
+                                    <td>
+                                        <ul class="list-inline mb-0">
+                                            <li class="list-inline-item">
+                                                @* <a data-bs-toggle="tooltip" data-bs-placement="top" title="Edit" class="px-2 text-primary" @onclick="EditDialog"><i class="bx bx-pencil font-size-18"></i></a> *@
+                                                <a data-bs-toggle="tooltip"
+                                                   data-bs-placement="top"
+                                                   title="Edit"
+                                                   class="px-2 text-primary"
+                                                   @onclick="() => EditDialog(cow.spd_Id)">
+                                                    <i class="bx bx-pencil font-size-18"></i>
+                                                </a>
+                                            </li>
+                                            <li class="list-inline-item">
+                                                <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete" class="px-2 text-danger"><i class="bx bx-trash-alt font-size-18"></i></a>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-0 align-items-center pb-4">
+        <div class="col-sm-6">
+            <div><p class="mb-sm-0">Showing 1 to @CowCount entries</p></div>
+        </div>
+    </div>
+</div>
+
