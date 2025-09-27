@@ -1,10 +1,11 @@
-.page[b-lht2ox5a5m] {
+
+.page[b-lht2ox5a5m]  {
     position: relative;
     display: flex;
     flex-direction: column;
 }
 
-main[b-lht2ox5a5m] {
+.main[b-lht2ox5a5m] {
     flex: 1;
 }
 
@@ -51,14 +52,14 @@ main[b-lht2ox5a5m] {
         flex-direction: row;
     }
 
-    .sidebar[b-lht2ox5a5m] {
+    .sidebar[b-lht2ox5a5m]  {
         width: 250px;
         height: 100vh;
         position: sticky;
         top: 0;
     }
 
-    .top-row[b-lht2ox5a5m] {
+    .top-row[b-lht2ox5a5m]  {
         position: sticky;
         top: 0;
         z-index: 1;
@@ -70,7 +71,7 @@ main[b-lht2ox5a5m] {
         width: 0;
     }
 
-    .top-row[b-lht2ox5a5m], article[b-lht2ox5a5m] {
+    .top-row[b-lht2ox5a5m] , article[b-lht2ox5a5m]  {
         padding-left: 2rem !important;
         padding-right: 1.5rem !important;
     }

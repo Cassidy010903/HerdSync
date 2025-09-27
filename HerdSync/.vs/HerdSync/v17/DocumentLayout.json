@@ -3,12 +3,25 @@
   "WorkspaceRootPath": "C:\\HerdSync\\HerdSync\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{3743BD54-CC95-4B29-A569-512A1DA9AD80}|HerdSync.csproj|c:\\herdsync\\herdsync\\components\\pages\\herd.razor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3743BD54-CC95-4B29-A569-512A1DA9AD80}|HerdSync.csproj|solutionrelative:components\\pages\\herd.razor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3743BD54-CC95-4B29-A569-512A1DA9AD80}|HerdSync.csproj|c:\\herdsync\\herdsync\\components\\pages\\newcow.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{3743BD54-CC95-4B29-A569-512A1DA9AD80}|HerdSync.csproj|solutionrelative:components\\pages\\newcow.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3743BD54-CC95-4B29-A569-512A1DA9AD80}|HerdSync.csproj|c:\\herdsync\\herdsync\\components\\pages\\herd.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{3743BD54-CC95-4B29-A569-512A1DA9AD80}|HerdSync.csproj|solutionrelative:components\\pages\\herd.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3743BD54-CC95-4B29-A569-512A1DA9AD80}|HerdSync.csproj|c:\\herdsync\\herdsync\\components\\pages\\newcow.razor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3743BD54-CC95-4B29-A569-512A1DA9AD80}|HerdSync.csproj|solutionrelative:components\\pages\\newcow.razor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D68EFFE-1CDF-4B99-80EC-0F69FBAFCA34}|..\\HerdSync.Shared\\HerdSync.Shared.csproj|c:\\herdsync\\herdsync.shared\\enums\\data\\extensions\\genderextensionenum.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8E868EFC-4F15-443C-86EA-6F1C4A40A877}|..\\BLL\\BLL.csproj|c:\\herdsync\\bll\\configuration\\mapping\\speciesmappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D68EFFE-1CDF-4B99-80EC-0F69FBAFCA34}|..\\HerdSync.Shared\\HerdSync.Shared.csproj|c:\\herdsync\\herdsync.shared\\enums\\data\\extensions\\colourextensionenum.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -17,21 +30,12 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "DockedWidth": 147,
+          "SelectedChildIndex": 5,
           "Children": [
             {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Herd.razor.cs",
-              "DocumentMoniker": "C:\\HerdSync\\HerdSync\\Components\\Pages\\Herd.razor.cs",
-              "RelativeDocumentMoniker": "Components\\Pages\\Herd.razor.cs",
-              "ToolTip": "C:\\HerdSync\\HerdSync\\Components\\Pages\\Herd.razor.cs",
-              "RelativeToolTip": "Components\\Pages\\Herd.razor.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAQwB4AAAAhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-15T16:57:34.388Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
             },
             {
               "$type": "Document",
@@ -41,9 +45,74 @@
               "RelativeDocumentMoniker": "Components\\Pages\\Herd.razor",
               "ToolTip": "C:\\HerdSync\\HerdSync\\Components\\Pages\\Herd.razor",
               "RelativeToolTip": "Components\\Pages\\Herd.razor",
-              "ViewState": "AgIAABIAAAAAAAAAAAAiwC4AAACfAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACsAAAA3AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-07-15T16:55:28.792Z",
+              "WhenOpened": "2025-09-27T10:15:16.368Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "SpeciesMappingProfile.cs",
+              "DocumentMoniker": "C:\\HerdSync\\BLL\\Configuration\\Mapping\\SpeciesMappingProfile.cs",
+              "RelativeDocumentMoniker": "..\\BLL\\Configuration\\Mapping\\SpeciesMappingProfile.cs",
+              "ToolTip": "C:\\HerdSync\\BLL\\Configuration\\Mapping\\SpeciesMappingProfile.cs",
+              "RelativeToolTip": "..\\BLL\\Configuration\\Mapping\\SpeciesMappingProfile.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAtwBIAAABjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-27T10:11:27.842Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ColourExtensionEnum.cs",
+              "DocumentMoniker": "C:\\HerdSync\\HerdSync.Shared\\Enums\\Data\\Extensions\\ColourExtensionEnum.cs",
+              "RelativeDocumentMoniker": "..\\HerdSync.Shared\\Enums\\Data\\Extensions\\ColourExtensionEnum.cs",
+              "ToolTip": "C:\\HerdSync\\HerdSync.Shared\\Enums\\Data\\Extensions\\ColourExtensionEnum.cs",
+              "RelativeToolTip": "..\\HerdSync.Shared\\Enums\\Data\\Extensions\\ColourExtensionEnum.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAoAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-27T10:08:49.7Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "GenderExtensionEnum.cs",
+              "DocumentMoniker": "C:\\HerdSync\\HerdSync.Shared\\Enums\\Data\\Extensions\\GenderExtensionEnum.cs",
+              "RelativeDocumentMoniker": "..\\HerdSync.Shared\\Enums\\Data\\Extensions\\GenderExtensionEnum.cs",
+              "ToolTip": "C:\\HerdSync\\HerdSync.Shared\\Enums\\Data\\Extensions\\GenderExtensionEnum.cs",
+              "RelativeToolTip": "..\\HerdSync.Shared\\Enums\\Data\\Extensions\\GenderExtensionEnum.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAkAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-27T10:08:17.189Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "NewCow.razor",
+              "DocumentMoniker": "C:\\HerdSync\\HerdSync\\Components\\Pages\\NewCow.razor",
+              "RelativeDocumentMoniker": "Components\\Pages\\NewCow.razor",
+              "ToolTip": "C:\\HerdSync\\HerdSync\\Components\\Pages\\NewCow.razor",
+              "RelativeToolTip": "Components\\Pages\\NewCow.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAADVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-27T10:03:35.189Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "NewCow.razor.cs",
+              "DocumentMoniker": "C:\\HerdSync\\HerdSync\\Components\\Pages\\NewCow.razor.cs",
+              "RelativeDocumentMoniker": "Components\\Pages\\NewCow.razor.cs",
+              "ToolTip": "C:\\HerdSync\\HerdSync\\Components\\Pages\\NewCow.razor.cs",
+              "RelativeToolTip": "Components\\Pages\\NewCow.razor.cs",
+              "ViewState": "AgIAAE4AAAAAAAAAAAAWwF0AAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-27T09:56:24.39Z",
               "EditorCaption": ""
             }
           ]

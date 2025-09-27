@@ -63,6 +63,18 @@ build_metadata.AdditionalFiles.CssScope = b-lht2ox5a5m
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcTmF2TWVudS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-a7wftq26vu
 
+[C:/HerdSync/HerdSync/Components/Pages/CowProfile.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDb3dQcm9maWxlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-8v5tn0cj4f
+
+[C:/HerdSync/HerdSync/Components/Pages/CurrentProgram.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDdXJyZW50UHJvZ3JhbS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-rzk3aq3vgz
+
+[C:/HerdSync/HerdSync/Components/Pages/ExistingPrograms.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xFeGlzdGluZ1Byb2dyYW1zLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-fhg327yw08
+
 [C:/HerdSync/HerdSync/Components/Pages/Herd.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xIZXJkLnJhem9y
 build_metadata.AdditionalFiles.CssScope = b-o3yd7cbqrk
@@ -70,3 +82,11 @@ build_metadata.AdditionalFiles.CssScope = b-o3yd7cbqrk
 [C:/HerdSync/HerdSync/Components/Pages/Home.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xIb21lLnJhem9y
 build_metadata.AdditionalFiles.CssScope = b-zjy6p6ka7z
+
+[C:/HerdSync/HerdSync/Components/Pages/NewProgram.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xOZXdQcm9ncmFtLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-1tpcb23rgg
+
+[C:/HerdSync/HerdSync/Components/Pages/ProgramHistory.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xQcm9ncmFtSGlzdG9yeS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-9rru2m17g0

@@ -1,4 +1,9 @@
-﻿using HerdSync.Components.Pages;
+﻿using BLL.Services;
+using BLL.Services.Implementation;
+using HerdSync.Components.Pages;
+using HerdSync.Shared;
+using HerdSync.Shared.DTO;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
 namespace HerdSync.Components.Pages
@@ -6,38 +11,58 @@ namespace HerdSync.Components.Pages
 
     public partial class Herd
     {
+        [Inject] public IAnimalService AnimalService { get; set; }
+        public List<spd_Species_Detail_DTO> HerdList { get; set; } = new();
         int CowCount;
-
-        public List<HerdDetail> HerdList = new()
+        private async Task OpenDialogAsync()
         {
-            new HerdDetail {Number = 10, Colour = "Green", Age = "Adult",Weight = 125},
-            new HerdDetail {Number = 11, Colour = "Yellow", Age = "Adult",Weight = 132},
-            new HerdDetail {Number = 12, Colour = "Green", Age = "Calf",Weight = 112},
-            new HerdDetail {Number = 13, Colour = "Yellow", Age = "Adult",Weight = 121},
-            new HerdDetail {Number = 14, Colour = "Green", Age = "Adult",Weight = 145},
-            new HerdDetail {Number = 15, Colour = "Yellow", Age = "Calf",Weight = 136},
-            new HerdDetail {Number = 16, Colour = "Green", Age = "Adult",Weight = 125},
-            new HerdDetail {Number = 17, Colour = "Yellow", Age = "Adult",Weight = 154},
-            new HerdDetail {Number = 18, Colour = "Green", Age = "Adult",Weight = 231}
-        };
+            //var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        private Task OpenDialogAsync()
-        {
+            //return DialogService.ShowAsync<NewCow>("Add New Cow", options);
             var options = new DialogOptions { CloseOnEscapeKey = true };
+            var dialog = await DialogService.ShowAsync<NewCow>("Add New Cow", options);
+            var result = await dialog.Result;
 
-            return DialogService.ShowAsync<NewCow>("Add New Cow", options);
+            if (!result.Canceled)
+            {
+                HerdList = await AnimalService.GetAllHerdAsync();
+                CowCount = HerdList.Count;
+                StateHasChanged();
+            }
+
         }
 
-        private Task EditDialog()
+        private async Task EditDialog(Guid cow)
         {
-            var options = new DialogOptions { CloseOnEscapeKey = true };
+            var parameters = new DialogParameters
+            {
+                ["ExistingCow"] = cow,
+                ["HerdList"] = HerdList
+            };
 
-            return DialogService.ShowAsync<NewCow>("Edit Cow", options);
+
+            var options = new DialogOptions { CloseOnEscapeKey = true };
+            var dialog = await DialogService.ShowAsync<NewCow>("Edit Cow", parameters, options);
+            var result = await dialog.Result;
+
+            if (result.Data is spd_Species_Detail_DTO updatedCow)
+            {
+                var index = HerdList.FindIndex(c => c.spd_Id == updatedCow.spd_Id);
+                if (index >= 0)
+                    HerdList[index] = updatedCow;
+                else
+                    HerdList.Add(updatedCow);
+
+                CowCount = HerdList.Count;
+                StateHasChanged();
+            }
+
         }
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
-            CowCount = HerdList.Count; 
+            HerdList = await AnimalService.GetAllHerdAsync();
+            CowCount = HerdList.Count;
             base.OnInitialized(); 
         }
 

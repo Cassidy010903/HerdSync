@@ -1,18 +1,22 @@
 ﻿@inherits LayoutComponentBase
-
+@rendermode @(new InteractiveServerRenderMode(prerender: true))
+<HeadContent>
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+</HeadContent>
 @* Required *@
 <MudThemeProvider Theme="HerdSyncThemes" />
 <MudPopoverProvider />
 
 @* Needed for dialogs *@
 <MudDialogProvider FullWidth="true"
-                    MaxWidth="MaxWidth.ExtraSmall"
-                    CloseButton="true"
-                    BackdropClick="false"
+                   MaxWidth="MaxWidth.Medium"
+                   CloseButton="true"
+                   BackdropClick="false"
 
-                    Position="DialogPosition.Center"
-                    CloseOnEscapeKey="true"
-                    BackgroundClass="my-custom-class" />
+                   Position="DialogPosition.Center"
+                   CloseOnEscapeKey="true"
+                   BackgroundClass="my-custom-class" />
 
 @* Needed for snackbars *@
 <MudSnackbarProvider />

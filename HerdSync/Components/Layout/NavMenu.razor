@@ -1,4 +1,6 @@
-﻿<MudPaper Width="250px" Class="py-3" Elevation="0">
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: true))
+
+<MudPaper Width="250px" Class="py-3" Elevation="0">
     <MudNavMenu Rounded="true" Margin="Margin.Dense" Color="Color.Primary" Class="pa-2">
         <MudSwitch @bind-Value="_isCowsMode" Label="@(_isCowsMode ? "Cows" : "Farmer")" Color="@(_isCowsMode ? Color.Primary : Color.Secondary)" />
         @if (_isCowsMode)
