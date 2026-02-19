@@ -42,19 +42,19 @@ namespace DAL.Services.Implementation
                 program.Instructions.Add(instr);
             }
 
-            _db.Program.Add(program);
+            _db.ProgramOld.Add(program);
             await _db.SaveChangesAsync();
             return program;
         }
 
         public Task<List<prg_Program>> ListAsync() =>
-            _db.Program
+            _db.ProgramOld
                 .Include(p => p.Instructions)
                 .ThenInclude(i => i.Treatments)
                 .ToListAsync();
 
         public Task<prg_Program?> GetAsync(Guid programId) =>
-            _db.Program
+            _db.ProgramOld
                 .Include(p => p.Instructions)
                 .ThenInclude(i => i.Treatments)
                 .ThenInclude(it => it.Treatment)

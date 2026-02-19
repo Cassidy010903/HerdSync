@@ -6,8 +6,8 @@
                 <MudSelect T="Guid" @bind-Value="tag.spd_Id" Label="Select Animal" Variant="MudBlazor.Variant.Filled" Dense="true">
                     @foreach (var animal in HerdList)
                     {
-                        <MudSelectItem Value="@animal.spd_Id">
-                            @animal.spd_Number - @animal.spd_Tag_Colour
+                        <MudSelectItem Value="@animal.AnimalId">
+                            @animal.DisplayIdentifier - @animal.BirthYear
                         </MudSelectItem>
                     }
                 </MudSelect>

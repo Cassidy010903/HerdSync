@@ -50,7 +50,7 @@ namespace BLL.Services.Implementation
                 IsClosed = false
             };
 
-            _db.ProgramRun.Add(Current);
+            _db.ProgramRunOld.Add(Current);
             await _db.SaveChangesAsync();
 
             return Current;
@@ -59,7 +59,7 @@ namespace BLL.Services.Implementation
         // Resume last open session (if exists)
         public async Task<ase_Active_Session?> ResumeAsync()
         {
-            Current = await _db.ProgramRun
+            Current = await _db.ProgramRunOld
                 .Include(r => r.Animals)
                 .ThenInclude(a => a.Treatments)
                 .FirstOrDefaultAsync(r => !r.IsClosed);
@@ -70,13 +70,13 @@ namespace BLL.Services.Implementation
         // End session & schedule deletion of backup
         public async Task EndAsync(Guid sessionId)
         {
-            var run = await _db.ProgramRun.FindAsync(sessionId);
+            var run = await _db.ProgramRunOld.FindAsync(sessionId);
             if (run is null) return;
 
             run.IsClosed = true;
             run.EndedUtc = DateTime.UtcNow;
 
-            var program = await _db.Program.FindAsync(run.ProgramId);
+            var program = await _db.ProgramOld.FindAsync(run.ProgramId);
             if (program is not null)
                 program.LastRunUtc = run.EndedUtc ?? run.StartedUtc;
 
@@ -106,70 +106,70 @@ namespace BLL.Services.Implementation
                 var link = await _db.SpeciesTag.FirstOrDefaultAsync(t => t.stl_Tag_Id == read.TagId);
                 if (link is null) { _log.LogWarning("Tag {tag} not mapped", read.TagId); return; }
 
-                var animal = await _db.Species.FirstOrDefaultAsync(a => a.Id == link.spd_Id);
+                var animal = await _db.Animals.FirstOrDefaultAsync(a => a.AnimalId == link.spd_Id);
                 if (animal is null) { _log.LogWarning("No animal for spd_Id {id}", link.spd_Id); return; }
 
                 // Parse animal attributes
-                AgeGroupEnum? ageGroup = !string.IsNullOrWhiteSpace(animal.spd_AgeGroup)
-                    ? Enum.Parse<AgeGroupEnum>(animal.spd_AgeGroup)
-                    : null;
+                //AgeGroupEnum? ageGroup = !string.IsNullOrWhiteSpace(animal.spd_AgeGroup)
+                //    ? Enum.Parse<AgeGroupEnum>(animal.spd_AgeGroup)
+                //    : null;
 
-                GenderEnum? gender = !string.IsNullOrWhiteSpace(animal.spd_Gender)
-                    ? Enum.Parse<GenderEnum>(animal.spd_Gender)
-                    : null;
+                //GenderEnum? gender = !string.IsNullOrWhiteSpace(animal.spd_Gender)
+                //    ? Enum.Parse<GenderEnum>(animal.spd_Gender)
+                //    : null;
 
-                AnimalTypeEnum? species = !string.IsNullOrWhiteSpace(animal.spd_Species)
-                    ? Enum.Parse<AnimalTypeEnum>(animal.spd_Species)
-                    : null;
+                //AnimalTypeEnum? species = !string.IsNullOrWhiteSpace(animal.spd_Species)
+                //    ? Enum.Parse<AnimalTypeEnum>(animal.spd_Species)
+                //    : null;
 
                 // Load program with instructions
-                var program = await _db.Program
+                var program = await _db.ProgramOld
                     .Include(p => p.Instructions)
                     .ThenInclude(i => i.Treatments)
                     .FirstAsync(p => p.Id == Current.ProgramId);
 
                 // Find matching instruction (3-way match: age, gender, species)
-                var instr = program.Instructions.FirstOrDefault(i =>
-                    (i.TargetGroup == null || i.TargetGroup == ageGroup) &&
-                    (i.TargetGender == null || i.TargetGender == gender) &&
-                    (i.TargetSpecies == null || i.TargetSpecies == species)
-                );
+                //var instr = program.Instructions.FirstOrDefault(i =>
+                //    (i.TargetGroup == null || i.TargetGroup == ageGroup) &&
+                //    (i.TargetGender == null || i.TargetGender == gender) &&
+                //    (i.TargetSpecies == null || i.TargetSpecies == species)
+                //);
 
-                var defaultTreatmentIds = instr?.Treatments
-                    .OrderBy(t => t.SortOrder)
-                    .Select(t => t.TreatmentId)
-                    .ToList() ?? new List<Guid>();
+                //var defaultTreatmentIds = instr?.Treatments
+                //    .OrderBy(t => t.SortOrder)
+                //    .Select(t => t.TreatmentId)
+                //    .ToList() ?? new List<Guid>();
 
-                var action = new ast_Animal_Session_Treatment
-                {
-                    Id = Guid.NewGuid(),
-                    SessionId = Current.Id,
-                    spd_Id = animal.Id,
-                    TagId = read.TagId,
-                    AgeGroup = ageGroup ?? AgeGroupEnum.Adult, // default if null
-                    ScannedUtc = DateTime.UtcNow,
-                    AutoApplied = true
-                };
+                //var action = new ast_Animal_Session_Treatment
+                //{
+                //    Id = Guid.NewGuid(),
+                //    SessionId = Current.Id,
+                //    spd_Id = animal.Id,
+                //    TagId = read.TagId,
+                //    AgeGroup = ageGroup ?? AgeGroupEnum.Adult, // default if null
+                //    ScannedUtc = DateTime.UtcNow,
+                //    AutoApplied = true
+                //};
 
-                foreach (var tid in defaultTreatmentIds)
-                {
-                    action.Treatments.Add(new atr_Animal_Treatment
-                    {
-                        Id = Guid.NewGuid(),
-                        AnimalAction = action,
-                        TreatmentId = tid,
-                        IsDefault = true,
-                        AppliedUtc = DateTime.UtcNow
-                    });
-                }
+                //foreach (var tid in defaultTreatmentIds)
+                //{
+                //    action.Treatments.Add(new atr_Animal_Treatment
+                //    {
+                //        Id = Guid.NewGuid(),
+                //        AnimalAction = action,
+                //        TreatmentId = tid,
+                //        IsDefault = true,
+                //        AppliedUtc = DateTime.UtcNow
+                //    });
+                //}
 
-                _db.ProgramRunAnimal.Add(action);
+                //_db.ProgramRunAnimalOld.Add(action);
                 await _db.SaveChangesAsync();
 
                 // Write to CSV backup
-                await AppendToCsvAsync(action);
+                //await AppendToCsvAsync(action);
 
-                OnAnimalAction?.Invoke(action);
+                //OnAnimalAction?.Invoke(action);
             }
             catch (Exception ex)
             {
@@ -180,7 +180,7 @@ namespace BLL.Services.Implementation
         // Add extra treatment per animal
         public async Task AddExtraTreatmentAsync(Guid animalActionId, Guid treatmentId, string? doseOverride = null)
         {
-            var action = await _db.ProgramRunAnimal
+            var action = await _db.ProgramRunAnimalOld
                 .Include(a => a.Treatments)
                 .FirstOrDefaultAsync(a => a.Id == animalActionId);
 

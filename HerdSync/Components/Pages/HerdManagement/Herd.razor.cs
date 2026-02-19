@@ -2,6 +2,7 @@
 using BLL.Services.Implementation;
 using HerdSync.Shared;
 using HerdSync.Shared.DTO;
+using HerdSync.Shared.DTO.Animal;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -11,7 +12,7 @@ namespace HerdSync.Components.Pages.HerdManagement
     public partial class Herd
     {
         [Inject] public IAnimalService AnimalService { get; set; }
-        public List<spd_Species_Detail_DTO> HerdList { get; set; } = new();
+        public List<AnimalDTO> HerdList { get; set; } = new();
         int CowCount;
         private async Task OpenDialogAsync()
         {
@@ -44,9 +45,9 @@ namespace HerdSync.Components.Pages.HerdManagement
             var dialog = await DialogService.ShowAsync<NewCow>("Edit Cow", parameters, options);
             var result = await dialog.Result;
 
-            if (result.Data is spd_Species_Detail_DTO updatedCow)
+            if (result.Data is AnimalDTO updatedCow)
             {
-                var index = HerdList.FindIndex(c => c.spd_Id == updatedCow.spd_Id);
+                var index = HerdList.FindIndex(c => c.AnimalId == updatedCow.AnimalId);
                 if (index >= 0)
                     HerdList[index] = updatedCow;
                 else

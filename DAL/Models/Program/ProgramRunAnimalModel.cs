@@ -1,5 +1,6 @@
 ﻿using DAL.Models.Animal;
 using DAL.Models.Base;
+using HerdSync.Shared.DTO.Program;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -21,7 +22,7 @@ namespace DAL.Models.Program
 
         // Navigation
         [ForeignKey("ProgramRunId")]
-        public ProgramRun ProgramRun { get; set; }
+        public ProgramRunModel ProgramRun { get; set; }
 
         [ForeignKey("AnimalId")]
         public AnimalModel Animal { get; set; }

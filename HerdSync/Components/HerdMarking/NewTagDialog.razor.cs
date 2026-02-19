@@ -2,6 +2,7 @@
 using BLL.Services.Implementation;
 using FluentValidation;
 using HerdSync.Shared.DTO;
+using HerdSync.Shared.DTO.Animal;
 using HerdSync.Shared.Enums.Data;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
@@ -17,7 +18,7 @@ namespace HerdSync.Components.HerdMarking
         [Parameter]
         public List<stl_Species_Tag_Lookup_DTO> TagList { get; set; } = new();
         [Parameter]
-        public List<spd_Species_Detail_DTO> HerdList { get; set; } = new();
+        public List<AnimalDTO> HerdList { get; set; } = new();
 
         [Inject]
         private ITagService tagService { get; set; }

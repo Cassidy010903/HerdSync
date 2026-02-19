@@ -8,6 +8,7 @@ using HerdSync.Shared.Enums.Data;
 using HerdSync.Shared.Enums.Data.Extensions;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using HerdSync.Shared.DTO.Animal;
 
 namespace HerdSync.Components.Pages.HerdManagement
 {
@@ -18,15 +19,15 @@ namespace HerdSync.Components.Pages.HerdManagement
         [Parameter]
         public Guid ExistingCow { get; set; }
         [Parameter]
-        public List<spd_Species_Detail_DTO> HerdList { get; set; } = new();
+        public List<AnimalDTO> HerdList { get; set; } = new();
 
         [Inject]
         private IAnimalService animalService { get; set; }
         [Inject]
-        private IValidator<spd_Species_Detail_DTO> SpeciesValidator { get; set; }
+        private IValidator<AnimalDTO> SpeciesValidator { get; set; }
         [Inject] 
         ISnackbar Snackbar { get; set; }
-        public spd_Species_Detail_DTO species = new();
+        public AnimalDTO species = new();
         public string Branded { get; set; }
         public bool IsEditMode => ExistingCow != Guid.Empty;
         public List<(AgeGroupEnum Value, string Display)> AgeGroupDisplayOptions =>
@@ -37,7 +38,7 @@ namespace HerdSync.Components.Pages.HerdManagement
         public List<(GenderEnum Value, string Display)> GenderDisplayOptions =>
             Enum.GetValues<GenderEnum>()
                 .Cast<GenderEnum>()
-                .Select(g => (g, g.ToDisplayGender(species.spd_Species)))
+                .Select(g => (g, g.ToDisplayGender(AnimalTypeEnum.Cow))) //TODO: Update this according to actual AnimalType
                 .ToList();
 
         public List<(ColourEnum Value, string Display)> ColourDisplayOptions =>
@@ -47,7 +48,7 @@ namespace HerdSync.Components.Pages.HerdManagement
                 .ToList();
         private string GetBranded()
         {
-            if (species.spd_Branded == true)
+            if (species.IsBranded == true)
             {
                 Branded = "Branded";
             }
@@ -61,15 +62,15 @@ namespace HerdSync.Components.Pages.HerdManagement
 
         private async Task Submit()
         {
-            var result = await SpeciesValidator.ValidateAsync(species);
-            if (!result.IsValid)
-            {
-                foreach (var error in result.Errors)
-                {
-                    Snackbar.Add($"{error.PropertyName}: {error.ErrorMessage}", MudBlazor.Severity.Error);
-                }
-                return;
-            }
+            //var result = await SpeciesValidator.ValidateAsync(species);
+            //if (!result.IsValid)
+            //{
+            //    foreach (var error in result.Errors)
+            //    {
+            //        Snackbar.Add($"{error.PropertyName}: {error.ErrorMessage}", MudBlazor.Severity.Error);
+            //    }
+            //    return;
+            //}
 
             try
             {
@@ -95,7 +96,7 @@ namespace HerdSync.Components.Pages.HerdManagement
         {
             if (IsEditMode)
             {
-                species = HerdList.FirstOrDefault(c => c.spd_Id == ExistingCow) ?? new spd_Species_Detail_DTO();
+                species = HerdList.FirstOrDefault(c => c.AnimalId == ExistingCow) ?? new AnimalDTO();
             }
             return Task.CompletedTask;
 

@@ -87,8 +87,8 @@ autocomplete="off" />
         {
             Id = Guid.NewGuid(),
             TagId = tag,
-            spd_Id = null,
-            AgeGroup = null,
+            spd_Id = Guid.NewGuid(),
+            AgeGroup = Shared.Enums.Data.AgeGroupEnum.Calf1,
             ScannedUtc = DateTime.UtcNow,
             Treatments = new List<atr_Animal_Treatment>()
         };

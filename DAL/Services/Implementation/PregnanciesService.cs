@@ -13,7 +13,7 @@ namespace DAL.Services.Implementation
     {
         public async Task ArchiveAndDeletePregnancyAsync(Guid id, string deletedBy)
         {
-            var entity = await context.Pregnancies.FindAsync(id);
+            var entity = await context.Pregnanciess.FindAsync(id);
             if (entity == null) return;
 
             var history = new PregnanciesDetailHistory
@@ -28,8 +28,8 @@ namespace DAL.Services.Implementation
                 DeletedUser = deletedBy
             };
 
-            context.PregnanciesHistory.Add(history);
-            context.Pregnancies.Remove(entity);
+            context.PregnanciesHistoryOld.Add(history);
+            context.Pregnanciess.Remove(entity);
 
             await context.SaveChangesAsync();
         }

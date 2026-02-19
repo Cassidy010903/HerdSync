@@ -1,4 +1,5 @@
-﻿using DAL.Models.Base;
+﻿using DAL.Models.Animal;
+using DAL.Models.Base;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

@@ -1,4 +1,5 @@
 ﻿
+using DAL.Models.Animal;
 using DAL.Models.Base;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,6 @@ namespace DAL.Models
         [ForeignKey("spd_Id")]
         [Required]
         public required Guid spd_Id { get; set; }
-        public required spd_Species_Detail Species { get; set; }
+        public required AnimalModel Species { get; set; }
     }
 }

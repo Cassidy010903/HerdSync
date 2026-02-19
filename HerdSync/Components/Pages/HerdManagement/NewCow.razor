@@ -4,28 +4,28 @@
     <DialogContent>
         <MudGrid>
             <MudItem xs="12" sm="6" md="6">
-                <MudTextField ShrinkLabel @bind-Value="species.spd_Number" Label="Cow Number" Variant="MudBlazor.Variant.Outlined" Adornment="Adornment.Start" AdornmentText="#" AdornmentColor="Color.Primary"></MudTextField>
-                <MudSelect T="ColourEnum" Label="Colour" @bind-Value="species.spd_Tag_Colour" Required="true" Variant="MudBlazor.Variant.Outlined">
+                <MudTextField ShrinkLabel @bind-Value="species.DisplayIdentifier" Label="Cow Number" Variant="MudBlazor.Variant.Outlined" Adornment="Adornment.Start" AdornmentText="#" AdornmentColor="Color.Primary"></MudTextField>
+                @* <MudSelect T="ColourEnum" Label="Colour" @bind-Value="species.spd_Tag_Colour" Required="true" Variant="MudBlazor.Variant.Outlined">
                     @foreach (var colour in Enum.GetValues<ColourEnum>())
                     {
                             <MudSelectItem Value="@colour">@colour.ToDisplayColour()</MudSelectItem>
                     }
-                </MudSelect>
-                <MudTextField ShrinkLabel @bind-Value="species.spd_Age" Label="Age" Variant="MudBlazor.Variant.Outlined"></MudTextField>
-                <MudSelect T="AgeGroupEnum" Label="Age Group" @bind-Value="species.spd_AgeGroup" Variant="MudBlazor.Variant.Outlined">
+                </MudSelect> *@
+                <MudTextField ShrinkLabel @bind-Value="species.BirthYear" Label="Age" Variant="MudBlazor.Variant.Outlined"></MudTextField>
+                @* <MudSelect T="AgeGroupEnum" Label="Age Group" @bind-Value="species.spd_AgeGroup" Variant="MudBlazor.Variant.Outlined">
                     @foreach (var age in Enum.GetValues<AgeGroupEnum>())
                     {
                         <MudSelectItem Value="@age">@age.ToDisplayName(species.spd_Species)</MudSelectItem>
                     }
-                </MudSelect>
-                <MudTextField ShrinkLabel @bind-Value="species.spd_Weight" Label="Weight" Variant="MudBlazor.Variant.Outlined" Adornment="Adornment.End" AdornmentText="Kg" AdornmentColor="Color.Info"></MudTextField>
+                </MudSelect> *@
+                @* <MudTextField ShrinkLabel @bind-Value="species.spd_Weight" Label="Weight" Variant="MudBlazor.Variant.Outlined" Adornment="Adornment.End" AdornmentText="Kg" AdornmentColor="Color.Info"></MudTextField>
                 <MudTextField ShrinkLabel @bind-Value="species.spd_Mother" Label="Mother" Variant="MudBlazor.Variant.Outlined"></MudTextField>
                 <MudTextField ShrinkLabel @bind-Value="species.spd_Father" Label="Father" Variant="MudBlazor.Variant.Outlined"></MudTextField>
                 <MudTextField ShrinkLabel @bind-Value="species.spd_Est_Years_Left" Label="Years Left" Variant="MudBlazor.Variant.Outlined"></MudTextField>
-                <MudTextField ShrinkLabel @bind-Value="species.spd_Medical_Note" Label="Medical note" Variant="MudBlazor.Variant.Outlined"></MudTextField>
+                <MudTextField ShrinkLabel @bind-Value="species.spd_Medical_Note" Label="Medical note" Variant="MudBlazor.Variant.Outlined"></MudTextField> *@
             </MudItem>
             <MudItem xs="12" sm="6" md="6">
-                <MudDatePicker ShrinkLabel @bind-Date="species.spd_Last_Pregnancy" Label="Last Pregnancy" Variant="MudBlazor.Variant.Outlined" required></MudDatePicker>
+            @*     <MudDatePicker ShrinkLabel @bind-Date="species.spd_Last_Pregnancy" Label="Last Pregnancy" Variant="MudBlazor.Variant.Outlined" required></MudDatePicker>
                 <MudTextField ShrinkLabel @bind-Value="species.spd_Total_Pregnancies" Label="Total Pregnancies" Variant="MudBlazor.Variant.Outlined"></MudTextField>
                 <MudTextField ShrinkLabel @bind-Value="species.spd_Total_Offspring" Label="Total Offspring" Variant="MudBlazor.Variant.Outlined"></MudTextField>
                 <MudSwitch @bind-Value="species.spd_Branded" Label="@(GetBranded())"></MudSwitch>
@@ -44,7 +44,7 @@
                 <MudSelect T="bool" Label="Born/Buy" @bind-Value="species.spd_Born_Or_Buy" Variant="MudBlazor.Variant.Outlined">
                 <MudSelectItem Value="true">Born</MudSelectItem>
                 <MudSelectItem Value="false">Buy</MudSelectItem>
-            </MudSelect>
+            </MudSelect> *@
             </MudItem>
         </MudGrid>
     </DialogContent>

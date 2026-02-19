@@ -1,4 +1,3 @@
-using BLL.Configuration.Mapping;
 using BLL.Services;
 using BLL.Services.Implementation;
 using BLL.Validators;
@@ -10,6 +9,7 @@ using HerdMark.Services;
 using HerdSync;
 using HerdSync.Components;
 using HerdSync.Shared.DTO;
+using HerdSync.Shared.DTO.Animal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MudBlazor;
@@ -26,6 +26,7 @@ configManager.AddJsonFile($"appsettings.{dbEnvironment}.json", optional: true, r
 var connectionString = configManager.GetConnectionString(dbEnvironment == "SSMS" ? "SSMSConnection" : "OracleConnection");
 builder.Services.AddMudServices();
 builder.Services.AddControllers();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Add services to the container
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
@@ -44,13 +45,12 @@ builder.Services.AddScoped<ISpeciesRepository, SpeciesRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IAnimalService, AnimalService>();
 builder.Services.AddScoped<ITagService, TagService>();
-builder.Services.AddScoped<IValidator<spd_Species_Detail_DTO>, SpeciesDTOValidator>();
+builder.Services.AddScoped<IValidator<AnimalDTO>, SpeciesDTOValidator>();
 builder.Services.AddScoped<IProgramRepository, ProgramRepository>();
 builder.Services.AddSingleton<ISessionRepository, SessionRepository>(); // subscribes to reads for the lifetime
 builder.Services.AddScoped<IProgramService, ProgramService>();
 builder.Services.AddSingleton<ISessionService, SessionService>(); // subscribes to reads for the lifetime
 
-builder.Services.AddAutoMapper(typeof(SpeciesMappingProfile).Assembly);
 builder.Services.AddRadzenComponents();
 OracleConfiguration.WalletLocation = "./wwwroot/Wallet_HerdSync";
 

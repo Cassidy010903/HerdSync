@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HerdSync.Shared.Enums.Data;
+using DAL.Models.Animal;
 
 namespace DAL.Services
 {
@@ -14,8 +15,8 @@ namespace DAL.Services
     {
         public List<GenderEnum> GetGenderOptions(AnimalTypeEnum species);
         public List<AgeGroupEnum> GetAgeGroupOptions(AnimalTypeEnum species);
-        public Task AddSpecies(spd_Species_Detail spd);
-        public Task UpdateSpecies(spd_Species_Detail updated);
-        public Task<List<spd_Species_Detail>> GetAllSpeciesAsync();
+        public Task AddSpecies(AnimalModel spd);
+        public Task UpdateSpecies(AnimalModel updated);
+        public Task<List<AnimalModel>> GetAllSpeciesAsync();
     }
 }

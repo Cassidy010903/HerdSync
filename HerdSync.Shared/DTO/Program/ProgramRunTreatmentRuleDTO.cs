@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HerdSync.Shared.DTO.Program
 {
-    internal class ProgramRunAnimalDTO
+    internal class ProgramRunTreatmentRuleDTO
     {
     }
 }
