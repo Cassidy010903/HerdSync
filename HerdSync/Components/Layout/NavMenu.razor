@@ -2,17 +2,18 @@
 
 <MudPaper Width="250px" Class="py-3" Elevation="0">
     <MudNavMenu Rounded="true" Margin="Margin.Dense" Color="Color.Primary" Class="pa-2">
-        <MudSwitch @bind-Value="_isCowsMode" Label="@(_isCowsMode ? "Cows" : "Farmer")" Color="@(_isCowsMode ? Color.Primary : Color.Secondary)" />
+        <MudSwitch @bind-Value="_isCowsMode" Label="@(_isCowsMode ? "Herd" : "Farmer")" Color="@(_isCowsMode? Color.Primary: Color.Secondary)" UncheckedColor="Color.Secondary" />
         @if (_isCowsMode)
         {
-            <MudNavLink Href="/">Dashboard (Cows)</MudNavLink>
+            <MudNavLink Href="/">Dashboard (Herd)</MudNavLink>
             <MudNavLink Href="/herd" Match="NavLinkMatch.Prefix">Herd</MudNavLink>
             <MudNavGroup Title="Settings" Expanded="false">
                 <MudNavLink Href="/newprogram">New Program</MudNavLink>
                 <MudNavLink Href="/existingprograms">Existing Program</MudNavLink>
                 <MudNavLink Href="/programhistory">Program History</MudNavLink>
+                <MudNavLink Href="/livelist">LiveList</MudNavLink>
             </MudNavGroup>
-            <MudNavLink Href="/about">About</MudNavLink>
+            <MudNavLink Href="/TagManagement">Tag Management</MudNavLink>
         }
         else 
         {

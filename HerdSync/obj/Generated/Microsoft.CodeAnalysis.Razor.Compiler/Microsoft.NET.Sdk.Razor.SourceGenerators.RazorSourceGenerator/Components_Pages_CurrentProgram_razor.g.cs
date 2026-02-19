@@ -87,6 +87,18 @@ using MudBlazor
 
 #nullable disable
     ;
+#nullable restore
+#line (14,2)-(14,14) "C:\HerdSync\HerdSync\Components\_Imports.razor"
+using Radzen
+
+#nullable disable
+    ;
+#nullable restore
+#line (15,2)-(15,21) "C:\HerdSync\HerdSync\Components\_Imports.razor"
+using Radzen.Blazor
+
+#nullable disable
+    ;
     #line default
     #line hidden
     [global::Microsoft.AspNetCore.Components.RouteAttribute(

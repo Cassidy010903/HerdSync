@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "HerdSync.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "..\\HerdMarkSim\\HerdMarkSim.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

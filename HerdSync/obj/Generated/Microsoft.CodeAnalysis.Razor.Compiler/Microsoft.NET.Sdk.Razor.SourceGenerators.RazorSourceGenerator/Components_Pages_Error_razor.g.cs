@@ -88,6 +88,18 @@ using MudBlazor
 #nullable disable
     ;
 #nullable restore
+#line (14,2)-(14,14) "C:\HerdSync\HerdSync\Components\_Imports.razor"
+using Radzen
+
+#nullable disable
+    ;
+#nullable restore
+#line (15,2)-(15,21) "C:\HerdSync\HerdSync\Components\_Imports.razor"
+using Radzen.Blazor
+
+#nullable disable
+    ;
+#nullable restore
 #line (2,2)-(2,26) "C:\HerdSync\HerdSync\Components\Pages\Error.razor"
 using System.Diagnostics
 

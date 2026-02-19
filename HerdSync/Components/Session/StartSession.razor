@@ -1,0 +1,44 @@
+﻿@page "/program-run"
+@using BLL.Services
+@using DAL.Models
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@inject IProgramService ProgramService
+@inject ISessionService Session
+
+@* <MudSelect @bind-Value="_selectedProgramId" Label="Select Program">
+    @foreach (var p in _programs)
+    {
+        <MudSelectItem Value="@p.Id">@p.ProgramName</MudSelectItem>
+    }
+</MudSelect>
+
+<MudButton Disabled="@(_selectedProgramId==Guid.Empty || Session.Current!=null)"
+           OnClick="Start">Start Run</MudButton>
+
+@if (Session.Current is not null)
+{
+    <MudButton Color="Color.Error" OnClick="End">End & Save</MudButton>
+} *@
+
+@code {
+    // private List<prg_Program> _programs = new();
+    // private Guid _selectedProgramId;
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     _programs = await ProgramService.ListAsync();
+    // }
+
+    // private async Task Start()
+    // {
+    //     await Session.StartAsync(_selectedProgramId);
+    //     // navigate to /livelist
+    //     //Navigation.NavigateTo("/livelist");
+    // }
+
+    // private async Task End()
+    // {
+    //     if (Session.Current is not null)
+    //         await Session.EndAsync(Session.Current.Id);
+    // }
+}

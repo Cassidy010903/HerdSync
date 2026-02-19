@@ -269,12 +269,58 @@ namespace DAL.Migrations.SSMS
                     b.ToTable("Species");
                 });
 
+            modelBuilder.Entity("DAL.Models.stl_Species_Tag_Lookup", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedUser")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("Updated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<Guid>("spd_Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("stl_Tag_Id")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("spd_Id");
+
+                    b.ToTable("SpeciesTag");
+                });
+
             modelBuilder.Entity("DAL.Models.prg_Pregnancies_Detail", b =>
                 {
                     b.HasOne("DAL.Models.spd_Species_Detail", "Species")
                         .WithMany("Pregnancies")
                         .HasForeignKey("spd_Id")
                         .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Species");
+                });
+
+            modelBuilder.Entity("DAL.Models.stl_Species_Tag_Lookup", b =>
+                {
+                    b.HasOne("DAL.Models.spd_Species_Detail", "Species")
+                        .WithMany()
+                        .HasForeignKey("spd_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Species");

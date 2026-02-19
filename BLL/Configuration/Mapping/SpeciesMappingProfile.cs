@@ -34,7 +34,8 @@ namespace BLL.Configuration.Mapping
             .ForMember(dest => dest.spd_Tag_Colour, opt => opt.MapFrom(src => src.spd_Tag_Colour.ToString()))
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.spd_Id));
 
-            CreateMap<prg_Pregnancies_Detail, prg_Pregnancies_Detail_DTO>();
+            CreateMap<prg_Pregnancies_Detail, prg_Pregnancies_Detail_DTO>().ReverseMap();
+            CreateMap<stl_Species_Tag_Lookup, stl_Species_Tag_Lookup_DTO>().ReverseMap();
         }
     }
 }

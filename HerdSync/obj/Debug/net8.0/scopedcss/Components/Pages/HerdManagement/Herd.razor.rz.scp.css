@@ -1,0 +1,99 @@
+body[b-o1bsnvmwji] {
+    margin-top: 20px;
+    background-color: #eee;
+}
+
+.project-list-table[b-o1bsnvmwji] {
+    border-collapse: separate;
+    border-spacing: 0 12px
+}
+
+    .project-list-table tr[b-o1bsnvmwji] {
+        background-color: #fff
+    }
+
+.table-nowrap td[b-o1bsnvmwji], .table-nowrap th[b-o1bsnvmwji] {
+    white-space: nowrap;
+}
+
+.table-borderless > :not(caption) > * > *[b-o1bsnvmwji] {
+    border-bottom-width: 0;
+}
+
+.table > :not(caption) > * > *[b-o1bsnvmwji] {
+    padding: 0.75rem 0.75rem;
+    background-color: var(--bs-table-bg);
+    border-bottom-width: 1px;
+    box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg);
+}
+
+.avatar-sm[b-o1bsnvmwji] {
+    height: 2rem;
+    width: 2rem;
+}
+
+.rounded-circle[b-o1bsnvmwji] {
+    border-radius: 50% !important;
+}
+
+.me-2[b-o1bsnvmwji] {
+    margin-right: 0.5rem !important;
+}
+
+img[b-o1bsnvmwji], svg[b-o1bsnvmwji] {
+    vertical-align: middle;
+}
+
+a[b-o1bsnvmwji] {
+    color: #c4c4c4;
+    text-decoration: none;
+}
+
+.badge-soft-danger[b-o1bsnvmwji] {
+    color: #f56e6e !important;
+    background-color: rgba(245,110,110,.1);
+}
+
+.badge-soft-success[b-o1bsnvmwji] {
+    color: #63ad6f !important;
+    background-color: rgba(99,173,111,.1);
+}
+
+.badge-soft-primary[b-o1bsnvmwji] {
+    color: #3b76e1 !important;
+    background-color: rgba(59,118,225,.1);
+}
+
+.badge-soft-info[b-o1bsnvmwji] {
+    color: #57c9eb !important;
+    background-color: rgba(87,201,235,.1);
+}
+
+.avatar-title[b-o1bsnvmwji] {
+    align-items: center;
+    background-color: #3b76e1;
+    color: #fff;
+    display: flex;
+    font-weight: 500;
+    height: 100%;
+    justify-content: center;
+    width: 100%;
+}
+
+.bg-soft-primary[b-o1bsnvmwji] {
+    background-color: rgba(59,118,225,.25) !important;
+}
+
+.badge-soft-info[b-o1bsnvmwji] {
+    /* These colors are similar to Bootstrap's default 'warning' palette */
+    background-color: var(--bs-warning-bg-subtle, #fff3cd) !important; /* Light yellow background */
+    color: var(--bs-warning-text-emphasis, #664d03) !important; /* Darker yellow text */
+    /* Optional: If you want a border to match the warning style */
+    /* border-color: var(--bs-warning-border-subtle, #ffe69c) !important; */
+}
+
+.btn-primary[b-o1bsnvmwji] {
+    background-color: #90b499;
+    color: white;
+    border-color: #748f7a;
+}

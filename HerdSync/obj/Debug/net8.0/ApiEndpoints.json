@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "ContainingType": "HerdMark.Controllers.ReadsController",
+    "Method": "Post",
+    "RelativePath": "api/Reads",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "reads",
+        "Type": "HerdMark.Models.HerdMarkRead[]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
