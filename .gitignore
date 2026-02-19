@@ -88,3 +88,5 @@ build/
 
 appsettings.Development.json
 secrets.json
+/HerdSync/.vs/HerdSync/CopilotIndices/17.14.1231.31060/CodeChunks.db
+/HerdSync/.vs/HerdSync/CopilotIndices/17.14.1231.31060/SemanticSymbols.db
