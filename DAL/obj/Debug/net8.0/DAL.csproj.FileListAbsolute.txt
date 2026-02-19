@@ -2,7 +2,9 @@ C:\HerdSync\DAL\bin\Debug\net8.0\DAL.deps.json
 C:\HerdSync\DAL\bin\Debug\net8.0\DAL.runtimeconfig.json
 C:\HerdSync\DAL\bin\Debug\net8.0\DAL.dll
 C:\HerdSync\DAL\bin\Debug\net8.0\DAL.pdb
+C:\HerdSync\DAL\bin\Debug\net8.0\HerdMark.dll
 C:\HerdSync\DAL\bin\Debug\net8.0\HerdSync.Shared.dll
+C:\HerdSync\DAL\bin\Debug\net8.0\HerdMark.pdb
 C:\HerdSync\DAL\bin\Debug\net8.0\HerdSync.Shared.pdb
 C:\HerdSync\DAL\obj\Debug\net8.0\DAL.csproj.AssemblyReference.cache
 C:\HerdSync\DAL\obj\Debug\net8.0\DAL.GeneratedMSBuildEditorConfig.editorconfig

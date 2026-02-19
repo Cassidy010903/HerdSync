@@ -3,9 +3,11 @@ C:\HerdSync\BLL\bin\Debug\net8.0\BLL.runtimeconfig.json
 C:\HerdSync\BLL\bin\Debug\net8.0\BLL.dll
 C:\HerdSync\BLL\bin\Debug\net8.0\BLL.pdb
 C:\HerdSync\BLL\bin\Debug\net8.0\DAL.dll
+C:\HerdSync\BLL\bin\Debug\net8.0\HerdMark.dll
 C:\HerdSync\BLL\bin\Debug\net8.0\HerdSync.Shared.dll
 C:\HerdSync\BLL\bin\Debug\net8.0\DAL.pdb
 C:\HerdSync\BLL\bin\Debug\net8.0\HerdSync.Shared.pdb
+C:\HerdSync\BLL\bin\Debug\net8.0\HerdMark.pdb
 C:\HerdSync\BLL\obj\Debug\net8.0\BLL.csproj.AssemblyReference.cache
 C:\HerdSync\BLL\obj\Debug\net8.0\BLL.GeneratedMSBuildEditorConfig.editorconfig
 C:\HerdSync\BLL\obj\Debug\net8.0\BLL.AssemblyInfoInputs.cache

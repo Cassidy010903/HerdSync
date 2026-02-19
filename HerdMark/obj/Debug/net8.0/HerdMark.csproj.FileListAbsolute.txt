@@ -1,0 +1,13 @@
+C:\HerdSync\HerdMark\bin\Debug\net8.0\HerdMark.deps.json
+C:\HerdSync\HerdMark\bin\Debug\net8.0\HerdMark.dll
+C:\HerdSync\HerdMark\bin\Debug\net8.0\HerdMark.pdb
+C:\HerdSync\HerdMark\obj\Debug\net8.0\HerdMark.csproj.AssemblyReference.cache
+C:\HerdSync\HerdMark\obj\Debug\net8.0\HerdMark.GeneratedMSBuildEditorConfig.editorconfig
+C:\HerdSync\HerdMark\obj\Debug\net8.0\HerdMark.AssemblyInfoInputs.cache
+C:\HerdSync\HerdMark\obj\Debug\net8.0\HerdMark.AssemblyInfo.cs
+C:\HerdSync\HerdMark\obj\Debug\net8.0\HerdMark.csproj.CoreCompileInputs.cache
+C:\HerdSync\HerdMark\obj\Debug\net8.0\HerdMark.sourcelink.json
+C:\HerdSync\HerdMark\obj\Debug\net8.0\HerdMark.dll
+C:\HerdSync\HerdMark\obj\Debug\net8.0\refint\HerdMark.dll
+C:\HerdSync\HerdMark\obj\Debug\net8.0\HerdMark.pdb
+C:\HerdSync\HerdMark\obj\Debug\net8.0\ref\HerdMark.dll

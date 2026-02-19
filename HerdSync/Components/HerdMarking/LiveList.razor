@@ -1,0 +1,104 @@
+﻿@page "/livelist"
+@using DAL.Models
+@using BLL.Services
+@using Microsoft.AspNetCore.Components.Web
+@implements IDisposable
+@inject ISessionService SessionService
+@inject NavigationManager Nav
+
+Active Program - Live List
+
+<input @ref="scannerInput"
+@onkeydown="HandleKeyDown"
+style="position; left:-10000px; top:-10000px;"
+autocomplete="off" />
+
+            <div class="card-header align-items-center">
+                <h5 class="mb-0">Scanned Animals (@animalActions.Count)</h5>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead class="small text-uppercase bg-body text-muted">
+                        <tr>
+                            <th>Tag ID</th>
+                            <th>Animal ID</th>
+                            <th>Age Group</th>
+                            <th>Treatments</th>
+                            <th>Scanned</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var action in animalActions.OrderByDescending(a => a.ScannedUtc))
+                        {
+                            <tr>
+                                <td>@action.TagId</td>
+                                <td>@action.spd_Id</td>
+                                <td>@action.AgeGroup</td>
+                                <td>
+                                    @string.Join(", ", action.Treatments.Select(t => t.TreatmentId.ToString().Substring(0, 8)))
+                                    (@action.Treatments.Count)
+                                </td>
+                                <td>@action.ScannedUtc.ToLocalTime().ToString("HH:mm:ss")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+@code {
+
+    private ElementReference scannerInput;
+    private string _scanBuffer = "";
+    private DateTime _lastKey = DateTime.MinValue;
+
+    private List<ast_Animal_Session_Treatment> animalActions = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await scannerInput.FocusAsync();
+    }
+
+    private void HandleKeyDown(KeyboardEventArgs e)
+    {
+        // new scan if pause
+        if ((DateTime.Now - _lastKey).TotalMilliseconds > 60)
+            _scanBuffer = "";
+
+        _lastKey = DateTime.Now;
+
+        if (e.Key == "Enter")
+        {
+            if (!string.IsNullOrWhiteSpace(_scanBuffer))
+                AddScan(_scanBuffer);
+
+            _scanBuffer = "";
+            return;
+        }
+
+        if (e.Key.Length == 1)
+            _scanBuffer += e.Key;
+    }
+
+    private void AddScan(string tag)
+    {
+        var action = new ast_Animal_Session_Treatment
+        {
+            Id = Guid.NewGuid(),
+            TagId = tag,
+            spd_Id = null,
+            AgeGroup = null,
+            ScannedUtc = DateTime.UtcNow,
+            Treatments = new List<atr_Animal_Treatment>()
+        };
+
+        animalActions.Insert(0, action);
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+    }
+
+}

@@ -1,0 +1,71 @@
+﻿@using BLL.Services
+@using Microsoft.JSInterop
+@implements IDisposable
+@inject ISessionService SessionService
+@inject NavigationManager Nav
+@inject IDialogService DialogService
+@inject IJSRuntime JS
+
+@code {
+    private bool _isNavigating = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Nav.LocationChanged += OnLocationChanged;
+
+            // Add browser beforeunload event handler
+            await JS.InvokeVoidAsync("eval", @"
+                window.addEventListener('beforeunload', function (e) {
+                    if (window.hasActiveSession) {
+                        e.preventDefault();
+                        e.returnValue = '';
+                        return '';
+                    }
+                });
+            ");
+
+            UpdateBrowserSessionFlag();
+        }
+    }
+
+    private async void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        if (_isNavigating) return;
+
+        // If there's an active session and user is trying to leave LiveList
+        if (SessionService.Current != null &&
+            !SessionService.Current.IsClosed &&
+            !e.Location.Contains("/livelist"))
+        {
+            _isNavigating = true;
+
+            var confirm = await DialogService.ShowMessageBox(
+                "Active Session Warning",
+                "You have an active program session. Leaving this page may cause data loss. Are you sure?",
+                yesText: "Leave Anyway",
+                cancelText: "Stay"
+            );
+
+            if (confirm != true)
+            {
+                // Cancel navigation - navigate back to livelist
+                Nav.NavigateTo("/livelist", forceLoad: false);
+            }
+
+            _isNavigating = false;
+        }
+    }
+
+    private async void UpdateBrowserSessionFlag()
+    {
+        bool hasActive = SessionService.Current != null && !SessionService.Current.IsClosed;
+        await JS.InvokeVoidAsync("eval", $"window.hasActiveSession = {hasActive.ToString().ToLower()};");
+    }
+
+    public void Dispose()
+    {
+        Nav.LocationChanged -= OnLocationChanged;
+    }
+}

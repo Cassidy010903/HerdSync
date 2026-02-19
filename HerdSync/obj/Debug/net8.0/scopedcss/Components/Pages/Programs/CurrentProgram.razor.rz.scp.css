@@ -1,0 +1,39 @@
+body[b-e8j0i40011] {
+    margin-top: 20px;
+
+}
+
+.card[b-e8j0i40011] {
+    box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
+}
+
+.avatar.sm[b-e8j0i40011] {
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: .818125rem;
+}
+
+.table-nowrap .table td[b-e8j0i40011],
+.table-nowrap .table th[b-e8j0i40011] {
+    white-space: nowrap;
+
+}
+
+.table > :not(caption) > * > *[b-e8j0i40011] {
+    padding: 0.75rem 1.25rem;
+    border-bottom-width: 1px;
+}
+
+table th[b-e8j0i40011] {
+    font-weight: 600;
+    background-color: #90b499;
+    color: white;
+}
+
+.fa-arrow-up[b-e8j0i40011] {
+    color: #00CED1;
+}
+
+.fa-arrow-down[b-e8j0i40011] {
+    color: #FF00FF;
+}

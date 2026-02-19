@@ -1,11 +1,12 @@
 ﻿@page "/settings"
+@using HerdSync.Components.Loaders
 @attribute [StreamRendering]
 
 <PageTitle>Weather</PageTitle>
 
 <h1>Weather</h1>
 
-<p>This component demonstrates showing data.</p>
+<FarmerLoader/>
 
 @if (forecasts == null)
 {

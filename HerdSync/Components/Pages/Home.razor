@@ -107,38 +107,6 @@
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
-                    <div class="dropdown no-arrow">
-                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                             aria-labelledby="dropdownMenuLink">
-                            <div class="dropdown-header">Dropdown Header:</div>
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    R1.vetbaiegeld
-                    <div class="chart-area">
-                        <canvas id="myAreaChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Pie Chart -->
-        <div class="col-xl-4 col-lg-5">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">Important Dates</h6>
                     <div class="dropdown no-arrow">
                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
@@ -156,14 +124,64 @@
                     </div>
                 </div>
                 <!-- Card Body -->
+                <div class="card-body" style="height: 50vh;">
+                    <RadzenScheduler @ref=@scheduler SlotRender=@OnSlotRender style="height: 100%;" TItem="Appointment" Data=@appointments StartProperty="Start" EndProperty="End" ShowHeader=@showHeader
+                                     TextProperty="Text" SelectedIndex="2"
+                                     AppointmentRender=@OnAppointmentRender
+                                     AppointmentMove=@OnAppointmentMove >
+                        <RadzenDayView />
+                        <RadzenWeekView />
+                        <RadzenMonthView />
+                    </RadzenScheduler>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Pie Chart -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Observations</h6>
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                             aria-labelledby="dropdownMenuLink">
+                            <div class="dropdown-header">Dropdown Header:</div>
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card Body -->
                 <div class="card-body">
-                    There will be dates displayed here!
-                    <div class="chart-pie pt-4 pb-2">
-                        <canvas id="myPieChart"></canvas>
-                    </div>
-                    <div class="mt-4 text-center small">
-                        
-                    </div>
+                    <MudDropContainer T="KanbanTaskItem" @ref="_dropContainer" Items="@_tasks" ItemsSelector="@((item, column) => column == "Board")"  Class="d-flex flex-row">
+                        <ChildContent>
+                            <MudPaper Elevation="0" Width="224px" MinHeight="400px" Class="pa-4 ma-4 d-flex flex-column mud-background-gray rounded-lg">
+                                <MudDropZone T="KanbanTaskItem" Identifier="Board" Class="mud-height-full" />
+                                @if (NewTaskOpen)
+                                {
+                                    <MudPaper Elevation="25" Class="pa-2 rounded-lg">
+                                        <MudTextField @bind-Value="NewTaskName" Placeholder="New Comment" Underline="false" Margin="Margin.Dense" Class="mx-2 mt-n2"></MudTextField>
+                                        <MudButton OnClick="AddTask" Size="Size.Small" Color="Color.Primary" FullWidth="true">Add Comment</MudButton>
+                                    </MudPaper>
+                                }
+                                else
+                                {
+                                    <MudButton OnClick="@(() => NewTaskOpen = true)" StartIcon="@Icons.Material.Filled.Add" FullWidth="true" Class="rounded-lg py-2">Add Comment</MudButton>
+                                }
+                            </MudPaper>
+                        </ChildContent>
+                        <ItemRenderer>
+                            <MudPaper Elevation="25" Class="pa-4 rounded-lg my-3">@context.Name</MudPaper>
+                        </ItemRenderer>
+                    </MudDropContainer>
                 </div>
             </div>
         </div>

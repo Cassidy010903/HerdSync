@@ -19,6 +19,14 @@ namespace DAL.Configuration.Database
 
         public DbSet<SpeciesDetailHistory> SpeciesHistory { get; set; }
         public DbSet<PregnanciesDetailHistory> PregnanciesHistory { get; set; }
+        public DbSet<stl_Species_Tag_Lookup> SpeciesTag { get; set; }
+        public DbSet<trl_Treatment_Lookup> Treatment { get; set; }
+        public DbSet<prg_Program> Program { get; set; }
+        public DbSet<ins_Instruction_Lookup> ProgramInstruction { get; set; }
+        public DbSet<itr_Instruction_Treatment> ProgramInstructionTreatment { get; set; }
+        public DbSet<ase_Active_Session> ProgramRun { get; set; }
+        public DbSet<ast_Animal_Session_Treatment> ProgramRunAnimal { get; set; }
+        public DbSet<atr_Animal_Treatment> ProgramRunAnimalTreatment { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -54,6 +62,18 @@ namespace DAL.Configuration.Database
             pregnancies.HasOne(p => p.Species)
                 .WithMany(s => s.Pregnancies)
                 .HasForeignKey(p => p.spd_Id)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<itr_Instruction_Treatment>()
+                .HasOne(it => it.Treatment)
+                .WithMany()
+                .HasForeignKey(it => it.TreatmentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<atr_Animal_Treatment>()
+                .HasOne(at => at.Treatment)
+                .WithMany()
+                .HasForeignKey(at => at.TreatmentId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

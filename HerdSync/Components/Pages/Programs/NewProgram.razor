@@ -1,0 +1,149 @@
+﻿@page "/newprogram"
+
+<PageTitle>New Program</PageTitle>
+
+<div class="pa-4">
+    <MudText Typo="Typo.h4">New Program</MudText>
+    <MudText Typo="Typo.caption">Set up new treatment program</MudText>
+</div>
+
+
+<div class="row">
+    <div class="col-lg-8">
+        @foreach (var card in Cards)
+        {
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        @if (Cards.Count > 1) // Only show remove button if there's more than one card
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small"
+                                           OnClick="@(() => RemoveCard(card))" />
+                        }
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">Group</label>
+                                <MudCheckBox @bind-Value="Label_CheckBox1" Label="Cows"></MudCheckBox>
+                                <MudCheckBox @bind-Value="Label_CheckBox2" Label="Calfs"></MudCheckBox>
+                                <MudCheckBox @bind-Value="Label_CheckBox3" Label="Bulls"></MudCheckBox>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label class="form-label">Treatments</label>
+                                <MudCheckBox @bind-Value="Label_CheckBox1" Label="Dip"></MudCheckBox>
+                                <MudCheckBox @bind-Value="Label_CheckBox2" Label="Ivermectin"></MudCheckBox>
+                                <MudCheckBox @bind-Value="Label_CheckBox2" Label="Multimin"></MudCheckBox>
+                                <MudCheckBox @bind-Value="Label_CheckBox1" Label="Tag"></MudCheckBox>
+                                <MudCheckBox @bind-Value="Label_CheckBox2" Label="Eye"></MudCheckBox>
+                                <MudCheckBox @bind-Value="Label_CheckBox2" Label="Injury"></MudCheckBox>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="text-center mt-4">
+            <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" OnClick="AddCard">
+                Add Another Card
+            </MudButton>
+            <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary">
+                Submit
+            </MudButton>
+        </div>
+
+    </div>
+    <div class="col-lg-4">
+        <!-- Status -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="h6">Program Name</h3>
+                <input type="text" class="form-control">
+            </div>
+        </div>
+        <!-- Notification settings -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="h6">Settings</h3>
+                <ul class="list-group list-group-flush mx-n2">
+                    <li class="list-group-item px-0 d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <h6 class="mb-0">Auto generate program name</h6>
+                            <small>Name of program will be auto generated.</small>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch">
+                        </div>
+                    </li>
+                    <li class="list-group-item px-0 d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <h6 class="mb-0">Export on Complete</h6>
+                            <small>Export to CSV on Complete.</small>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" checked="">
+                        </div>
+                    </li>
+                    <li class="list-group-item px-0 d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <h6 class="mb-0">Save Program</h6>
+                            <small>Save program for future use.</small>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch">
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- Notes -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="h6">Notes</h3>
+                <textarea class="form-control" rows="3"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    public bool Label_CheckBox1 { get; set; } = true;
+    public bool Label_CheckBox2 { get; set; } = true;
+    public bool Label_CheckBox3 { get; set; } = true;
+
+    public class CardData
+    {
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
+    }
+
+    private List<CardData> Cards { get; set; } = new List<CardData>();
+
+    protected override void OnInitialized()
+    {
+        Cards.Add(new CardData());
+    }
+
+    private void AddCard()
+    {
+        Cards.Add(new CardData());
+    }
+
+    // New method to remove a card
+    private void RemoveCard(CardData cardToRemove)
+    {
+        // Check to make sure we don't remove the last card if you always want at least one
+        // Or you can remove this check if you want to allow all cards to be removed
+        if (Cards.Count > 1)
+        {
+            Cards.Remove(cardToRemove);
+        }
+        // If you want to allow removing the last card, just use: Cards.Remove(cardToRemove);
+    }
+}
