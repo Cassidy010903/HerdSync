@@ -1,9 +1,4 @@
 ﻿using DAL.MetaData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using HerdSync.Shared.Enums.Data;
 
 namespace DAL.Constants
@@ -25,7 +20,7 @@ namespace DAL.Constants
                 new AnimalInfo
                 {
                     GenderOptions = new List<GenderEnum> { GenderEnum.Female, GenderEnum.Male },
-                    AgeGroup = new List<AgeGroupEnum> { AgeGroupEnum.Calf1, AgeGroupEnum.Adult } 
+                    AgeGroup = new List<AgeGroupEnum> { AgeGroupEnum.Calf1, AgeGroupEnum.Adult }
                 }
             }
         };

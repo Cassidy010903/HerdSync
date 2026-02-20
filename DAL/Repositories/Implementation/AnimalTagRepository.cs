@@ -1,0 +1,46 @@
+﻿using DAL.Configuration.Database;
+using DAL.Models.Animal;
+
+namespace DAL.Repositories.Implementation
+{
+    public class AnimalTagRepository(HerdSyncDbContext context, ILogger<AnimalTagRepository> logger) : IAnimalTagRepository
+    {
+        public async Task<IEnumerable<AnimalTagModel>> GetAllAsync()
+        {
+            return await context.AnimalTags
+                .Where(a => !a.IsDeleted)
+                .ToListAsync();
+        }
+
+        public async Task<AnimalTagModel?> GetByIdAsync(Guid animalTagId)
+        {
+            return await context.AnimalTags
+                .FirstOrDefaultAsync(a => a.AnimalTagId == animalTagId && !a.IsDeleted);
+        }
+
+        public async Task<AnimalTagModel> AddAsync(AnimalTagModel animalTag)
+        {
+            context.AnimalTags.Add(animalTag);
+            await context.SaveChangesAsync();
+            logger.LogInformation("Added new animal tag with ID {AnimalTagId}", animalTag.AnimalTagId);
+            return animalTag;
+        }
+
+        public async Task<AnimalTagModel> UpdateAsync(AnimalTagModel animalTag)
+        {
+            context.AnimalTags.Update(animalTag);
+            await context.SaveChangesAsync();
+            logger.LogInformation("Updated animal tag with ID {AnimalTagId}", animalTag.AnimalTagId);
+            return animalTag;
+        }
+
+        public async Task SoftDeleteAsync(Guid animalTagId)
+        {
+            var entity = await context.AnimalTags.FirstOrDefaultAsync(a => a.AnimalTagId == animalTagId);
+            if (entity == null) throw new KeyNotFoundException($"AnimalTag {animalTagId} not found.");
+            entity.IsDeleted = true;
+            await context.SaveChangesAsync();
+            logger.LogInformation("Soft deleted animal tag with ID {AnimalTagId}", animalTagId);
+        }
+    }
+}

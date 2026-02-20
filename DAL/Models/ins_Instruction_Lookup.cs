@@ -1,17 +1,13 @@
 ﻿using DAL.Models.Base;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using HerdSync.Shared.Enums.Data;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DAL.Models
 {
     public class ins_Instruction_Lookup : BaseModel
     {
         public Guid ProgramId { get; set; }
+
         [ForeignKey("ProgramId")]
         public prg_Program Program { get; set; } = default!;
 

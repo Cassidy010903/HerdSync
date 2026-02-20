@@ -1,18 +1,15 @@
-﻿using MudBlazor;
-
-namespace HerdSync.Components.Layout
+﻿namespace HerdSync.Components.Layout
 {
-
     public partial class MainLayout
     {
-        bool _drawerOpen = true;
+        private bool _drawerOpen = true;
 
-        void DrawerToggle()
+        private void DrawerToggle()
         {
             _drawerOpen = !_drawerOpen;
         }
 
-        MudTheme HerdSyncThemes = new MudTheme()
+        private MudTheme HerdSyncThemes = new MudTheme()
         {
             PaletteLight = new PaletteLight()
             {

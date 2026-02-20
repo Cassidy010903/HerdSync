@@ -1,14 +1,7 @@
-﻿using AutoMapper;
-using DAL.Configuration.Database;
-using DAL.Models;
+﻿using BLL.Services;
 using DAL.Models.Animal;
 using DAL.Services;
-using DAL.Services.Implementation;
-using HerdSync.Shared;
-using HerdSync.Shared.DTO;
 using HerdSync.Shared.DTO.Animal;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace BLL.Services.Implementation
 {
@@ -30,15 +23,52 @@ namespace BLL.Services.Implementation
         {
             var entities = await repository.GetAllSpeciesAsync();
             return mapper.Map<List<AnimalDTO>>(entities);
-
         }
-
 
         public async Task UpdateAnimalAsync(AnimalDTO animalDTO)
         {
             var entity = mapper.Map<AnimalModel>(animalDTO);
             await repository.UpdateSpecies(entity);
         }
+    }
+    public class AnimalService2(IMapper mapper, IAnimalRepository repository, ILogger<AnimalService> logger) : IAnimalService
+    {
+        public async Task<IEnumerable<AnimalDTO>> GetAllAsync()
+        {
+            var entities = await repository.GetAllAsync();
+            return mapper.Map<IEnumerable<AnimalDTO>>(entities);
+        }
 
+        public async Task<AnimalDTO?> GetByIdAsync(Guid animalId)
+        {
+            var entity = await repository.GetByIdAsync(animalId);
+            return entity == null ? null : mapper.Map<AnimalDTO>(entity);
+        }
+
+        public async Task<AnimalDTO> CreateAsync(AnimalDTO animalDTO)
+        {
+            var entity = mapper.Map<AnimalModel>(animalDTO);
+            if (entity == null)
+                throw new InvalidOperationException("Mapping from DTO to entity failed.");
+            var created = await repository.AddAsync(entity);
+            logger.LogInformation("Created new animal with ID {AnimalId}", created.AnimalId);
+            return mapper.Map<AnimalDTO>(created);
+        }
+
+        public async Task<AnimalDTO> UpdateAsync(AnimalDTO animalDTO)
+        {
+            var entity = mapper.Map<AnimalModel>(animalDTO);
+            if (entity == null)
+                throw new InvalidOperationException("Mapping from DTO to entity failed.");
+            var updated = await repository.UpdateAsync(entity);
+            logger.LogInformation("Updated animal with ID {AnimalId}", updated.AnimalId);
+            return mapper.Map<AnimalDTO>(updated);
+        }
+
+        public async Task SoftDeleteAsync(Guid animalId)
+        {
+            await repository.SoftDeleteAsync(animalId);
+            logger.LogInformation("Soft deleted animal with ID {AnimalId}", animalId);
+        }
     }
 }

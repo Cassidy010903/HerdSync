@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HerdSync.Shared.DTO
+﻿namespace HerdSync.Shared.DTO
 {
     public class stl_Species_Tag_Lookup_DTO
     {

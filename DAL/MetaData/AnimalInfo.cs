@@ -1,10 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HerdSync.Shared.Enums.Data;
+﻿using HerdSync.Shared.Enums.Data;
 
 namespace DAL.MetaData
 {
@@ -16,7 +10,7 @@ namespace DAL.MetaData
         //Usage tip:
         /*
         var displayName = AgeGroupEnum.Calf1.ToDisplayName();
-        Console.WriteLine(displayName); // Output: "Young Calf"         
+        Console.WriteLine(displayName); // Output: "Young Calf"
          */
     }
 }

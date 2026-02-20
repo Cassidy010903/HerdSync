@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace DAL.Models.Base
 {
@@ -11,6 +6,7 @@ namespace DAL.Models.Base
     {
         [Key]
         public Guid HistoryId { get; set; }
+
         public Guid OriginalId { get; set; }
         public DateTime DeletedDateTime { get; set; }
         public string DeletedUser { get; set; } = "System";  //Update this to take the name of the logged-in user

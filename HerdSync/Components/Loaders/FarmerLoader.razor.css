@@ -125,7 +125,6 @@ $loops: 2;
 .wheel {
     animation: spinL $truckLoopDur ease-in-out $truckRounds;
 }
-
 }
 
 &:last-of-type {
@@ -149,7 +148,6 @@ $loops: 2;
 .wheel {
     animation: spinR $truckLoopDur $truckLoopDur/2 ease-in-out $truckRounds;
 }
-
 }
 }
 

@@ -70,13 +70,14 @@
     margin-bottom: 1rem;
 }
 
-h5, h6{
+h5, h6 {
     color: rgba(116,143,122,1) !important;
 }
 
-.text-primary{
+.text-primary {
     color: rgb(125, 166, 135);
 }
+
 .btn-primary {
     background-color: rgb(125, 166, 135) !important;
     border-color: rgb(125, 166, 135) !important;

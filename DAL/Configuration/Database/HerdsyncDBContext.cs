@@ -1,22 +1,22 @@
 ﻿using DAL.Models;
 using DAL.Models.Animal;
 using DAL.Models.Authentication;
-using DAL.Models.Base;
 using DAL.Models.Base.History;
 using DAL.Models.Farm;
-using DAL.Models.Program;
+using DAL.Models.Program.ProgramRun;
+using DAL.Models.Program.ProgramTemplate;
 using DAL.Models.Treatment;
+
 // using DAL.Models.Base.History;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Oracle.ManagedDataAccess.Client;
-using System.Configuration;
 
 namespace DAL.Configuration.Database
 {
     public class HerdsyncDBContext : DbContext
     {
-        public HerdsyncDBContext(DbContextOptions<HerdsyncDBContext> options) : base(options) { }
+        public HerdsyncDBContext(DbContextOptions<HerdsyncDBContext> options) : base(options)
+        {
+        }
+
         public DbSet<AnimalModel> Animals { get; set; }
         public DbSet<AnimalEventTypeModel> AnimalEventTypes { get; set; }
         public DbSet<AnimalTagModel> AnimalTags { get; set; }
@@ -54,7 +54,6 @@ namespace DAL.Configuration.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
             // SpeciesDetailHistory
             var speciesHistory = modelBuilder.Entity<SpeciesDetailHistory>();
             speciesHistory.Property(h => h.DeletedUser).HasMaxLength(100);

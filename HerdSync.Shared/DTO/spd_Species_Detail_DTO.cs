@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HerdSync.Shared.Enums.Data;
+﻿using HerdSync.Shared.Enums.Data;
 
 namespace HerdSync.Shared.DTO
 {
@@ -27,8 +20,7 @@ namespace HerdSync.Shared.DTO
         public bool spd_Branded { get; set; } = false;
         public AnimalTypeEnum spd_Species { get; set; }
         public GenderEnum spd_Gender { get; set; } = GenderEnum.Male;
-        public Guid? prg_Pregnancy_Id { get; set; } 
+        public Guid? prg_Pregnancy_Id { get; set; }
         public bool spd_Born_Or_Buy { get; set; } = true; // 1 - Born, 0 - Buy
-
     }
 }

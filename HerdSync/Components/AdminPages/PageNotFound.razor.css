@@ -1,6 +1,4 @@
-﻿
-
-body {
+﻿body {
     color: #fff;
     font-family: 'Open Sans', sans-serif;
     max-height: 700px;
@@ -52,7 +50,6 @@ body {
     line-height: 1.2em;
     display: inline-block;
 }
-
 
 .btn {
     background-color: rgb( 255, 255, 255 );

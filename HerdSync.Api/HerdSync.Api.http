@@ -1,0 +1,6 @@
+@HerdSync.Api_HostAddress = http://localhost:5107
+
+GET {{HerdSync.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

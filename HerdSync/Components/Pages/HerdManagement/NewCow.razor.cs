@@ -1,14 +1,8 @@
-﻿using HerdSync.Shared.DTO;
-using BLL.Services;
-using BLL.Services.Implementation;
-using FluentValidation;
-using HerdSync.Components.Pages;
-using HerdSync.Shared;
+﻿using BLL.Services;
+using HerdSync.Shared.DTO.Animal;
 using HerdSync.Shared.Enums.Data;
 using HerdSync.Shared.Enums.Data.Extensions;
 using Microsoft.AspNetCore.Components;
-using MudBlazor;
-using HerdSync.Shared.DTO.Animal;
 
 namespace HerdSync.Components.Pages.HerdManagement
 {
@@ -16,25 +10,32 @@ namespace HerdSync.Components.Pages.HerdManagement
     {
         [CascadingParameter]
         private IMudDialogInstance MudDialog { get; set; }
+
         [Parameter]
         public Guid ExistingCow { get; set; }
+
         [Parameter]
         public List<AnimalDTO> HerdList { get; set; } = new();
 
         [Inject]
         private IAnimalService animalService { get; set; }
+
         [Inject]
         private IValidator<AnimalDTO> SpeciesValidator { get; set; }
-        [Inject] 
-        ISnackbar Snackbar { get; set; }
+
+        [Inject]
+        private ISnackbar Snackbar { get; set; }
+
         public AnimalDTO species = new();
         public string Branded { get; set; }
         public bool IsEditMode => ExistingCow != Guid.Empty;
+
         public List<(AgeGroupEnum Value, string Display)> AgeGroupDisplayOptions =>
             Enum.GetValues<AgeGroupEnum>()
                 .Cast<AgeGroupEnum>()
-                .Select(a => (a, a.ToDisplayName(AnimalTypeEnum.Cow))) 
+                .Select(a => (a, a.ToDisplayName(AnimalTypeEnum.Cow)))
                 .ToList();
+
         public List<(GenderEnum Value, string Display)> GenderDisplayOptions =>
             Enum.GetValues<GenderEnum>()
                 .Cast<GenderEnum>()
@@ -46,6 +47,7 @@ namespace HerdSync.Components.Pages.HerdManagement
                 .Cast<ColourEnum>()
                 .Select(g => (g, g.ToDisplayColour()))
                 .ToList();
+
         private string GetBranded()
         {
             if (species.IsBranded == true)
@@ -76,7 +78,7 @@ namespace HerdSync.Components.Pages.HerdManagement
             {
                 if (IsEditMode)
                 {
-                    await animalService.UpdateAnimalAsync(species); 
+                    await animalService.UpdateAnimalAsync(species);
                     MudDialog.Close(DialogResult.Ok(species));
                 }
                 else
@@ -84,7 +86,6 @@ namespace HerdSync.Components.Pages.HerdManagement
                     await animalService.AddAnimalAsync(species);
                     MudDialog.Close(DialogResult.Ok(true));
                 }
-
             }
             catch (Exception ex)
             {
@@ -92,6 +93,7 @@ namespace HerdSync.Components.Pages.HerdManagement
                 Snackbar.Add("Failed to save cow data.", MudBlazor.Severity.Error);
             }
         }
+
         protected override Task OnInitializedAsync()
         {
             if (IsEditMode)
@@ -99,9 +101,7 @@ namespace HerdSync.Components.Pages.HerdManagement
                 species = HerdList.FirstOrDefault(c => c.AnimalId == ExistingCow) ?? new AnimalDTO();
             }
             return Task.CompletedTask;
-
         }
-
 
         private void Cancel() => MudDialog.Cancel();
     }

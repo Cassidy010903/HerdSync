@@ -1,12 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HerdSync.Shared.Enums.Data;
-
-namespace DAL.Models.Base.History
+﻿namespace DAL.Models.Base.History
 {
     public class SpeciesDetailHistory : BaseHistoryModel
     {
@@ -25,8 +17,7 @@ namespace DAL.Models.Base.History
         public bool spd_Branded { get; set; } = false;
         public string spd_Species { get; set; }
         public string? spd_Gender { get; set; }
-        public Guid? prg_Pregnancy_Id { get; set; } 
-        public bool spd_Born_Or_Buy { get; set; } = true; 
-
+        public Guid? prg_Pregnancy_Id { get; set; }
+        public bool spd_Born_Or_Buy { get; set; } = true;
     }
 }

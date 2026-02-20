@@ -1,12 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
-using MudBlazor;
-using Radzen;
-using Radzen.Blazor;
-using Radzen.Blazor.Rendering;
-using System;
-using System.ComponentModel.DataAnnotations;
-
-namespace HerdSync.Components.Pages
+﻿namespace HerdSync.Components.Pages
 {
     public partial class Home
     {
@@ -82,8 +74,7 @@ namespace HerdSync.Components.Pages
         {
             var draggedAppointment = appointments.FirstOrDefault(x => x == args.Appointment.Data);
 
-                await scheduler.Reload();
-            
+            await scheduler.Reload();
         }
         public class Appointment
         {
@@ -120,4 +111,3 @@ namespace HerdSync.Components.Pages
         }
     }
 }
-    

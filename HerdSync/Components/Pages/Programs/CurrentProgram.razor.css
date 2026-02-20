@@ -1,6 +1,5 @@
 ﻿body {
     margin-top: 20px;
-
 }
 
 .card {
@@ -16,7 +15,6 @@
 .table-nowrap .table td,
 .table-nowrap .table th {
     white-space: nowrap;
-
 }
 
 .table > :not(caption) > * > * {

@@ -1,20 +1,14 @@
-﻿using AutoMapper;
-using DAL.Models.Animal;
+﻿using DAL.Models.Animal;
 using DAL.Models.Authentication;
 using DAL.Models.Farm;
-using DAL.Models.Program;
+using DAL.Models.Program.ProgramRun;
+using DAL.Models.Program.ProgramTemplate;
 using DAL.Models.Treatment;
 using HerdSync.Shared.DTO.Animal;
 using HerdSync.Shared.DTO.Authentication;
 using HerdSync.Shared.DTO.Farm;
 using HerdSync.Shared.DTO.Program;
 using HerdSync.Shared.DTO.Treatment;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DAL.Mappings
 {

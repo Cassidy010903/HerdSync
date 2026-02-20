@@ -1,19 +1,15 @@
 ﻿using BLL.Services;
-using BLL.Services.Implementation;
-using HerdSync.Shared;
-using HerdSync.Shared.DTO;
 using HerdSync.Shared.DTO.Animal;
 using Microsoft.AspNetCore.Components;
-using MudBlazor;
 
 namespace HerdSync.Components.Pages.HerdManagement
 {
-
     public partial class Herd
     {
         [Inject] public IAnimalService AnimalService { get; set; }
         public List<AnimalDTO> HerdList { get; set; } = new();
-        int CowCount;
+        private int CowCount;
+
         private async Task OpenDialogAsync()
         {
             //var options = new DialogOptions { CloseOnEscapeKey = true };
@@ -29,7 +25,6 @@ namespace HerdSync.Components.Pages.HerdManagement
                 CowCount = HerdList.Count;
                 StateHasChanged();
             }
-
         }
 
         private async Task EditDialog(Guid cow)
@@ -39,7 +34,6 @@ namespace HerdSync.Components.Pages.HerdManagement
                 ["ExistingCow"] = cow,
                 ["HerdList"] = HerdList
             };
-
 
             var options = new DialogOptions { CloseOnEscapeKey = true };
             var dialog = await DialogService.ShowAsync<NewCow>("Edit Cow", parameters, options);
@@ -56,18 +50,13 @@ namespace HerdSync.Components.Pages.HerdManagement
                 CowCount = HerdList.Count;
                 StateHasChanged();
             }
-
         }
 
         protected override async Task OnInitializedAsync()
         {
             HerdList = await AnimalService.GetAllHerdAsync();
             CowCount = HerdList.Count;
-            base.OnInitialized(); 
+            base.OnInitialized();
         }
-
     }
 }
-
-
-

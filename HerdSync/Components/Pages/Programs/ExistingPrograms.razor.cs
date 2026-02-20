@@ -1,7 +1,6 @@
-﻿using DAL.Models;
-using BLL.Services;
+﻿using BLL.Services;
+using DAL.Models;
 using Microsoft.AspNetCore.Components;
-using MudBlazor;
 
 namespace HerdSync.Components.Pages.Programs
 {

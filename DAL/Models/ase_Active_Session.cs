@@ -1,16 +1,12 @@
 ﻿using DAL.Models.Base;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.Models
 {
     public class ase_Active_Session : BaseModel
     {
         public Guid ProgramId { get; set; }
+
         [ForeignKey("ProgramId")]
         public prg_Program Program { get; set; } = default!;
 

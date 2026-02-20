@@ -1,10 +1,7 @@
 ﻿using BLL.Services;
-using BLL.Services.Implementation;
-using HerdSync.Components.Pages.HerdManagement;
 using HerdSync.Shared.DTO;
 using HerdSync.Shared.DTO.Animal;
 using Microsoft.AspNetCore.Components;
-using MudBlazor;
 
 namespace HerdSync.Components.HerdMarking
 {
@@ -14,16 +11,17 @@ namespace HerdSync.Components.HerdMarking
         [Inject] public IAnimalService AnimalService { get; set; }
         public List<stl_Species_Tag_Lookup_DTO> TagList { get; set; } = new();
         public List<AnimalDTO> HerdList { get; set; } = new();
-        int TagCount;
+        private int TagCount;
+
         private async Task OpenDialogAsync()
         {
             var parameters = new DialogParameters
             {
-               ["HerdList"] = HerdList
+                ["HerdList"] = HerdList
             };
 
             var options = new DialogOptions { CloseOnEscapeKey = true };
-            var dialog = await DialogService.ShowAsync<NewTagDialog>("Add New Tag",parameters, options);
+            var dialog = await DialogService.ShowAsync<NewTagDialog>("Add New Tag", parameters, options);
             var result = await dialog.Result;
 
             if (!result.Canceled)
@@ -32,7 +30,6 @@ namespace HerdSync.Components.HerdMarking
                 TagCount = TagList.Count;
                 StateHasChanged();
             }
-
         }
 
         private async Task EditDialog(string tagID)
@@ -59,7 +56,6 @@ namespace HerdSync.Components.HerdMarking
                 TagCount = TagList.Count;
                 StateHasChanged();
             }
-
         }
 
         protected override async Task OnInitializedAsync()

@@ -1,13 +1,6 @@
-﻿using AutoMapper;
-using DAL.Models;
+﻿using DAL.Models;
 using DAL.Services;
 using HerdSync.Shared.DTO;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLL.Services.Implementation
 {
@@ -25,12 +18,13 @@ namespace BLL.Services.Implementation
 
             logger.LogInformation("Added new tag with number ", tagDTO.stl_Tag_Id);
         }
+
         public async Task<List<stl_Species_Tag_Lookup_DTO>> GetAllTagsAsync()
         {
             var entities = await repository.GetAllTagsAsync();
             return mapper.Map<List<stl_Species_Tag_Lookup_DTO>>(entities);
-
         }
+
         public async Task UpdateTagAsync(stl_Species_Tag_Lookup_DTO tagDTO)
         {
             var entity = mapper.Map<stl_Species_Tag_Lookup>(tagDTO);

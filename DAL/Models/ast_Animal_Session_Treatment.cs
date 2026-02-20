@@ -1,17 +1,13 @@
 ﻿using DAL.Models.Base;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using HerdSync.Shared.Enums.Data;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DAL.Models
 {
     public class ast_Animal_Session_Treatment : BaseModel
     {
         public Guid SessionId { get; set; }
+
         [ForeignKey("SessionId")]
         public ase_Active_Session Session { get; set; } = default!;
 

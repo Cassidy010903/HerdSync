@@ -1,11 +1,4 @@
-﻿using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HerdSync.Shared.DTO;
-using HerdSync.Shared.DTO.Animal;
+﻿using HerdSync.Shared.DTO.Animal;
 
 namespace BLL.Validators
 {
@@ -18,6 +11,5 @@ namespace BLL.Validators
             //RuleFor(x => x.spd_Species).Equal("Cow").WithMessage("Species must be Cow.");
             // Add more rules as needed
         }
-
     }
 }
