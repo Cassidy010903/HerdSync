@@ -7,32 +7,36 @@ namespace HerdSync.Components.Pages.HerdManagement
 {
     public partial class Herd
     {
-        [Inject] public IAnimalService AnimalService { get; set; }
+        [Inject] public IAnimalService AnimalService { get; set; } = default!;
+
         public List<AnimalDTO> HerdList { get; set; } = new();
         private int CowCount;
 
+        protected override async Task OnInitializedAsync()
+        {
+            HerdList = await AnimalService.GetAllAsync();
+            CowCount = HerdList.Count;
+        }
+
         private async Task OpenDialogAsync()
         {
-            //var options = new DialogOptions { CloseOnEscapeKey = true };
-
-            //return DialogService.ShowAsync<NewCow>("Add New Cow", options);
             var options = new DialogOptions { CloseOnEscapeKey = true };
             var dialog = await DialogService.ShowAsync<NewCow>("Add New Cow", options);
             var result = await dialog.Result;
 
             if (!result.Canceled)
             {
-                HerdList = await AnimalService.GetAllHerdAsync();
+                HerdList = await AnimalService.GetAllAsync();
                 CowCount = HerdList.Count;
                 StateHasChanged();
             }
         }
 
-        private async Task EditDialog(Guid cow)
+        private async Task EditDialog(Guid animalId)
         {
             var parameters = new DialogParameters
             {
-                ["ExistingCow"] = cow,
+                ["ExistingCow"] = animalId,
                 ["HerdList"] = HerdList
             };
 
@@ -51,13 +55,6 @@ namespace HerdSync.Components.Pages.HerdManagement
                 CowCount = HerdList.Count;
                 StateHasChanged();
             }
-        }
-
-        protected override async Task OnInitializedAsync()
-        {
-            HerdList = await AnimalService.GetAllHerdAsync();
-            CowCount = HerdList.Count;
-            base.OnInitialized();
         }
     }
 }

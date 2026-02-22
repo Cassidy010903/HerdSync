@@ -8,10 +8,10 @@ namespace BLL.Services.Implementation
 {
     public class ProgramRunService(IMapper mapper, IProgramRunRepository repository, ILogger<ProgramRunService> logger) : IProgramRunService
     {
-        public async Task<IEnumerable<ProgramRunDTO>> GetAllAsync()
+        public async Task<List<ProgramRunDTO>> GetAllAsync()
         {
             var entities = await repository.GetAllAsync();
-            return mapper.Map<IEnumerable<ProgramRunDTO>>(entities);
+            return mapper.Map<List<ProgramRunDTO>>(entities);
         }
 
         public async Task<ProgramRunDTO?> GetByIdAsync(Guid programRunId)

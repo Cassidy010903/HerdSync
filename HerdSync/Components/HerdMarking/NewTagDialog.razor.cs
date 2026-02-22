@@ -1,9 +1,5 @@
 ﻿using BLL.Services;
-using DAL.Repositories.Implementation;
-using FluentValidation;
-using HerdSync.Shared.DTO;
 using HerdSync.Shared.DTO.Animal;
-using HerdSync.Shared.Enums.Data;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -18,20 +14,20 @@ namespace HerdSync.Components.HerdMarking
         public Guid ExistingTag { get; set; }
 
         [Parameter]
-        public List<stl_Species_Tag_Lookup_DTO> TagList { get; set; } = new();
+        public List<AnimalTagDTO> TagList { get; set; } = new();
 
         [Parameter]
         public List<AnimalDTO> HerdList { get; set; } = new();
 
         [Inject]
-        private ITagService tagService { get; set; }
+        private IAnimalTagService tagService { get; set; }
 
         [Inject] public IAnimalService AnimalService { get; set; }
 
         [Inject]
         private ISnackbar Snackbar { get; set; }
 
-        public stl_Species_Tag_Lookup_DTO tag = new();
+        public AnimalTagDTO tag = new();
         public bool IsEditMode => ExistingTag != Guid.Empty;
 
         private async Task Submit()
@@ -40,12 +36,12 @@ namespace HerdSync.Components.HerdMarking
             {
                 if (IsEditMode)
                 {
-                    await tagService.UpdateTagAsync(tag);
+                    await tagService.UpdateAsync(tag);
                     MudDialog.Close(DialogResult.Ok(tag));
                 }
                 else
                 {
-                    await tagService.AddTagAsync(tag);
+                    await tagService.CreateAsync(tag);
                     MudDialog.Close(DialogResult.Ok(true));
                 }
             }
@@ -60,7 +56,7 @@ namespace HerdSync.Components.HerdMarking
         {
             if (IsEditMode)
             {
-                tag = TagList.FirstOrDefault(c => c.spd_Id == ExistingTag) ?? new stl_Species_Tag_Lookup_DTO();
+                tag = TagList.FirstOrDefault(c => c.AnimalTagId == ExistingTag) ?? new AnimalTagDTO();
             }
             return Task.CompletedTask;
         }

@@ -10,8 +10,8 @@ namespace HerdSync.Api.Controllers.Animal
     [Route("api/[controller]")]
     public class AnimalController : ControllerBase
     {
-        private readonly IAnimalService2 _service;
-        public AnimalController(IAnimalService2 service) => _service = service;
+        private readonly IAnimalService _service;
+        public AnimalController(IAnimalService service) => _service = service;
 
         [HttpGet]
         public async Task<IActionResult> GetAll()

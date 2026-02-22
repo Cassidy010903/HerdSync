@@ -1,44 +1,40 @@
 ﻿@page "/program-run"
 @using BLL.Services
-@using DAL.Models
-@using Microsoft.EntityFrameworkCore.Metadata.Internal
-@inject IProgramService ProgramService
-@inject ISessionService Session
+@using HerdSync.Shared.DTO.Program
+@inject IProgramTemplateService ProgramTemplateService
+@inject IProgramRunService ProgramRunService
+@inject NavigationManager Navigation
 
-@* <MudSelect @bind-Value="_selectedProgramId" Label="Select Program">
-    @foreach (var p in _programs)
+<MudSelect @bind-Value="_selectedTemplateCode" Label="Select Program Template">
+    @foreach (var t in _templates)
     {
-        <MudSelectItem Value="@p.Id">@p.ProgramName</MudSelectItem>
+        <MudSelectItem Value="@t.ProgramTemplateCode">@t.ProgramTemplateCode</MudSelectItem>
     }
 </MudSelect>
 
-<MudButton Disabled="@(_selectedProgramId==Guid.Empty || Session.Current!=null)"
+<MudButton Disabled="@(string.IsNullOrEmpty(_selectedTemplateCode))"
            OnClick="Start">Start Run</MudButton>
 
-@if (Session.Current is not null)
-{
-    <MudButton Color="Color.Error" OnClick="End">End & Save</MudButton>
-} *@
-
 @code {
-    // private List<prg_Program> _programs = new();
-    // private Guid _selectedProgramId;
+    private List<ProgramTemplateDTO> _templates = new();
+    private string? _selectedTemplateCode;
 
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     _programs = await ProgramService.ListAsync();
-    // }
+    protected override async Task OnInitializedAsync()
+    {
+        _templates = (await ProgramTemplateService.GetAllAsync()).ToList();
+    }
 
-    // private async Task Start()
-    // {
-    //     await Session.StartAsync(_selectedProgramId);
-    //     // navigate to /livelist
-    //     //Navigation.NavigateTo("/livelist");
-    // }
+    private async Task Start()
+    {
+        if (string.IsNullOrEmpty(_selectedTemplateCode)) return;
 
-    // private async Task End()
-    // {
-    //     if (Session.Current is not null)
-    //         await Session.EndAsync(Session.Current.Id);
-    // }
+        var newRun = new ProgramRunDTO
+        {
+            ProgramTemplateCode = _selectedTemplateCode,
+            RunDate = DateTime.UtcNow,
+        };
+
+        await ProgramRunService.CreateAsync(newRun);
+        Navigation.NavigateTo("/existingprograms");
+    }
 }

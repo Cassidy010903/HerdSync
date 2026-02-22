@@ -8,25 +8,20 @@ using DAL.Services;
 using DAL.Services.Implementation;
 using FluentValidation;
 using HerdMark.Services;
-using HerdSync;
 using HerdSync.Components;
 using HerdSync.Shared.DTO.Animal;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
-using Oracle.ManagedDataAccess.Client;
 using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseStaticWebAssets();
 
-var configManager = builder.Configuration;
-string dbEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "SSMS";
-configManager.AddJsonFile($"appsettings.{dbEnvironment}.json", optional: true, reloadOnChange: true);
-var connectionString = configManager.GetConnectionString(dbEnvironment == "SSMS" ? "SSMSConnection" : "OracleConnection");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddMudServices();
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-// Add services to the container
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddSingleton<ReadMappingService>();
@@ -39,22 +34,16 @@ builder.Services.AddServerSideBlazor()
         options.DetailedErrors = true;
     });
 
-// Register business services and AutoMapper
-builder.Services.AddScoped<ISpeciesRepository, AnimalRepository>();
-builder.Services.AddScoped<ITagRepository, TagRepository>();
+builder.Services.AddDbContext<HerdsyncDBContext>(options =>
+    options.UseSqlServer(connectionString));
+
+builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
 builder.Services.AddScoped<IAnimalService, AnimalService>();
-builder.Services.AddScoped<DAL.Repositories.ITagService, DAL.Repositories.Implementation.TagService>();
 builder.Services.AddScoped<IValidator<AnimalDTO>, SpeciesDTOValidator>();
-builder.Services.AddScoped<IProgramRepository, ProgramRepository>();
-builder.Services.AddSingleton<ISessionRepository, SessionRepository>(); // subscribes to reads for the lifetime
-builder.Services.AddScoped<DAL.Repositories.IProgramService, DAL.Repositories.Implementation.ProgramService>();
-builder.Services.AddSingleton<DAL.Repositories.ISessionService, DAL.Repositories.Implementation.SessionService>(); // subscribes to reads for the lifetime
-//builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
 builder.Services.AddScoped<IAnimalEventTypeRepository, AnimalEventTypeRepository>();
 builder.Services.AddScoped<IAnimalTagRepository, AnimalTagRepository>();
 builder.Services.AddScoped<IAnimalTypeRepository, AnimalTypeRepository>();
 builder.Services.AddScoped<IPregnancyRepository, PregnancyRepository>();
-
 builder.Services.AddScoped<IAnimalEventTypeService, AnimalEventTypeService>();
 builder.Services.AddScoped<IAnimalTagService, AnimalTagService>();
 builder.Services.AddScoped<IAnimalTypeService, AnimalTypeService>();
@@ -63,7 +52,6 @@ builder.Services.AddScoped<IPregnancyService, PregnancyService>();
 builder.Services.AddScoped<IFarmRepository, FarmRepository>();
 builder.Services.AddScoped<IFarmActivityRepository, FarmActivityRepository>();
 builder.Services.AddScoped<IFarmActivityTypeRepository, FarmActivityTypeRepository>();
-
 builder.Services.AddScoped<IFarmService, FarmService>();
 builder.Services.AddScoped<IFarmActivityService, FarmActivityService>();
 builder.Services.AddScoped<IFarmActivityTypeService, FarmActivityTypeService>();
@@ -71,7 +59,6 @@ builder.Services.AddScoped<IFarmActivityTypeService, FarmActivityTypeService>();
 builder.Services.AddScoped<IFarmUserRepository, FarmUserRepository>();
 builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
 builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
-
 builder.Services.AddScoped<IFarmUserService, FarmUserService>();
 builder.Services.AddScoped<IUserAccountService, UserAccountService>();
 builder.Services.AddScoped<IUserRoleService, UserRoleService>();
@@ -80,7 +67,6 @@ builder.Services.AddScoped<IProgramRunRepository, ProgramRunRepository>();
 builder.Services.AddScoped<IProgramRunAnimalRepository, ProgramRunAnimalRepository>();
 builder.Services.AddScoped<IProgramRunObservationRepository, ProgramRunObservationRepository>();
 builder.Services.AddScoped<IProgramRunTreatmentRepository, ProgramRunTreatmentRepository>();
-
 builder.Services.AddScoped<IProgramRunService, ProgramRunService>();
 builder.Services.AddScoped<IProgramRunAnimalService, ProgramRunAnimalService>();
 builder.Services.AddScoped<IProgramRunObservationService, ProgramRunObservationService>();
@@ -89,7 +75,6 @@ builder.Services.AddScoped<IProgramRunTreatmentService, ProgramRunTreatmentServi
 builder.Services.AddScoped<IProgramTemplateRepository, ProgramTemplateRepository>();
 builder.Services.AddScoped<IProgramTemplateRuleRepository, ProgramTemplateRuleRepository>();
 builder.Services.AddScoped<IProgramTemplateRuleTreatmentRepository, ProgramTemplateRuleTreatmentRepository>();
-
 builder.Services.AddScoped<IProgramTemplateService, ProgramTemplateService>();
 builder.Services.AddScoped<IProgramTemplateRuleService, ProgramTemplateRuleService>();
 builder.Services.AddScoped<IProgramTemplateRuleTreatmentService, ProgramTemplateRuleTreatmentService>();
@@ -98,45 +83,27 @@ builder.Services.AddScoped<ITreatmentRepository, TreatmentRepository>();
 builder.Services.AddScoped<ITreatmentCategoryRepository, TreatmentCategoryRepository>();
 builder.Services.AddScoped<ITreatmentProductRepository, TreatmentProductRepository>();
 builder.Services.AddScoped<IConditionRepository, ConditionRepository>();
-
 builder.Services.AddScoped<ITreatmentService, TreatmentService>();
 builder.Services.AddScoped<ITreatmentCategoryService, TreatmentCategoryService>();
 builder.Services.AddScoped<ITreatmentProductService, TreatmentProductService>();
 builder.Services.AddScoped<IConditionService, ConditionService>();
 
 builder.Services.AddRadzenComponents();
-OracleConfiguration.WalletLocation = "./wwwroot/Wallet_HerdSync";
-
-// Register DbContext with provider-specific configuration
-if (dbEnvironment == "SSMS")
-{
-    builder.Services.AddDbContext<HerdsyncDBContext>(options =>
-      options.UseSqlServer(connectionString));
-}
-else if (dbEnvironment == "Oracle")
-{
-    builder.Services.AddDbContext<HerdsyncDBContext>(options =>
-    {
-        options.UseOracle(connectionString);
-    });
-}
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment() || app.Environment.IsSSMS() || app.Environment.IsOracle())
+if (app.Environment.IsDevelopment())
 {
-    // The code that loads your services goes here
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
     app.UseHsts();
 }
-// For Blazor Web App in .NET 8
+
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseStaticFiles();
 app.UseAntiforgery();
 app.MapRazorComponents<App>()
-  .AddInteractiveServerRenderMode();
+    .AddInteractiveServerRenderMode();
 app.MapControllers();
 
 app.Run();

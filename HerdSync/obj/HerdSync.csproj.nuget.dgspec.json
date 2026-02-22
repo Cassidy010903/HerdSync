@@ -461,6 +461,10 @@
               "target": "Package",
               "version": "[7.4.3, )"
             },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[10.1.4, )"
+            },
             "System.IO.Ports": {
               "target": "Package",
               "version": "[9.0.9, )"

@@ -1,5 +1,5 @@
 ﻿using BLL.Services;
-using DAL.Models;
+using HerdSync.Shared.DTO.Program;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -7,12 +7,11 @@ namespace HerdSync.Components.Pages.Programs
 {
     public partial class ExistingPrograms
     {
-        [Inject] private IProgramService ProgramService { get; set; } = default!;
-        [Inject] private ISessionService SessionService { get; set; } = default!;
+        [Inject] private IProgramRunService ProgramRunService { get; set; } = default!;
         [Inject] private NavigationManager Nav { get; set; } = default!;
         [Inject] private IDialogService DialogService { get; set; } = default!;
 
-        private List<prg_Program> programs = new();
+        private List<ProgramRunDTO> programs = new();
         private bool loading = true;
 
         protected override async Task OnInitializedAsync()
@@ -23,11 +22,11 @@ namespace HerdSync.Components.Pages.Programs
         private async Task LoadPrograms()
         {
             loading = true;
-            programs = await ProgramService.ListAsync();
+            programs = (await ProgramRunService.GetAllAsync()).ToList();
             loading = false;
         }
 
-        private async Task StartProgram(Guid programId)
+        private async Task StartProgram(Guid programRunId)
         {
             var confirm = await DialogService.ShowMessageBox(
                 "Start Program",
@@ -38,7 +37,6 @@ namespace HerdSync.Components.Pages.Programs
 
             if (confirm == true)
             {
-                await SessionService.StartAsync(programId);
                 Nav.NavigateTo("/livelist");
             }
         }

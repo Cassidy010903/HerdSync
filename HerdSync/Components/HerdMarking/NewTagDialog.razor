@@ -2,8 +2,19 @@
     <DialogContent>
         <MudGrid>
             <MudItem xs="12" sm="6" md="6">
-                <MudTextField ShrinkLabel @bind-Value="tag.stl_Tag_Id" Label="Tag ID" Variant="MudBlazor.Variant.Outlined" Adornment="Adornment.Start" AdornmentText="#" AdornmentColor="Color.Primary"></MudTextField>
-                <MudSelect T="Guid" @bind-Value="tag.spd_Id" Label="Select Animal" Variant="MudBlazor.Variant.Filled" Dense="true">
+                <MudTextField ShrinkLabel
+                              @bind-Value="tag.RFIDTagCode"
+                              Label="Tag ID"
+                              Variant="MudBlazor.Variant.Outlined"
+                              Adornment="Adornment.Start"
+                              AdornmentText="#"
+                              AdornmentColor="Color.Primary" />
+
+                <MudSelect T="Guid"
+                           @bind-Value="tag.AnimalId"
+                           Label="Select Animal"
+                           Variant="MudBlazor.Variant.Filled"
+                           Dense="true">
                     @foreach (var animal in HerdList)
                     {
                         <MudSelectItem Value="@animal.AnimalId">
@@ -11,12 +22,12 @@
                         </MudSelectItem>
                     }
                 </MudSelect>
-
             </MudItem>
         </MudGrid>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Style="@($"color:{MudBlazor.Colors.Teal.Lighten2}; background:{MudBlazor.Colors.Teal.Lighten5};")" OnClick="Submit">OK</MudButton>
+        <MudButton Style="@($"color:{MudBlazor.Colors.Teal.Lighten2}; background:{MudBlazor.Colors.Teal.Lighten5};")"
+                   OnClick="Submit">OK</MudButton>
     </DialogActions>
 </MudDialog>

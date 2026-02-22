@@ -1,20 +1,7 @@
 ﻿using DAL.Models.Animal;
-using HerdSync.Shared.Enums.Data;
 
-namespace DAL.Services
+namespace DAL.Repositories
 {
-    public interface ISpeciesRepository
-    {
-        public List<GenderEnum> GetGenderOptions(AnimalTypeEnum species);
-
-        public List<AgeGroupEnum> GetAgeGroupOptions(AnimalTypeEnum species);
-
-        public Task AddSpecies(AnimalModel spd);
-
-        public Task UpdateSpecies(AnimalModel updated);
-
-        public Task<List<AnimalModel>> GetAllSpeciesAsync();
-    }
     public interface IAnimalRepository
     {
         Task<IEnumerable<AnimalModel>> GetAllAsync();

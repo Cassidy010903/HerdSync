@@ -1,6 +1,6 @@
 ﻿@page "/existingprograms"
-@using DAL.Models
 @using BLL.Services
+@using HerdSync.Shared.DTO.Program
 
 <PageTitle>Existing Programs</PageTitle>
 
@@ -17,8 +17,8 @@
     else if (programs.Count == 0)
     {
         <MudAlert Severity="Severity.Info">No programs found. Create a new program first.</MudAlert>
-        <MudButton Href="/newprogram" Color="Color.Primary" Variant="MudBlazor.Variant.Filled" Class="mt-3">
-            Create New Program
+        <MudButton Href="/program-run" Color="Color.Primary" Variant="MudBlazor.Variant.Filled" Class="mt-3">
+            Create New Program Run
         </MudButton>
     }
     else
@@ -29,21 +29,20 @@
                 <div class="col-lg-4 col-md-6 col-12 mt-4 pt-2">
                     <div class="card border-0 bg-light rounded shadow">
                         <div class="card-body p-4">
-                            <span class="badge rounded-pill bg-primary float-md-end mb-3 mb-sm-0">@program.Repeat</span>
-                            <h5>@program.ProgramName</h5>
+                            <span class="badge rounded-pill bg-primary float-md-end mb-3 mb-sm-0">
+                                @program.RunDate.ToString("dd MMM yyyy")
+                            </span>
+                            <h5>@program.ProgramTemplateCode</h5>
                             <div class="mt-3">
-                                <span class="text-muted d-block">@program.Instructions.Count instruction(s)</span>
-                                @if (program.LastRunUtc.HasValue)
+                                @if (program.ModifiedDate.HasValue)
                                 {
-                                    <span class="text-muted d-block">Last run: @program.LastRunUtc.Value.ToLocalTime().ToString("g")</span>
+                                    <span class="text-muted d-block">Last modified: @program.ModifiedDate.Value.ToString("dd MMM yyyy")</span>
                                 }
                             </div>
-
                             <div class="mt-3">
-                                <MudButton OnClick="() => StartProgram(program.Id)"
+                                <MudButton OnClick="() => StartProgram(program.ProgramRunId)"
                                            Color="Color.Success"
-                                           Variant="MudBlazor.Variant.Filled"
-                                           Disabled="@(SessionService.Current != null)">
+                                           Variant="MudBlazor.Variant.Filled">
                                     Start Program
                                 </MudButton>
                             </div>
@@ -54,14 +53,3 @@
         </div>
     }
 </div>
-
-
-@if (SessionService.Current != null)
-{
-    <MudAlert Severity="Severity.Warning" Class="mt-4">
-        There is already an active session running. Please end it before starting a new program.
-        <MudButton Href="/livelist" Color="Color.Primary" Size="Size.Small" Class="ml-2">
-            Go to Active Session
-        </MudButton>
-    </MudAlert>
-}

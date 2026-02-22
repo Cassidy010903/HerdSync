@@ -1,59 +1,64 @@
 ﻿@page "/livelist"
-@using DAL.Models
 @using BLL.Services
+@using HerdSync.Shared.DTO.Animal
+@using HerdSync.Shared.DTO.Program
 @using Microsoft.AspNetCore.Components.Web
 @implements IDisposable
-@inject ISessionService SessionService
+@inject IProgramRunAnimalService ProgramRunAnimalService
+@inject IAnimalService AnimalService
 @inject NavigationManager Nav
 
-Active Program - Live List
+<h4>Active Program - Live List</h4>
 
 <input @ref="scannerInput"
-@onkeydown="HandleKeyDown"
-style="position; left:-10000px; top:-10000px;"
-autocomplete="off" />
+       @onkeydown="HandleKeyDown"
+       style="position:fixed; left:-10000px; top:-10000px;"
+       autocomplete="off" />
 
-            <div class="card-header align-items-center">
-                <h5 class="mb-0">Scanned Animals (@animalActions.Count)</h5>
-            </div>
+<div class="card">
+    <div class="card-header align-items-center">
+        <h5 class="mb-0">Scanned Animals (@animalActions.Count)</h5>
+    </div>
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead class="small text-uppercase bg-body text-muted">
+                <tr>
+                    <th>Tag (RFID)</th>
+                    <th>Animal</th>
+                    <th>Scanned</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var action in animalActions)
+                {
+                    <tr>
+                        <td>@(action.Animal?.AnimalTag?.RFIDTagCode ?? "-")</td>
+                        <td>@(action.Animal?.DisplayIdentifier ?? action.AnimalId.ToString())</td>
+                        <td>@action.CreatedDate.ToString("HH:mm:ss")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
-            <div class="table-responsive">
-                <table class="table mb-0">
-                    <thead class="small text-uppercase bg-body text-muted">
-                        <tr>
-                            <th>Tag ID</th>
-                            <th>Animal ID</th>
-                            <th>Age Group</th>
-                            <th>Treatments</th>
-                            <th>Scanned</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach (var action in animalActions.OrderByDescending(a => a.ScannedUtc))
-                        {
-                            <tr>
-                                <td>@action.TagId</td>
-                                <td>@action.spd_Id</td>
-                                <td>@action.AgeGroup</td>
-                                <td>
-                                    @string.Join(", ", action.Treatments.Select(t => t.TreatmentId.ToString().Substring(0, 8)))
-                                    (@action.Treatments.Count)
-                                </td>
-                                <td>@action.ScannedUtc.ToLocalTime().ToString("HH:mm:ss")</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-warning mt-2">@_errorMessage</div>
+}
 
 @code {
-
     private ElementReference scannerInput;
     private string _scanBuffer = "";
     private DateTime _lastKey = DateTime.MinValue;
+    private string? _errorMessage;
+    private List<ProgramRunAnimalDTO> animalActions = new();
+    private List<AnimalDTO> _allAnimals = new();
 
-    private List<ast_Animal_Session_Treatment> animalActions = new();
+    protected override async Task OnInitializedAsync()
+    {
+        _allAnimals = await AnimalService.GetAllAsync();
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -62,7 +67,6 @@ autocomplete="off" />
 
     private void HandleKeyDown(KeyboardEventArgs e)
     {
-        // new scan if pause
         if ((DateTime.Now - _lastKey).TotalMilliseconds > 60)
             _scanBuffer = "";
 
@@ -71,8 +75,7 @@ autocomplete="off" />
         if (e.Key == "Enter")
         {
             if (!string.IsNullOrWhiteSpace(_scanBuffer))
-                AddScan(_scanBuffer);
-
+                _ = AddScanAsync(_scanBuffer.Trim());
             _scanBuffer = "";
             return;
         }
@@ -81,24 +84,41 @@ autocomplete="off" />
             _scanBuffer += e.Key;
     }
 
-    private void AddScan(string tag)
+    private async Task AddScanAsync(string rfidCode)
     {
-        var action = new ast_Animal_Session_Treatment
+        _errorMessage = null;
+
+        var animal = _allAnimals.FirstOrDefault(a =>
+            a.AnimalTag?.RFIDTagCode == rfidCode);
+
+        if (animal == null)
         {
-            Id = Guid.NewGuid(),
-            TagId = tag,
-            spd_Id = Guid.NewGuid(),
-            AgeGroup = Shared.Enums.Data.AgeGroupEnum.Calf1,
-            ScannedUtc = DateTime.UtcNow,
-            Treatments = new List<atr_Animal_Treatment>()
+            _errorMessage = $"No animal found for tag: {rfidCode}";
+            await InvokeAsync(StateHasChanged);
+            return;
+        }
+
+        var newEntry = new ProgramRunAnimalDTO
+        {
+            AnimalId = animal.AnimalId,
+            Animal = animal,
+            CreatedDate = DateTime.UtcNow,
+            WasHandled = false,
         };
 
-        animalActions.Insert(0, action);
-        InvokeAsync(StateHasChanged);
+        try
+        {
+            var saved = await ProgramRunAnimalService.CreateAsync(newEntry);
+            saved.Animal = animal;
+            animalActions.Insert(0, saved);
+        }
+        catch
+        {
+            animalActions.Insert(0, newEntry);
+        }
+
+        await InvokeAsync(StateHasChanged);
     }
 
-    public void Dispose()
-    {
-    }
-
+    public void Dispose() { }
 }
