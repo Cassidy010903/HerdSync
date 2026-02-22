@@ -1,6 +1,8 @@
-﻿using DAL.Models.Treatment;
+﻿using AutoMapper;
+using DAL.Models.Treatment;
 using DAL.Repositories;
 using HerdSync.Shared.DTO.Treatment;
+using Microsoft.Extensions.Logging;
 
 namespace BLL.Services.Implementation
 {

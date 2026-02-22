@@ -70,13 +70,14 @@ body[b-8v5tn0cj4f] {
     margin-bottom: 1rem;
 }
 
-h5[b-8v5tn0cj4f], h6[b-8v5tn0cj4f]{
+h5[b-8v5tn0cj4f], h6[b-8v5tn0cj4f] {
     color: rgba(116,143,122,1) !important;
 }
 
-.text-primary[b-8v5tn0cj4f]{
+.text-primary[b-8v5tn0cj4f] {
     color: rgb(125, 166, 135);
 }
+
 .btn-primary[b-8v5tn0cj4f] {
     background-color: rgb(125, 166, 135) !important;
     border-color: rgb(125, 166, 135) !important;

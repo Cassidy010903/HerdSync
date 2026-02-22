@@ -32,7 +32,7 @@ namespace HerdSync.Api.Controllers.Program.ProgramTemplate
         public async Task<IActionResult> Create([FromBody] ProgramTemplateRuleTreatmentDTO programTemplateRuleTreatmentDTO)
         {
             var result = await _service.CreateAsync(programTemplateRuleTreatmentDTO);
-            return CreatedAtAction(nameof(GetById), new { programTemplateRuleTreatmentId = result.Id }, result);
+            return CreatedAtAction(nameof(GetById), new { programTemplateRuleTreatmentId = result.ProgramTemplateRuleTreatmentId }, result);
         }
 
         [HttpPut("{programTemplateRuleTreatmentId:Guid}")]

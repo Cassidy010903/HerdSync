@@ -1,9 +1,11 @@
 ﻿using DAL.Configuration.Database;
 using DAL.Models.Program.ProgramTemplate;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DAL.Repositories.Implementation
 {
-    public class ProgramTemplateRuleTreatmentRepository(HerdSyncDbContext context, ILogger<ProgramTemplateRuleTreatmentRepository> logger) : IProgramTemplateRuleTreatmentRepository
+    public class ProgramTemplateRuleTreatmentRepository(HerdsyncDBContext context, ILogger<ProgramTemplateRuleTreatmentRepository> logger) : IProgramTemplateRuleTreatmentRepository
     {
         public async Task<IEnumerable<ProgramTemplateRuleTreatmentModel>> GetAllAsync()
         {

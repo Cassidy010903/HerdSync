@@ -1,6 +1,8 @@
-﻿using DAL.Models.Program.ProgramRun;
+﻿using AutoMapper;
+using DAL.Models.Program.ProgramRun;
 using DAL.Repositories;
 using HerdSync.Shared.DTO.Program;
+using Microsoft.Extensions.Logging;
 
 namespace BLL.Services.Implementation
 {

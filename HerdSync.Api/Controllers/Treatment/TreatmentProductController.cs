@@ -32,7 +32,7 @@ namespace HerdSync.Api.Controllers.Treatment
         public async Task<IActionResult> Create([FromBody] TreatmentProductDTO treatmentProductDTO)
         {
             var result = await _service.CreateAsync(treatmentProductDTO);
-            return CreatedAtAction(nameof(GetById), new { treatmentProductId = result.treatmentProductId }, result);
+            return CreatedAtAction(nameof(GetById), new { treatmentProductId = result.TreatmentProductId }, result);
         }
 
         [HttpPut("{treatmentProductId:Guid}")]

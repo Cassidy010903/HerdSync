@@ -1,4 +1,7 @@
 ﻿using DAL.Configuration.Database;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 
 namespace DAL.Configuration
 {

@@ -1,7 +1,9 @@
-﻿using BLL.Services;
+﻿using AutoMapper;
+using BLL.Services;
 using DAL.Models.Animal;
 using DAL.Services;
 using HerdSync.Shared.DTO.Animal;
+using Microsoft.Extensions.Logging;
 
 namespace BLL.Services.Implementation
 {
@@ -31,7 +33,7 @@ namespace BLL.Services.Implementation
             await repository.UpdateSpecies(entity);
         }
     }
-    public class AnimalService2(IMapper mapper, IAnimalRepository repository, ILogger<AnimalService> logger) : IAnimalService
+    public class AnimalService2(IMapper mapper, IAnimalRepository repository, ILogger<AnimalService> logger) : IAnimalService2
     {
         public async Task<IEnumerable<AnimalDTO>> GetAllAsync()
         {

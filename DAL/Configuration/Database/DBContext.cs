@@ -7,9 +7,9 @@
 
 //namespace DAL.Configuration.Database
 //{
-//    public class HerdSyncDbContext : DbContext
+//    public class HerdsyncDBContext : DbContext
 //    {
-//        public HerdSyncDbContext(DbContextOptions<HerdSyncDbContext> options) : base(options)
+//        public HerdsyncDBContext(DbContextOptions<HerdsyncDBContext> options) : base(options)
 //        {
 //        }
 

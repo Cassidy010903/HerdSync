@@ -1,4 +1,5 @@
-﻿using DAL.Models.Animal;
+﻿using AutoMapper;
+using DAL.Models.Animal;
 using DAL.Models.Authentication;
 using DAL.Models.Farm;
 using DAL.Models.Program.ProgramRun;
@@ -17,7 +18,7 @@ namespace BLL.Mappings
         public HerdSyncMappingProfile()
         {
             CreateMap<AnimalModel, AnimalDTO>().ReverseMap();
-            CreateMap<AnimalEventTypeService, AnimalEventTypeDTO>().ReverseMap();
+            CreateMap<AnimalEventTypeModel, AnimalEventTypeDTO>().ReverseMap();
             CreateMap<AnimalTagModel, AnimalTagDTO>().ReverseMap();
             CreateMap<AnimalTypeModel, AnimalTypeDTO>().ReverseMap();
             CreateMap<ConditionModel, ConditionDTO>().ReverseMap();

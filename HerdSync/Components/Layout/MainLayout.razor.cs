@@ -1,4 +1,6 @@
-﻿namespace HerdSync.Components.Layout
+﻿using MudBlazor;
+
+namespace HerdSync.Components.Layout
 {
     public partial class MainLayout
     {

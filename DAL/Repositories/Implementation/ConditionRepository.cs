@@ -1,9 +1,11 @@
 ﻿using DAL.Configuration.Database;
 using DAL.Models.Treatment;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DAL.Repositories.Implementation
 {
-    public class ConditionRepository(HerdSyncDbContext context, ILogger<ConditionRepository> logger) : IConditionRepository
+    public class ConditionRepository(HerdsyncDBContext context, ILogger<ConditionRepository> logger) : IConditionRepository
     {
         public async Task<IEnumerable<ConditionModel>> GetAllAsync()
         {

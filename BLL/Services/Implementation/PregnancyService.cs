@@ -1,6 +1,8 @@
-﻿using DAL.Models.Animal;
+﻿using AutoMapper;
+using DAL.Models.Animal;
 using DAL.Repositories;
 using HerdSync.Shared.DTO.Animal;
+using Microsoft.Extensions.Logging;
 
 namespace BLL.Services.Implementation
 {
@@ -44,3 +46,4 @@ namespace BLL.Services.Implementation
             logger.LogInformation("Soft deleted pregnancy record with ID {PregnancyId}", pregnancyId);
         }
     }
+}

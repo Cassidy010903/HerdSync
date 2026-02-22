@@ -2155,6 +2155,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
+          "AutoMapper": "12.0.1",
           "HerdMark": "1.0.0",
           "HerdSync.Shared": "1.0.0",
           "Microsoft.EntityFrameworkCore.SqlServer": "9.0.7",
@@ -5903,23 +5904,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Cassidy\\.nuget\\packages\\": {},
+    "C:\\Users\\Cassidy_Potgieter\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\HerdSync\\BLL\\BLL.csproj",
+      "projectUniqueName": "C:\\Cassidy\\CRUDProgram\\HerdSync\\BLL\\BLL.csproj",
       "projectName": "BLL",
-      "projectPath": "C:\\HerdSync\\BLL\\BLL.csproj",
-      "packagesPath": "C:\\Users\\Cassidy\\.nuget\\packages\\",
-      "outputPath": "C:\\HerdSync\\BLL\\obj\\",
+      "projectPath": "C:\\Cassidy\\CRUDProgram\\HerdSync\\BLL\\BLL.csproj",
+      "packagesPath": "C:\\Users\\Cassidy_Potgieter\\.nuget\\packages\\",
+      "outputPath": "C:\\Cassidy\\CRUDProgram\\HerdSync\\BLL\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Cassidy\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Cassidy\\CRUDProgram\\HerdSync\\NuGet.Config",
+        "C:\\Users\\Cassidy_Potgieter\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -5927,7 +5929,6 @@
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
@@ -5935,11 +5936,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\HerdSync\\DAL\\DAL.csproj": {
-              "projectPath": "C:\\HerdSync\\DAL\\DAL.csproj"
+            "C:\\Cassidy\\CRUDProgram\\HerdSync\\DAL\\DAL.csproj": {
+              "projectPath": "C:\\Cassidy\\CRUDProgram\\HerdSync\\DAL\\DAL.csproj"
             },
-            "C:\\HerdSync\\HerdSync.Shared\\HerdSync.Shared.csproj": {
-              "projectPath": "C:\\HerdSync\\HerdSync.Shared\\HerdSync.Shared.csproj"
+            "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdSync.Shared\\HerdSync.Shared.csproj": {
+              "projectPath": "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdSync.Shared\\HerdSync.Shared.csproj"
             }
           }
         }
@@ -6003,7 +6004,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

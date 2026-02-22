@@ -1,9 +1,11 @@
 ﻿using DAL.Configuration.Database;
 using DAL.Models.Authentication;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DAL.Repositories.Implementation
 {
-    public class FarmUserRepository(HerdSyncDbContext context, ILogger<FarmUserRepository> logger) : IFarmUserRepository
+    public class FarmUserRepository(HerdsyncDBContext context, ILogger<FarmUserRepository> logger) : IFarmUserRepository
     {
         public async Task<IEnumerable<FarmUserModel>> GetAllAsync()
         {

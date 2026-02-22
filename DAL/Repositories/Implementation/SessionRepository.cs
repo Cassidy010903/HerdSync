@@ -3,6 +3,8 @@ using DAL.Models;
 using DAL.Services;
 using HerdMark.Models;
 using HerdMark.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Text;
 
 namespace DAL.Repositories.Implementation

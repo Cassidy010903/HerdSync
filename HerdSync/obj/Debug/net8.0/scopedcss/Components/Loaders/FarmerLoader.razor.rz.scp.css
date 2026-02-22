@@ -125,7 +125,6 @@ $loops: 2;
 .wheel[b-zdtxh41o1e] {
     animation: spinL-b-zdtxh41o1e $truckLoopDur ease-in-out $truckRounds;
 }
-
 }
 
 &:last-of-type[b-zdtxh41o1e] {
@@ -149,7 +148,6 @@ $loops: 2;
 .wheel[b-zdtxh41o1e] {
     animation: spinR-b-zdtxh41o1e $truckLoopDur $truckLoopDur/2 ease-in-out $truckRounds;
 }
-
 }
 }
 

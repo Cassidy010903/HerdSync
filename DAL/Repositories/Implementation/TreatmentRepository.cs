@@ -1,9 +1,11 @@
 ﻿using DAL.Configuration.Database;
 using DAL.Models.Treatment;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DAL.Repositories.Implementation
 {
-    public class TreatmentRepository(HerdSyncDbContext context, ILogger<TreatmentRepository> logger) : ITreatmentRepository
+    public class TreatmentRepository(HerdsyncDBContext context, ILogger<TreatmentRepository> logger) : ITreatmentRepository
     {
         public async Task<IEnumerable<TreatmentModel>> GetAllAsync()
         {

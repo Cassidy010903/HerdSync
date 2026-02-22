@@ -1,9 +1,11 @@
 ﻿using DAL.Configuration.Database;
 using DAL.Models.Animal;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DAL.Repositories.Implementation
 {
-    public class PregnancyRepository(HerdSyncDbContext context, ILogger<PregnancyRepository> logger) : IPregnancyRepository
+    public class PregnancyRepository(HerdsyncDBContext context, ILogger<PregnancyRepository> logger) : IPregnancyRepository
     {
         public async Task<IEnumerable<PregnancyModel>> GetAllAsync()
         {

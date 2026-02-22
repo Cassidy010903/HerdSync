@@ -1,6 +1,8 @@
-﻿using DAL.Models;
+﻿using AutoMapper;
+using DAL.Models;
 using DAL.Services;
 using HerdSync.Shared.DTO;
+using Microsoft.Extensions.Logging;
 
 namespace DAL.Repositories.Implementation
 {

@@ -32,7 +32,7 @@ namespace HerdSync.Api.Controllers.Animal
         public async Task<IActionResult> Create([FromBody] PregnancyDTO pregnancyDTO)
         {
             var result = await _service.CreateAsync(pregnancyDTO);
-            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+            return CreatedAtAction(nameof(GetById), new { id = result.PregnancyId }, result);
         }
 
         [HttpPut("{id:int}")]

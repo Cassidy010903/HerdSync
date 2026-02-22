@@ -10,8 +10,8 @@ namespace HerdSync.Api.Controllers.Animal
     [Route("api/[controller]")]
     public class AnimalController : ControllerBase
     {
-        private readonly IAnimalService _service;
-        public AnimalController(IAnimalService service) => _service = service;
+        private readonly IAnimalService2 _service;
+        public AnimalController(IAnimalService2 service) => _service = service;
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -32,14 +32,14 @@ namespace HerdSync.Api.Controllers.Animal
         public async Task<IActionResult> Create([FromBody] AnimalDTO animalDTO)
         {
             var result = await _service.CreateAsync(animalDTO);
-            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+            return CreatedAtAction(nameof(GetById), new { id = result.AnimalId }, result);
         }
 
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] AnimalDTO animalDTO)
         {
-            if (id != dto.Id) return BadRequest("ID mismatch.");
-            var result = await _service.UpdateAsync(dto);
+            if (id != animalDTO.AnimalId) return BadRequest("ID mismatch.");
+            var result = await _service.UpdateAsync(animalDTO);
             return Ok(result);
         }
 

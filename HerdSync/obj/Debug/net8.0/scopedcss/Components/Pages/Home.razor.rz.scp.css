@@ -1,4 +1,3 @@
-
 :root[b-zjy6p6ka7z] {
     --blue: #4e73df;
     --indigo: #6610f2;
@@ -12211,7 +12210,6 @@ body.sidebar-toggled footer.sticky-footer[b-zjy6p6ka7z] {
     width: 100%;
 }
 
-
 .chart-area[b-zjy6p6ka7z] {
     position: relative;
     height: 10rem;
@@ -12222,7 +12220,6 @@ body.sidebar-toggled footer.sticky-footer[b-zjy6p6ka7z] {
     }
 }
 
-
 .chart-bar[b-zjy6p6ka7z] {
     position: relative;
     height: 10rem;
@@ -12232,7 +12229,6 @@ body.sidebar-toggled footer.sticky-footer[b-zjy6p6ka7z] {
         height: 20rem;
     }
 }
-
 
 .chart-pie[b-zjy6p6ka7z] {
     position: relative;

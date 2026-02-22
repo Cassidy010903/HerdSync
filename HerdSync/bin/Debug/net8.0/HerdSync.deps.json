@@ -1664,6 +1664,7 @@
       },
       "DAL/1.0.0": {
         "dependencies": {
+          "AutoMapper": "12.0.1",
           "HerdMark": "1.0.0",
           "HerdSync.Shared": "1.0.0",
           "Microsoft.EntityFrameworkCore.SqlServer": "9.0.7",

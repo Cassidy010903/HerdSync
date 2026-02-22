@@ -1,5 +1,6 @@
 ﻿using DAL.Configuration.Database;
 using DAL.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Services.Implementation
 {

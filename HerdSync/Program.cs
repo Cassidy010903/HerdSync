@@ -6,10 +6,15 @@ using DAL.Repositories;
 using DAL.Repositories.Implementation;
 using DAL.Services;
 using DAL.Services.Implementation;
+using FluentValidation;
 using HerdMark.Services;
 using HerdSync;
 using HerdSync.Components;
 using HerdSync.Shared.DTO.Animal;
+using Microsoft.EntityFrameworkCore;
+using MudBlazor.Services;
+using Oracle.ManagedDataAccess.Client;
+using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseStaticWebAssets();
@@ -38,13 +43,13 @@ builder.Services.AddServerSideBlazor()
 builder.Services.AddScoped<ISpeciesRepository, AnimalRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IAnimalService, AnimalService>();
-builder.Services.AddScoped<ITagService, TagService>();
+builder.Services.AddScoped<DAL.Repositories.ITagService, DAL.Repositories.Implementation.TagService>();
 builder.Services.AddScoped<IValidator<AnimalDTO>, SpeciesDTOValidator>();
 builder.Services.AddScoped<IProgramRepository, ProgramRepository>();
 builder.Services.AddSingleton<ISessionRepository, SessionRepository>(); // subscribes to reads for the lifetime
-builder.Services.AddScoped<IProgramService, ProgramService>();
-builder.Services.AddSingleton<ISessionService, SessionService>(); // subscribes to reads for the lifetime
-builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
+builder.Services.AddScoped<DAL.Repositories.IProgramService, DAL.Repositories.Implementation.ProgramService>();
+builder.Services.AddSingleton<DAL.Repositories.ISessionService, DAL.Repositories.Implementation.SessionService>(); // subscribes to reads for the lifetime
+//builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
 builder.Services.AddScoped<IAnimalEventTypeRepository, AnimalEventTypeRepository>();
 builder.Services.AddScoped<IAnimalTagRepository, AnimalTagRepository>();
 builder.Services.AddScoped<IAnimalTypeRepository, AnimalTypeRepository>();

@@ -32,7 +32,7 @@ namespace HerdSync.Api.Controllers.Authentication
         public async Task<IActionResult> Create([FromBody] UserRoleDTO userRoleDTO)
         {
             var result = await _service.CreateAsync(userRoleDTO);
-            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+            return CreatedAtAction(nameof(GetById), new { id = result.RoleCode }, result);
         }
 
         [HttpPut("{id:int}")]

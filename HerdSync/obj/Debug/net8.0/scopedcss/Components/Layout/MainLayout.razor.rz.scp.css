@@ -1,4 +1,3 @@
-
 .page[b-lht2ox5a5m]  {
     position: relative;
     display: flex;
@@ -28,23 +27,23 @@
         text-decoration: none;
     }
 
-    .top-row[b-lht2ox5a5m]  a:hover, .top-row[b-lht2ox5a5m]  .btn-link:hover {
-        text-decoration: underline;
-    }
+        .top-row[b-lht2ox5a5m]  a:hover, .top-row[b-lht2ox5a5m]  .btn-link:hover {
+            text-decoration: underline;
+        }
 
-    .top-row[b-lht2ox5a5m]  a:first-child {
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+        .top-row[b-lht2ox5a5m]  a:first-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
 @media (max-width: 640.98px) {
     .top-row[b-lht2ox5a5m] {
         justify-content: space-between;
     }
 
-    .top-row[b-lht2ox5a5m]  a, .top-row[b-lht2ox5a5m]  .btn-link {
-        margin-left: 0;
-    }
+        .top-row[b-lht2ox5a5m]  a, .top-row[b-lht2ox5a5m]  .btn-link {
+            margin-left: 0;
+        }
 }
 
 @media (min-width: 641px) {

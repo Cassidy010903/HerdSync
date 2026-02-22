@@ -32,7 +32,7 @@ namespace HerdSync.Api.Controllers.Program.ProgramRun
         public async Task<IActionResult> Create([FromBody] ProgramRunDTO programRunDTO)
         {
             var result = await _service.CreateAsync(programRunDTO);
-            return CreatedAtAction(nameof(GetById), new { programRunId = result.Id }, result);
+            return CreatedAtAction(nameof(GetById), new { programRunId = result.ProgramRunId }, result);
         }
 
         [HttpPut("{programRunId:Guid}")]

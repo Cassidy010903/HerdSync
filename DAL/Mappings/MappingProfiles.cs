@@ -1,4 +1,5 @@
-﻿using DAL.Models.Animal;
+﻿using AutoMapper;
+using DAL.Models.Animal;
 using DAL.Models.Authentication;
 using DAL.Models.Farm;
 using DAL.Models.Program.ProgramRun;

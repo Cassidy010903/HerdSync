@@ -1,23 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\HerdSync\\HerdMarkSim\\HerdMarkSim.csproj": {}
+    "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdMarkSim\\HerdMarkSim.csproj": {}
   },
   "projects": {
-    "C:\\HerdSync\\HerdMarkSim\\HerdMarkSim.csproj": {
+    "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdMarkSim\\HerdMarkSim.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\HerdSync\\HerdMarkSim\\HerdMarkSim.csproj",
+        "projectUniqueName": "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdMarkSim\\HerdMarkSim.csproj",
         "projectName": "HerdMarkSim",
-        "projectPath": "C:\\HerdSync\\HerdMarkSim\\HerdMarkSim.csproj",
-        "packagesPath": "C:\\Users\\Cassidy\\.nuget\\packages\\",
-        "outputPath": "C:\\HerdSync\\HerdMarkSim\\obj\\",
+        "projectPath": "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdMarkSim\\HerdMarkSim.csproj",
+        "packagesPath": "C:\\Users\\Cassidy_Potgieter\\.nuget\\packages\\",
+        "outputPath": "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdMarkSim\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Cassidy\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Cassidy\\CRUDProgram\\HerdSync\\NuGet.Config",
+          "C:\\Users\\Cassidy_Potgieter\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -25,7 +26,6 @@
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
@@ -33,8 +33,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\HerdSync\\HerdMark\\HerdMark.csproj": {
-                "projectPath": "C:\\HerdSync\\HerdMark\\HerdMark.csproj"
+              "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdMark\\HerdMark.csproj": {
+                "projectPath": "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdMark\\HerdMark.csproj"
               }
             }
           }
@@ -70,24 +70,25 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\HerdSync\\HerdMark\\HerdMark.csproj": {
+    "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdMark\\HerdMark.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\HerdSync\\HerdMark\\HerdMark.csproj",
+        "projectUniqueName": "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdMark\\HerdMark.csproj",
         "projectName": "HerdMark",
-        "projectPath": "C:\\HerdSync\\HerdMark\\HerdMark.csproj",
-        "packagesPath": "C:\\Users\\Cassidy\\.nuget\\packages\\",
-        "outputPath": "C:\\HerdSync\\HerdMark\\obj\\",
+        "projectPath": "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdMark\\HerdMark.csproj",
+        "packagesPath": "C:\\Users\\Cassidy_Potgieter\\.nuget\\packages\\",
+        "outputPath": "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdMark\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Cassidy\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Cassidy\\CRUDProgram\\HerdSync\\NuGet.Config",
+          "C:\\Users\\Cassidy_Potgieter\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -95,7 +96,6 @@
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
@@ -153,7 +153,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

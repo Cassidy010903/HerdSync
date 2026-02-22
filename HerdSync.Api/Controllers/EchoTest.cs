@@ -1,5 +1,6 @@
 using DAL.Configuration.Database;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HerdSync.Api.Controllers
 {
@@ -38,7 +39,7 @@ namespace HerdSync.Api.Controllers
             .ToArray();
         }
         [HttpGet("echo-test")]
-        public async Task<IActionResult> EchoTest()
+        public async Task<IActionResult> EchoTestCall()
         {
             await _context.Database.ExecuteSqlRawAsync("SELECT 1");
             return Ok("Database reachable");

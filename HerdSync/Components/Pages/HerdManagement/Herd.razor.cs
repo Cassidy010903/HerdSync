@@ -1,6 +1,7 @@
 ﻿using BLL.Services;
 using HerdSync.Shared.DTO.Animal;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace HerdSync.Components.Pages.HerdManagement
 {

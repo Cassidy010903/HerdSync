@@ -1,9 +1,11 @@
 ﻿using DAL.Configuration.Database;
 using DAL.Models.Animal;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DAL.Repositories.Implementation
 {
-    public class AnimalEventTypeRepository(HerdSyncDbContext context, ILogger<AnimalEventTypeRepository> logger) : IAnimalEventTypeRepository
+    public class AnimalEventTypeRepository(HerdsyncDBContext context, ILogger<AnimalEventTypeRepository> logger) : IAnimalEventTypeRepository
     {
         public async Task<IEnumerable<AnimalEventTypeModel>> GetAllAsync()
         {

@@ -1,23 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\HerdSync\\DAL\\DAL.csproj": {}
+    "C:\\Cassidy\\CRUDProgram\\HerdSync\\DAL\\DAL.csproj": {}
   },
   "projects": {
-    "C:\\HerdSync\\DAL\\DAL.csproj": {
+    "C:\\Cassidy\\CRUDProgram\\HerdSync\\DAL\\DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\HerdSync\\DAL\\DAL.csproj",
+        "projectUniqueName": "C:\\Cassidy\\CRUDProgram\\HerdSync\\DAL\\DAL.csproj",
         "projectName": "DAL",
-        "projectPath": "C:\\HerdSync\\DAL\\DAL.csproj",
-        "packagesPath": "C:\\Users\\Cassidy\\.nuget\\packages\\",
-        "outputPath": "C:\\HerdSync\\DAL\\obj\\",
+        "projectPath": "C:\\Cassidy\\CRUDProgram\\HerdSync\\DAL\\DAL.csproj",
+        "packagesPath": "C:\\Users\\Cassidy_Potgieter\\.nuget\\packages\\",
+        "outputPath": "C:\\Cassidy\\CRUDProgram\\HerdSync\\DAL\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Cassidy\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Cassidy\\CRUDProgram\\HerdSync\\NuGet.Config",
+          "C:\\Users\\Cassidy_Potgieter\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -25,7 +26,6 @@
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
@@ -33,11 +33,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\HerdSync\\HerdMark\\HerdMark.csproj": {
-                "projectPath": "C:\\HerdSync\\HerdMark\\HerdMark.csproj"
+              "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdMark\\HerdMark.csproj": {
+                "projectPath": "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdMark\\HerdMark.csproj"
               },
-              "C:\\HerdSync\\HerdSync.Shared\\HerdSync.Shared.csproj": {
-                "projectPath": "C:\\HerdSync\\HerdSync.Shared\\HerdSync.Shared.csproj"
+              "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdSync.Shared\\HerdSync.Shared.csproj": {
+                "projectPath": "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdSync.Shared\\HerdSync.Shared.csproj"
               }
             }
           }
@@ -58,6 +58,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[12.0.1, )"
+            },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
               "version": "[9.0.7, )"
@@ -105,24 +109,25 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\HerdSync\\HerdMark\\HerdMark.csproj": {
+    "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdMark\\HerdMark.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\HerdSync\\HerdMark\\HerdMark.csproj",
+        "projectUniqueName": "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdMark\\HerdMark.csproj",
         "projectName": "HerdMark",
-        "projectPath": "C:\\HerdSync\\HerdMark\\HerdMark.csproj",
-        "packagesPath": "C:\\Users\\Cassidy\\.nuget\\packages\\",
-        "outputPath": "C:\\HerdSync\\HerdMark\\obj\\",
+        "projectPath": "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdMark\\HerdMark.csproj",
+        "packagesPath": "C:\\Users\\Cassidy_Potgieter\\.nuget\\packages\\",
+        "outputPath": "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdMark\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Cassidy\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Cassidy\\CRUDProgram\\HerdSync\\NuGet.Config",
+          "C:\\Users\\Cassidy_Potgieter\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -130,7 +135,6 @@
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
@@ -188,24 +192,25 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\HerdSync\\HerdSync.Shared\\HerdSync.Shared.csproj": {
+    "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdSync.Shared\\HerdSync.Shared.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\HerdSync\\HerdSync.Shared\\HerdSync.Shared.csproj",
+        "projectUniqueName": "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdSync.Shared\\HerdSync.Shared.csproj",
         "projectName": "HerdSync.Shared",
-        "projectPath": "C:\\HerdSync\\HerdSync.Shared\\HerdSync.Shared.csproj",
-        "packagesPath": "C:\\Users\\Cassidy\\.nuget\\packages\\",
-        "outputPath": "C:\\HerdSync\\HerdSync.Shared\\obj\\",
+        "projectPath": "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdSync.Shared\\HerdSync.Shared.csproj",
+        "packagesPath": "C:\\Users\\Cassidy_Potgieter\\.nuget\\packages\\",
+        "outputPath": "C:\\Cassidy\\CRUDProgram\\HerdSync\\HerdSync.Shared\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Cassidy\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Cassidy\\CRUDProgram\\HerdSync\\NuGet.Config",
+          "C:\\Users\\Cassidy_Potgieter\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -213,7 +218,6 @@
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
@@ -254,7 +258,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

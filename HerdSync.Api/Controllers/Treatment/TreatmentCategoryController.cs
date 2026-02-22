@@ -1,6 +1,5 @@
 ﻿using BLL.Services;
 using HerdSync.Shared.DTO.Treatment;
-using HerdSync.Shared.treatmentCategoryDTO.Treatment;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,7 +32,7 @@ namespace HerdSync.Api.Controllers.Treatment
         public async Task<IActionResult> Create([FromBody] TreatmentCategoryDTO treatmentCategoryDTO)
         {
             var result = await _service.CreateAsync(treatmentCategoryDTO);
-            return CreatedAtAction(nameof(GetById), new { code = result.code }, result);
+            return CreatedAtAction(nameof(GetById), new { code = result.TreatmentCategoryCode }, result);
         }
 
         [HttpPut("{code:string}")]

@@ -1,9 +1,11 @@
 ﻿using DAL.Configuration.Database;
 using DAL.Models.Program.ProgramRun;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DAL.Repositories.Implementation
 {
-    public class ProgramRunAnimalRepository(HerdSyncDbContext context, ILogger<ProgramRunAnimalRepository> logger) : IProgramRunAnimalRepository
+    public class ProgramRunAnimalRepository(HerdsyncDBContext context, ILogger<ProgramRunAnimalRepository> logger) : IProgramRunAnimalRepository
     {
         public async Task<IEnumerable<ProgramRunAnimalModel>> GetAllAsync()
         {

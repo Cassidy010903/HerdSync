@@ -1,9 +1,11 @@
 ﻿using DAL.Configuration.Database;
 using DAL.Models.Authentication;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DAL.Repositories.Implementation
 {
-    public class UserRoleRepository(HerdSyncDbContext context, ILogger<UserRoleRepository> logger) : IUserRoleRepository
+    public class UserRoleRepository(HerdsyncDBContext context, ILogger<UserRoleRepository> logger) : IUserRoleRepository
     {
         public async Task<IEnumerable<UserRoleModel>> GetAllAsync()
         {

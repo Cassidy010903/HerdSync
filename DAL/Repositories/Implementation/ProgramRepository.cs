@@ -1,6 +1,7 @@
 ﻿using DAL.Configuration.Database;
 using DAL.Models;
 using HerdSync.Shared.Enums.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Services.Implementation
 {

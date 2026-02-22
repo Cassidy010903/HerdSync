@@ -32,7 +32,7 @@ namespace HerdSync.Api.Controllers.Program.ProgramTemplate
         public async Task<IActionResult> Create([FromBody] ProgramTemplateDTO programTemplateDTO)
         {
             var result = await _service.CreateAsync(programTemplateDTO);
-            return CreatedAtAction(nameof(GetById), new { code = result.Id }, result);
+            return CreatedAtAction(nameof(GetById), new { code = result.ProgramTemplateCode }, result);
         }
 
         [HttpPut("{code:string}")]

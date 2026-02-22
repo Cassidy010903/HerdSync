@@ -2,6 +2,8 @@
 using DAL.Constants;
 using DAL.Models.Animal;
 using HerdSync.Shared.Enums.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DAL.Services.Implementation
 {
@@ -110,7 +112,7 @@ namespace DAL.Services.Implementation
         }
     }
 
-    public class AnimalRepository2(HerdSyncDbContext context, ILogger<AnimalRepository> logger) : IAnimalRepository
+    public class AnimalRepository2(HerdsyncDBContext context, ILogger<AnimalRepository> logger) : IAnimalRepository
     {
         public async Task<IEnumerable<AnimalModel>> GetAllAsync()
         {
