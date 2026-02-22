@@ -11,6 +11,7 @@ namespace HerdSync.Api.Controllers.Treatment
     public class ConditionController : ControllerBase
     {
         private readonly IConditionService _service;
+
         public ConditionController(IConditionService service) => _service = service;
 
         [HttpGet]

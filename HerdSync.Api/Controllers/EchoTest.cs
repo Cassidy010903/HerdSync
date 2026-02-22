@@ -38,6 +38,7 @@ namespace HerdSync.Api.Controllers
             })
             .ToArray();
         }
+
         [HttpGet("echo-test")]
         public async Task<IActionResult> EchoTestCall()
         {

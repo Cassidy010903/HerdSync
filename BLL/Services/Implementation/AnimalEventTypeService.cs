@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using BLL.Services;
 using DAL.Models.Animal;
 using DAL.Repositories;
 using HerdSync.Shared.DTO.Animal;

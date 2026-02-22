@@ -46,5 +46,4 @@ namespace BLL.Services.Implementation
             logger.LogInformation("Soft deleted program template rule with ID {ProgramTemplateRuleId}", programTemplateRuleId);
         }
     }
-
 }

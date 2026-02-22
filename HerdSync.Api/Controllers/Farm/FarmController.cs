@@ -11,6 +11,7 @@ namespace HerdSync.Api.Controllers.Farm
     public class FarmController : ControllerBase
     {
         private readonly IFarmService _service;
+
         public FarmController(IFarmService service) => _service = service;
 
         [HttpGet]

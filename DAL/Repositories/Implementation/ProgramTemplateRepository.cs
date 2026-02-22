@@ -45,5 +45,4 @@ namespace DAL.Repositories.Implementation
             logger.LogInformation("Soft deleted program template with code {Code}", code);
         }
     }
-
 }

@@ -11,6 +11,7 @@ namespace HerdSync.Api.Controllers.Program.ProgramRun
     public class ProgramRunAnimalController : ControllerBase
     {
         private readonly IProgramRunAnimalService _service;
+
         public ProgramRunAnimalController(IProgramRunAnimalService service) => _service = service;
 
         [HttpGet]

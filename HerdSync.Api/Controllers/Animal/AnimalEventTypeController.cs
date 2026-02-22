@@ -11,6 +11,7 @@ namespace HerdSync.Api.Controllers.Animal
     public class AnimalEventTypeController : ControllerBase
     {
         private readonly IAnimalEventTypeService _service;
+
         public AnimalEventTypeController(IAnimalEventTypeService service) => _service = service;
 
         [HttpGet]

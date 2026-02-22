@@ -11,6 +11,7 @@ namespace HerdSync.Api.Controllers.Animal
     public class PregnancyController : ControllerBase
     {
         private readonly IPregnancyService _service;
+
         public PregnancyController(IPregnancyService service) => _service = service;
 
         [HttpGet]

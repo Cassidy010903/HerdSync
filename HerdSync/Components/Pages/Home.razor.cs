@@ -6,12 +6,12 @@ namespace HerdSync.Components.Pages
 {
     public partial class Home
     {
-        RadzenScheduler<Appointment> scheduler;
-        Dictionary<DateTime, string> events = new Dictionary<DateTime, string>();
+        private RadzenScheduler<Appointment> scheduler;
+        private Dictionary<DateTime, string> events = new Dictionary<DateTime, string>();
 
-        bool showHeader = true;
+        private bool showHeader = true;
 
-        IList<Appointment> appointments = new List<Appointment>
+        private IList<Appointment> appointments = new List<Appointment>
         {
             new Appointment { Start = DateTime.Today.AddDays(-2), End = DateTime.Today.AddDays(-2), Text = "Birthday" },
             new Appointment
@@ -30,12 +30,12 @@ namespace HerdSync.Components.Pages
             new Appointment { Start = DateTime.Today.AddDays(1), End = DateTime.Today.AddDays(12), Text = "Vacation" },
         };
 
-        void OnDaySelect(SchedulerDaySelectEventArgs args)
+        private void OnDaySelect(SchedulerDaySelectEventArgs args)
         {
             Console.WriteLine($"DaySelect: Day={args.Day} AppointmentCount={args.Appointments.Count()}");
         }
 
-        void OnSlotRender(SchedulerSlotRenderEventArgs args)
+        private void OnSlotRender(SchedulerSlotRenderEventArgs args)
         {
             // Highlight today in month view
             if (args.View.Text == "Month" && args.Start.Date == DateTime.Today)
@@ -52,19 +52,19 @@ namespace HerdSync.Components.Pages
             }
         }
 
-        async Task OnSlotSelect(SchedulerSlotSelectEventArgs args)
+        private async Task OnSlotSelect(SchedulerSlotSelectEventArgs args)
         {
             Console.WriteLine($"SlotSelect: Start={args.Start} End={args.End}");
         }
 
-        async Task OnAppointmentSelect(SchedulerAppointmentSelectEventArgs<Appointment> args)
+        private async Task OnAppointmentSelect(SchedulerAppointmentSelectEventArgs<Appointment> args)
         {
             Console.WriteLine($"AppointmentSelect: Appointment={args.Data.Text}");
 
             await scheduler.Reload();
         }
 
-        void OnAppointmentRender(SchedulerAppointmentRenderEventArgs<Appointment> args)
+        private void OnAppointmentRender(SchedulerAppointmentRenderEventArgs<Appointment> args)
         {
             // Never call StateHasChanged in AppointmentRender - would lead to infinite loop
 
@@ -74,12 +74,13 @@ namespace HerdSync.Components.Pages
             }
         }
 
-        async Task OnAppointmentMove(SchedulerAppointmentMoveEventArgs args)
+        private async Task OnAppointmentMove(SchedulerAppointmentMoveEventArgs args)
         {
             var draggedAppointment = appointments.FirstOrDefault(x => x == args.Appointment.Data);
 
             await scheduler.Reload();
         }
+
         public class Appointment
         {
             public DateTime Start { get; set; }
@@ -94,7 +95,9 @@ namespace HerdSync.Components.Pages
         public class KanbanTaskItem
         {
             public string Name { get; set; }
+
             public KanbanTaskItem(string name) => Name = name;
+
             public string Column { get; set; } = "Board";
         }
 

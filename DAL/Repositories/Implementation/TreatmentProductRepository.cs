@@ -45,5 +45,4 @@ namespace DAL.Repositories.Implementation
             logger.LogInformation("Soft deleted treatment product with ID {TreatmentProductId}", treatmentProductId);
         }
     }
-
 }

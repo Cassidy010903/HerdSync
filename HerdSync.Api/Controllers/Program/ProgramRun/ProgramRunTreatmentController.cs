@@ -11,6 +11,7 @@ namespace HerdSync.Api.Controllers.Program.ProgramRun
     public class ProgramRunTreatmentController : ControllerBase
     {
         private readonly IProgramRunTreatmentService _service;
+
         public ProgramRunTreatmentController(IProgramRunTreatmentService service) => _service = service;
 
         [HttpGet]

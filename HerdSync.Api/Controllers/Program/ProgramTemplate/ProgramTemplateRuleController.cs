@@ -11,6 +11,7 @@ namespace HerdSync.Api.Controllers.Program.ProgramTemplate
     public class ProgramTemplateRuleController : ControllerBase
     {
         private readonly IProgramTemplateRuleService _service;
+
         public ProgramTemplateRuleController(IProgramTemplateRuleService service) => _service = service;
 
         [HttpGet]

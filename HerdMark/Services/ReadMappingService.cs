@@ -1,12 +1,8 @@
 ﻿using HerdMark.Models;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
 using Microsoft.AspNetCore.Hosting;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
+using System.Text.Json;
 
 namespace HerdMark.Services
 {

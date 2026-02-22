@@ -11,6 +11,7 @@ namespace HerdSync.Api.Controllers.Program.ProgramRun
     public class ProgramRunObservationController : ControllerBase
     {
         private readonly IProgramRunObservationService _service;
+
         public ProgramRunObservationController(IProgramRunObservationService service) => _service = service;
 
         [HttpGet]
@@ -50,5 +51,4 @@ namespace HerdSync.Api.Controllers.Program.ProgramRun
             return NoContent();
         }
     }
-
 }

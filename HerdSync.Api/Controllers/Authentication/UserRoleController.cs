@@ -11,6 +11,7 @@ namespace HerdSync.Api.Controllers.Authentication
     public class UserRoleController : ControllerBase
     {
         private readonly IUserRoleService _service;
+
         public UserRoleController(IUserRoleService service) => _service = service;
 
         [HttpGet]

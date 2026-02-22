@@ -1,14 +1,13 @@
-﻿using System.Net.Http.Json;
-using HerdMark.Models;
+﻿using HerdMark.Models;
+using System.Net.Http.Json;
 
-class Program
+internal class Program
 {
-    static async Task Main()
+    private static async Task Main()
     {
         var client = new HttpClient();
         var serverUrl = "http://localhost:5000/api/reads";
         bool enableSimulation = false; //change this to true to read real time data automatically
-
 
         var rand = new Random();
 

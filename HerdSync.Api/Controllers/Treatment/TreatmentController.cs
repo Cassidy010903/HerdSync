@@ -11,6 +11,7 @@ namespace HerdSync.Api.Controllers.Treatment
     public class TreatmentController : ControllerBase
     {
         private readonly ITreatmentService _service;
+
         public TreatmentController(ITreatmentService service) => _service = service;
 
         [HttpGet]

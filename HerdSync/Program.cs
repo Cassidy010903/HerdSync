@@ -4,8 +4,6 @@ using BLL.Validators;
 using DAL.Configuration.Database;
 using DAL.Repositories;
 using DAL.Repositories.Implementation;
-using DAL.Services;
-using DAL.Services.Implementation;
 using FluentValidation;
 using HerdMark.Services;
 using HerdSync.Components;
@@ -105,5 +103,7 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 app.MapControllers();
+
+app.MapFallback(() => Results.Redirect("/pagenotfound"));
 
 app.Run();

@@ -36,6 +36,7 @@ namespace DAL.Configuration.Database
         public DbSet<TreatmentProductModel> TreatmentProducts { get; set; }
         public DbSet<UserAccountModel> UserAccounts { get; set; }
         public DbSet<UserRoleModel> UserRoles { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<FarmUserModel>()

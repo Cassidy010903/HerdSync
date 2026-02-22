@@ -11,6 +11,7 @@ namespace HerdSync.Api.Controllers.Authentication
     public class FarmUserController : ControllerBase
     {
         private readonly IFarmUserService _service;
+
         public FarmUserController(IFarmUserService service) => _service = service;
 
         [HttpGet]
@@ -50,5 +51,4 @@ namespace HerdSync.Api.Controllers.Authentication
             return NoContent();
         }
     }
-
 }

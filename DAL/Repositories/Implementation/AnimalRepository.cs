@@ -1,5 +1,4 @@
 ﻿using DAL.Configuration.Database;
-using DAL.Models.Animal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
