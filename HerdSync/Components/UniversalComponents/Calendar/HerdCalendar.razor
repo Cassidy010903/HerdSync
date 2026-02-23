@@ -1,0 +1,220 @@
+﻿<div class="herd-calendar">
+    <div class="herd-calendar__header">
+        <button class="herd-calendar__nav" @onclick="PreviousMonth">
+            <i class="bx bx-chevron-left"></i>
+        </button>
+        <span class="herd-calendar__title">@CurrentMonth.ToString("MMMM yyyy")</span>
+        <button class="herd-calendar__nav" @onclick="NextMonth">
+            <i class="bx bx-chevron-right"></i>
+        </button>
+    </div>
+
+    <div class="herd-calendar__grid">
+        @foreach (var day in DayNames)
+        {
+            <div class="herd-calendar__day-header">@day</div>
+        }
+
+        @for (int i = 0; i < FirstDayOffset; i++)
+        {
+            <div class="herd-calendar__cell herd-calendar__cell--empty"></div>
+        }
+
+        @for (int day = 1; day <= DaysInMonth; day++)
+        {
+            var date = new DateTime(CurrentMonth.Year, CurrentMonth.Month, day);
+            var entries = GetEntriesForDate(date);
+            var isToday = date.Date == DateTime.Today;
+            var dayCapture = day;
+
+            <div class="herd-calendar__cell @(isToday ? "herd-calendar__cell--today" : "")">
+                <span class="herd-calendar__date @(isToday ? "herd-calendar__date--today" : "")">@dayCapture</span>
+                <div class="herd-calendar__entries">
+                    @foreach (var entry in entries.Take(MaxEntriesPerDay))
+                    {
+                        <div class="herd-calendar__entry herd-calendar__entry--@entry.Color"
+                             title="@entry.Title">
+                            <span class="herd-calendar__entry-dot"></span>
+                            <span class="herd-calendar__entry-text">@entry.Title</span>
+                        </div>
+                    }
+                    @if (entries.Count > MaxEntriesPerDay)
+                    {
+                        <div class="herd-calendar__more">+@(entries.Count - MaxEntriesPerDay) more</div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .herd-calendar {
+        width: 100%;
+        font-family: 'Poppins', sans-serif;
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .herd-calendar__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        background: #fff;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .herd-calendar__title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #2d3748;
+        letter-spacing: 0.3px;
+    }
+
+    .herd-calendar__nav {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 6px;
+        color: #718096;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        transition: background 0.15s, color 0.15s;
+    }
+
+    .herd-calendar__nav:hover {
+        background: #f7fafc;
+        color: #2d3748;
+    }
+
+    .herd-calendar__grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 0;
+    }
+
+    .herd-calendar__day-header {
+        text-align: center;
+        padding: 8px 4px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #a0aec0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid #f0f0f0;
+        background: #fafafa;
+    }
+
+    .herd-calendar__cell {
+        min-height: 80px;
+        padding: 6px;
+        border-right: 1px solid #f0f0f0;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: top;
+        position: relative;
+        transition: background 0.15s;
+    }
+
+    .herd-calendar__cell:hover { background: #fafafa; }
+    .herd-calendar__cell--empty { background: #fafafa; min-height: 80px; }
+    .herd-calendar__cell--today { background: #f0fff4; }
+
+    .herd-calendar__date {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 500;
+        color: #4a5568;
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+        text-align: center;
+        border-radius: 50%;
+        margin-bottom: 4px;
+    }
+
+    .herd-calendar__date--today {
+        background: #38a169;
+        color: #fff;
+        font-weight: 700;
+    }
+
+    .herd-calendar__entries {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .herd-calendar__entry {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 4px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 500;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .herd-calendar__entry-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .herd-calendar__entry-text { overflow: hidden; text-overflow: ellipsis; }
+
+    .herd-calendar__entry--primary { background: #ebf8ff; color: #2b6cb0; }
+    .herd-calendar__entry--primary .herd-calendar__entry-dot { background: #3182ce; }
+    .herd-calendar__entry--success { background: #f0fff4; color: #276749; }
+    .herd-calendar__entry--success .herd-calendar__entry-dot { background: #38a169; }
+    .herd-calendar__entry--warning { background: #fffff0; color: #975a16; }
+    .herd-calendar__entry--warning .herd-calendar__entry-dot { background: #d69e2e; }
+    .herd-calendar__entry--danger { background: #fff5f5; color: #9b2c2c; }
+    .herd-calendar__entry--danger .herd-calendar__entry-dot { background: #e53e3e; }
+    .herd-calendar__entry--info { background: #e9d8fd; color: #553c9a; }
+    .herd-calendar__entry--info .herd-calendar__entry-dot { background: #805ad5; }
+
+    .herd-calendar__more {
+        font-size: 10px;
+        color: #a0aec0;
+        font-weight: 500;
+        padding: 1px 4px;
+    }
+
+    @@media (max-width: 768px) {
+        .herd-calendar__cell { min-height: 56px; padding: 4px; }
+        .herd-calendar__entry-text { display: none; }
+        .herd-calendar__entry { justify-content: center; padding: 2px; }
+        .herd-calendar__day-header { font-size: 10px; padding: 6px 2px; }
+        .herd-calendar__date { font-size: 11px; width: 20px; height: 20px; line-height: 20px; }
+    }
+</style>
+
+@code {
+    [Parameter] public List<CalendarEntry> Entries { get; set; } = new();
+    [Parameter] public int MaxEntriesPerDay { get; set; } = 3;
+
+    private DateTime CurrentMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+    private readonly string[] DayNames = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+    private int DaysInMonth => DateTime.DaysInMonth(CurrentMonth.Year, CurrentMonth.Month);
+    private int FirstDayOffset => (int)new DateTime(CurrentMonth.Year, CurrentMonth.Month, 1).DayOfWeek;
+
+    private List<CalendarEntry> GetEntriesForDate(DateTime date)
+        => Entries.Where(e => e.Date.Date == date.Date).ToList();
+
+    private void PreviousMonth() => CurrentMonth = CurrentMonth.AddMonths(-1);
+    private void NextMonth() => CurrentMonth = CurrentMonth.AddMonths(1);
+
+    public class CalendarEntry
+    {
+        public DateTime Date { get; set; }
+        public string Title { get; set; } = "";
+        public string Color { get; set; } = "primary";
+    }
+}

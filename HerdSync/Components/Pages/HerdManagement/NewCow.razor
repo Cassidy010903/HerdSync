@@ -2,13 +2,21 @@
     <DialogContent>
         <MudGrid>
             <MudItem xs="12" sm="6" md="6">
+                <MudSelect @bind-Value="species.AnimalTypeCode" Label="Animal Type Code" Variant="MudBlazor.Variant.Outlined" ShrinkLabel Required>
+                    @foreach (var type in animalTypes)
+                    {
+                        <MudSelectItem Value="@type.AnimalTypeCode">@type.AnimalTypeName</MudSelectItem>
+                    }
+                </MudSelect>
+
                 <MudTextField ShrinkLabel
                               @bind-Value="species.DisplayIdentifier"
-                              Label="Cow Number"
+                              Label="Display Identifier"
                               Variant="MudBlazor.Variant.Outlined"
                               Adornment="Adornment.Start"
                               AdornmentText="#"
-                              AdornmentColor="Color.Primary" />
+                              AdornmentColor="Color.Primary"
+                              Required/>
 
                 <MudTextField ShrinkLabel
                               @bind-Value="species.BirthYear"
@@ -22,8 +30,37 @@
                               Adornment="Adornment.End"
                               AdornmentText="kg"
                               AdornmentColor="Color.Info" />
+
+                              <MudRadioGroup @bind-Value="species.Gender">
+                                    <MudRadio Value="@("M")" Color="Color.Primary">Male</MudRadio>
+                                    <MudRadio Value="@("F")" Color="Color.Primary">Female</MudRadio>
+                                    <MudRadio Value="@("U")" Color="Color.Primary">Unknown</MudRadio>
+                                </MudRadioGroup>
+
+                              <MudTextField ShrinkLabel
+                              @bind-Value="species.MotherAnimalId"
+                              Label="Mother"
+                              Variant="MudBlazor.Variant.Outlined" /> <!--CHANGE TO SELECT SEARCH LATER-->
             </MudItem>
+
             <MudItem xs="12" sm="6" md="6">
+                              <MudTextField ShrinkLabel
+                              @bind-Value="species.FatherAnimalId"
+                              Label="Father"
+                              Variant="MudBlazor.Variant.Outlined" /> <!--CHANGE TO SELECT SEARCH LATER-->
+
+                              <MudSwitch @bind-Value="species.IsBranded" Label="Branded" Color="Color.Primary" />
+
+                              <MudTextField ShrinkLabel
+                              @bind-Value="species.MedicalNote"
+                              Label="Medical Note"
+                              Variant="MudBlazor.Variant.Outlined" />
+
+                              <MudNumericField @bind-Value="species.TotalPregnancies" Label="Total Pregnancies" Variant="MudBlazor.Variant.Outlined" Min="0" />
+
+                              <MudNumericField @bind-Value="species.TotalCalves" Label="Total Offspring" Variant="MudBlazor.Variant.Outlined" Min="0" />
+
+                              <MudDatePicker Label="Last Pregnancy" Editable="true" @bind-Date="species.LastPregnancyDate" DateFormat="yyyy-MM-dd" Placeholder="Select Date" Variant="MudBlazor.Variant.Outlined" />
             </MudItem>
         </MudGrid>
     </DialogContent>

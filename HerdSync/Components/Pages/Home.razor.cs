@@ -1,4 +1,5 @@
 ﻿using BLL.Services;
+using HerdSync.Components.UniversalComponents.Calendar;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Radzen;
@@ -15,6 +16,13 @@ namespace HerdSync.Components.Pages
 
         private int StockCount;
         private int PregnancyCount;
+
+        private List<HerdCalendar.CalendarEntry> calendarEntries = new()
+        {
+            new() { Date = DateTime.Today.AddDays(3), Title = "Vaccination", Color = "success" },
+            new() { Date = DateTime.Today.AddDays(7), Title = "Vet Visit", Color = "warning" },
+            new() { Date = DateTime.Today, Title = "Dip Day", Color = "danger" },
+        };
 
         protected override async Task OnInitializedAsync()
         {

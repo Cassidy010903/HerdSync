@@ -1,5 +1,6 @@
 ﻿using DAL.Models.Animal;
 using DAL.Models.Authentication;
+using DAL.Models.Calendar;
 using DAL.Models.Farm;
 using DAL.Models.Program.ProgramRun;
 using DAL.Models.Program.ProgramTemplate;
@@ -19,6 +20,7 @@ namespace DAL.Configuration.Database
         public DbSet<AnimalTagModel> AnimalTags { get; set; }
         public DbSet<AnimalTypeModel> AnimalTypes { get; set; }
         public DbSet<ConditionModel> Conditions { get; set; }
+        public DbSet<CalendarEventModel> CalendarEvents { get; set; }
         public DbSet<FarmModel> Farms { get; set; }
         public DbSet<FarmActivityModel> FarmActivities { get; set; }
         public DbSet<FarmActivityTypeModel> FarmActivityTypes { get; set; }

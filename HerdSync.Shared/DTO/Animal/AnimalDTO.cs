@@ -8,7 +8,7 @@ namespace HerdSync.Shared.DTO.Animal
         public string? AnimalTypeCode { get; set; }
         public string? DisplayIdentifier { get; set; }
         public int? BirthYear { get; set; }
-        public string? Gender { get; set; }
+        public string Gender { get; set; } = "U";
         public decimal? Weight { get; set; }
         public Guid? MotherAnimalId { get; set; }
         public Guid? FatherAnimalId { get; set; }

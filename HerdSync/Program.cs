@@ -46,7 +46,8 @@ builder.Services.AddScoped<IAnimalEventTypeService, AnimalEventTypeService>();
 builder.Services.AddScoped<IAnimalTagService, AnimalTagService>();
 builder.Services.AddScoped<IAnimalTypeService, AnimalTypeService>();
 builder.Services.AddScoped<IPregnancyService, PregnancyService>();
-
+builder.Services.AddScoped<ICalendarEventRepository, CalendarEventRepository>();
+builder.Services.AddScoped<ICalendarEventService, CalendarEventService>();
 builder.Services.AddScoped<IFarmRepository, FarmRepository>();
 builder.Services.AddScoped<IFarmActivityRepository, FarmActivityRepository>();
 builder.Services.AddScoped<IFarmActivityTypeRepository, FarmActivityTypeRepository>();

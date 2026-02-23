@@ -15,13 +15,13 @@ else
         <div class="row align-items-center">
             <div class="col-md-6">
                 <div class="mb-3">
-                    <h5 class="card-title">Cow List <span class="text-muted fw-normal ms-2">@CowCount</span></h5>
+                    <h5 class="card-title">Animal List <span class="text-muted fw-normal ms-2">@CowCount</span></h5>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mb-3">
                     <MudButton OnClick="@OpenDialogAsync" Variant="MudBlazor.Variant.Outlined" Color="Color.Secondary">
-                        <i class="bx bx-plus me-1"></i> Add Cow
+                        <i class="bx bx-plus me-1"></i> Add Animal
                     </MudButton>
                 </div>
             </div>
@@ -32,9 +32,12 @@ else
                     <table class="table project-list-table table-nowrap align-middle table-borderless">
                         <thead>
                             <tr>
-                                <th scope="col">Number</th>
-                                <th scope="col">Age</th>
+                                <th scope="col">Identifier</th>
+                                <th scope="col">Animal Code</th>
+                                <th scope="col">Birth Year</th>
                                 <th scope="col">Weight (kg)</th>
+                                <th scope="col">Gender</th>
+                                <th scope="col">Branded</th>
                                 <th scope="col" style="width: 200px;">Action</th>
                             </tr>
                         </thead>
@@ -46,8 +49,11 @@ else
                                         <img src="/HerdSync_Cow.png" alt="" class="avatar-sm rounded-circle me-2" />
                                         <a href="#" class="text-body">#@cow.DisplayIdentifier</a>
                                     </td>
+                                    <td>@cow.AnimalTypeCode</td>
                                     <td>@cow.BirthYear</td>
                                     <td>@(cow.Weight.HasValue ? $"{cow.Weight:0.##} kg" : "-")</td>
+                                    <td>@cow.Gender</td>
+                                    <td>@(cow.IsBranded ? "YES" : "NO")</td>
                                     <td>
                                         <ul class="list-inline mb-0">
                                             <li class="list-inline-item">

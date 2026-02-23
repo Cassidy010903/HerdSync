@@ -7,6 +7,7 @@ namespace HerdSync.Shared.DTO.Animal
         public Guid AnimalTagId { get; set; }
         public string RFIDTagCode { get; set; }
         public Guid AnimalId { get; set; }
+        public AnimalDTO Animal { get; set; }
         public DateTime AssignedDate { get; set; }
         public DateTime? UnassignedDate { get; set; }
         public bool IsCurrent { get; set; }

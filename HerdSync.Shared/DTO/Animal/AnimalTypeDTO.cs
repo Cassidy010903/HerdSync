@@ -6,6 +6,6 @@ namespace HerdSync.Shared.DTO.Animal
     {
         public string AnimalTypeCode { get; set; }
         public string AnimalTypeName { get; set; }
-        public string PlaceholderImage { get; set; }
+        public string? PlaceholderImage { get; set; }
     }
 }

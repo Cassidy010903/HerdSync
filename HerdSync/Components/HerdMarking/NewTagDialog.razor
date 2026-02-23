@@ -7,7 +7,7 @@
                               Label="Tag ID"
                               Variant="MudBlazor.Variant.Outlined"
                               Adornment="Adornment.Start"
-                              AdornmentText="#"
+                              AdornmentIcon="@Icons.Material.Filled.Nfc"
                               AdornmentColor="Color.Primary" />
 
                 <MudSelect T="Guid"
@@ -18,7 +18,7 @@
                     @foreach (var animal in HerdList)
                     {
                         <MudSelectItem Value="@animal.AnimalId">
-                            @animal.DisplayIdentifier - @animal.BirthYear
+                            @animal.DisplayIdentifier
                         </MudSelectItem>
                     }
                 </MudSelect>

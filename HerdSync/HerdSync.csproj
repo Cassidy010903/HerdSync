@@ -55,6 +55,10 @@
 		<Content Update="**\*.razor.css" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Components\UniversalComponents\Buttons\" />
+	</ItemGroup>
+
 
 
 </Project>

@@ -18,7 +18,7 @@ public class AnimalModel : BaseEntity
     public int? BirthYear { get; set; }
 
     [MaxLength(6)]
-    public string? Gender { get; set; }
+    public string Gender { get; set; } = "U";
 
     public decimal? Weight { get; set; }
     public Guid? MotherAnimalId { get; set; }

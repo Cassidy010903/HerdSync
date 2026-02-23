@@ -122,14 +122,15 @@
                 </div>
                 <!-- Card Body -->
                 <div class="card-body" style="height: 100%; min-height: 400px;">
-                    <RadzenScheduler @ref=@scheduler SlotRender=@OnSlotRender style="height: 100%;" TItem="Appointment" Data=@appointments StartProperty="Start" EndProperty="End" ShowHeader=@showHeader
+                    @* <RadzenScheduler @ref=@scheduler SlotRender=@OnSlotRender style="height: 100%;" TItem="Appointment" Data=@appointments StartProperty="Start" EndProperty="End" ShowHeader=@showHeader
                                      TextProperty="Text" SelectedIndex="2"
                                      AppointmentRender=@OnAppointmentRender
                                      AppointmentMove=@OnAppointmentMove >
                         <RadzenDayView />
                         <RadzenWeekView />
                         <RadzenMonthView />
-                    </RadzenScheduler>
+                    </RadzenScheduler> *@
+                    <HerdCalendar Entries="@calendarEntries" MaxEntriesPerDay="3" />
                 </div>
             </div>
         </div>

@@ -18,12 +18,15 @@ namespace HerdSync.Components.Pages.HerdManagement
 
         [Inject]
         private IAnimalService AnimalService { get; set; } = default!;
+        [Inject]
+        private IAnimalTypeService AnimalTypeService { get; set; } = default!;
 
         [Inject]
         private ISnackbar Snackbar { get; set; } = default!;
 
         public AnimalDTO species = new();
         public bool IsEditMode => ExistingCow != Guid.Empty;
+        List<AnimalTypeDTO> animalTypes = new List<AnimalTypeDTO>();
 
         private async Task Submit()
         {
@@ -47,13 +50,15 @@ namespace HerdSync.Components.Pages.HerdManagement
             }
         }
 
-        protected override Task OnInitializedAsync()
+        protected override async Task OnInitializedAsync()
         {
+            var types = await AnimalTypeService.GetAllAsync();
+            animalTypes = types.ToList();
+
             if (IsEditMode)
             {
                 species = HerdList.FirstOrDefault(c => c.AnimalId == ExistingCow) ?? new AnimalDTO();
             }
-            return Task.CompletedTask;
         }
 
         private void Cancel() => MudDialog.Cancel();

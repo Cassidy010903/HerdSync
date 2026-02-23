@@ -13,6 +13,6 @@ namespace DAL.Models.Animal
         [Required, MaxLength(50)]
         public string AnimalTypeName { get; set; }
 
-        public string PlaceholderImage { get; set; }
+        public string? PlaceholderImage { get; set; }
     }
 }
