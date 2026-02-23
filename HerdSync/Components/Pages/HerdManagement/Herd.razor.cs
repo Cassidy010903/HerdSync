@@ -8,14 +8,27 @@ namespace HerdSync.Components.Pages.HerdManagement
     public partial class Herd
     {
         [Inject] public IAnimalService AnimalService { get; set; } = default!;
-
+        private bool _loading = true;
         public List<AnimalDTO> HerdList { get; set; } = new();
         private int CowCount;
 
-        protected override async Task OnInitializedAsync()
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            HerdList = await AnimalService.GetAllAsync();
-            CowCount = HerdList.Count;
+            if (firstRender)
+            {
+                _loading = true;
+                StateHasChanged();
+
+                HerdList = await AnimalService.GetAllAsync();
+                CowCount = HerdList.Count;
+                _loading = false;
+                StateHasChanged();
+            }
+        }
+
+        protected override Task OnInitializedAsync()
+        {
+            return Task.CompletedTask;
         }
 
         private async Task OpenDialogAsync()

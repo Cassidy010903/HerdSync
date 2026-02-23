@@ -5,7 +5,7 @@
         <MudSwitch @bind-Value="_isCowsMode" Label="@(_isCowsMode ? "Herd" : "Farmer")" Color="@(_isCowsMode? Color.Primary: Color.Secondary)" UncheckedColor="Color.Secondary" />
         @if (_isCowsMode)
         {
-            <MudNavLink Href="/">Dashboard (Herd)</MudNavLink>
+            <MudNavLink Href="/">Dashboard</MudNavLink>
             <MudNavLink Href="/herd" Match="NavLinkMatch.Prefix">Herd</MudNavLink>
             <MudNavGroup Title="Settings" Expanded="false">
                 <MudNavLink Href="/newprogram">New Program</MudNavLink>
@@ -17,7 +17,7 @@
         }
         else 
         {
-            <MudNavLink Href="/farmer-dashboard">Farmer Dashboard</MudNavLink>
+            <MudNavLink Href="/">Dashboard</MudNavLink>
             <MudNavLink Href="/fields" Match="NavLinkMatch.Prefix">Calendar</MudNavLink>
             <MudNavGroup Title="Reporting" Expanded="false">
                 <MudNavLink Href="/crop-planning">Upcoming events</MudNavLink>

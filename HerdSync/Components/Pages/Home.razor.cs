@@ -1,4 +1,6 @@
-﻿using MudBlazor;
+﻿using BLL.Services;
+using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using Radzen;
 using Radzen.Blazor;
 
@@ -8,6 +10,20 @@ namespace HerdSync.Components.Pages
     {
         private RadzenScheduler<Appointment> scheduler;
         private Dictionary<DateTime, string> events = new Dictionary<DateTime, string>();
+        [Inject] public IAnimalService AnimalService { get; set; } = default!;
+        [Inject] public IPregnancyService PregnancyService { get; set; } = default!;
+
+        private int StockCount;
+        private int PregnancyCount;
+
+        protected override async Task OnInitializedAsync()
+        {
+            var animals = await AnimalService.GetAllAsync();
+            StockCount = animals.Count;
+
+            var pregnancies = await PregnancyService.GetAllAsync();
+            PregnancyCount = pregnancies.Count();
+        }
 
         private bool showHeader = true;
 
