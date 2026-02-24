@@ -25,15 +25,19 @@
             var date = new DateTime(CurrentMonth.Year, CurrentMonth.Month, day);
             var entries = GetEntriesForDate(date);
             var isToday = date.Date == DateTime.Today;
-            var dayCapture = day;
+            var capturedDate = date;
 
-            <div class="herd-calendar__cell @(isToday ? "herd-calendar__cell--today" : "")">
-                <span class="herd-calendar__date @(isToday ? "herd-calendar__date--today" : "")">@dayCapture</span>
+            <div class="herd-calendar__cell @(isToday ? "herd-calendar__cell--today" : "")"
+                 @onclick="() => OpenAddModal(capturedDate)">
+                <span class="herd-calendar__date @(isToday ? "herd-calendar__date--today" : "")">@day</span>
                 <div class="herd-calendar__entries">
                     @foreach (var entry in entries.Take(MaxEntriesPerDay))
                     {
+                        var capturedEntry = entry;
                         <div class="herd-calendar__entry herd-calendar__entry--@entry.Color"
-                             title="@entry.Title">
+                             title="@entry.Title"
+                             @onclick:stopPropagation="true"
+                             @onclick="() => OpenEditModal(capturedEntry)">
                             <span class="herd-calendar__entry-dot"></span>
                             <span class="herd-calendar__entry-text">@entry.Title</span>
                         </div>
@@ -47,6 +51,59 @@
         }
     </div>
 </div>
+
+@if (_modalVisible)
+{
+    <div class="cal-modal-backdrop" @onclick="CloseModal"></div>
+    <div class="cal-modal">
+        <div class="cal-modal__header">
+            <h6 class="cal-modal__title">@(_isEdit ? "Edit Event" : "New Event")</h6>
+            <button class="cal-modal__close" @onclick="CloseModal"><i class="bx bx-x"></i></button>
+        </div>
+        <div class="cal-modal__body">
+            <div class="form-group mb-3">
+                <label class="form-label">Title</label>
+                <input class="form-control" @bind="_editEntry.Title" placeholder="Event title" />
+            </div>
+            <div class="form-group mb-3">
+                <label class="form-label">Start</label>
+                <div class="d-flex gap-2">
+                    <input type="date" class="form-control" value="@_editEntry.Start.ToString("yyyy-MM-dd")"
+                           @onchange="e => _editEntry.Start = DateTime.Parse(e.Value!.ToString()!).Date + _editEntry.Start.TimeOfDay" />
+                    <input type="time" class="form-control" value="@_editEntry.Start.ToString("HH:mm")"
+                           @onchange="e => _editEntry.Start = _editEntry.Start.Date + TimeSpan.Parse(e.Value!.ToString()!)" />
+                </div>
+            </div>
+            <div class="form-group mb-3">
+                <label class="form-label">End</label>
+                <div class="d-flex gap-2">
+                    <input type="date" class="form-control" value="@_editEntry.End.ToString("yyyy-MM-dd")"
+       @onchange="e => _editEntry.End = DateTime.Parse(e.Value!.ToString()!).Date + _editEntry.End.TimeOfDay" />
+<input type="time" class="form-control" value="@_editEntry.End.ToString("HH:mm")"
+       @onchange="e => _editEntry.End = _editEntry.End.Date + TimeSpan.Parse(e.Value!.ToString()!)" />
+                </div>
+            </div>
+            <div class="form-group mb-3">
+                <label class="form-label">Color</label>
+                <select class="form-control" @bind="_editEntry.Color">
+                    <option value="primary">Blue</option>
+                    <option value="success">Green</option>
+                    <option value="warning">Yellow</option>
+                    <option value="danger">Red</option>
+                    <option value="info">Purple</option>
+                </select>
+            </div>
+        </div>
+        <div class="cal-modal__footer">
+            @if (_isEdit)
+            {
+                <button class="btn btn-danger btn-sm" @onclick="DeleteEntry">Delete</button>
+            }
+            <button class="btn btn-secondary btn-sm cal-btn-right" @onclick="CloseModal">Cancel</button>
+            <button class="btn btn-primary btn-sm" @onclick="SaveEntry">Save</button>
+        </div>
+    </div>
+}
 
 <style>
     .herd-calendar {
@@ -117,10 +174,11 @@
         vertical-align: top;
         position: relative;
         transition: background 0.15s;
+        cursor: pointer;
     }
 
     .herd-calendar__cell:hover { background: #fafafa; }
-    .herd-calendar__cell--empty { background: #fafafa; min-height: 80px; }
+    .herd-calendar__cell--empty { background: #fafafa; min-height: 80px; cursor: default; }
     .herd-calendar__cell--today { background: #f0fff4; }
 
     .herd-calendar__date {
@@ -158,6 +216,7 @@
         font-weight: 500;
         overflow: hidden;
         white-space: nowrap;
+        cursor: pointer;
     }
 
     .herd-calendar__entry-dot {
@@ -194,26 +253,125 @@
         .herd-calendar__day-header { font-size: 10px; padding: 6px 2px; }
         .herd-calendar__date { font-size: 11px; width: 20px; height: 20px; line-height: 20px; }
     }
+
+    .cal-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.3);
+        z-index: 1040;
+    }
+
+    .cal-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0.5rem 2rem rgba(0,0,0,0.2);
+        z-index: 1050;
+        width: 360px;
+        max-width: 95vw;
+    }
+
+    .cal-modal__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px 12px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .cal-modal__title {
+        margin: 0;
+        font-weight: 600;
+        color: #2d3748;
+    }
+
+    .cal-modal__close {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: #a0aec0;
+        padding: 0;
+        line-height: 1;
+    }
+
+    .cal-modal__body { padding: 16px 20px; }
+
+    .cal-modal__footer {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        padding: 12px 20px 16px;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .cal-btn-right { margin-left: auto; }
 </style>
 
 @code {
     [Parameter] public List<CalendarEntry> Entries { get; set; } = new();
     [Parameter] public int MaxEntriesPerDay { get; set; } = 3;
+    [Parameter] public EventCallback<CalendarEntry> OnEntryAdded { get; set; }
+    [Parameter] public EventCallback<CalendarEntry> OnEntryUpdated { get; set; }
+    [Parameter] public EventCallback<CalendarEntry> OnEntryDeleted { get; set; }
 
     private DateTime CurrentMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
     private readonly string[] DayNames = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
     private int DaysInMonth => DateTime.DaysInMonth(CurrentMonth.Year, CurrentMonth.Month);
     private int FirstDayOffset => (int)new DateTime(CurrentMonth.Year, CurrentMonth.Month, 1).DayOfWeek;
 
+    private bool _modalVisible = false;
+    private bool _isEdit = false;
+    private CalendarEntry _editEntry = new();
+
     private List<CalendarEntry> GetEntriesForDate(DateTime date)
-        => Entries.Where(e => e.Date.Date == date.Date).ToList();
+    => Entries.Where(e => e.Start.Date <= date.Date && e.End.Date >= date.Date).ToList();
 
     private void PreviousMonth() => CurrentMonth = CurrentMonth.AddMonths(-1);
     private void NextMonth() => CurrentMonth = CurrentMonth.AddMonths(1);
 
+    private void OpenAddModal(DateTime date)
+    {
+        _isEdit = false;
+        _editEntry = new CalendarEntry { Start = date, End = date, Color = "primary" };
+        _modalVisible = true;
+    }
+
+    private void OpenEditModal(CalendarEntry entry)
+    {
+        _isEdit = true;
+        _editEntry = new CalendarEntry { Id = entry.Id, Start = entry.Start, End = entry.End, Title = entry.Title, Color = entry.Color };
+        _modalVisible = true;
+    }
+
+    private async Task SaveEntry()
+    {
+        if (string.IsNullOrWhiteSpace(_editEntry.Title)) return;
+
+        if (_isEdit)
+            await OnEntryUpdated.InvokeAsync(_editEntry);
+        else
+            await OnEntryAdded.InvokeAsync(_editEntry);
+
+        CloseModal();
+    }
+
+    private async Task DeleteEntry()
+    {
+        await OnEntryDeleted.InvokeAsync(_editEntry);
+        CloseModal();
+    }
+
+    private void CloseModal() => _modalVisible = false;
+
     public class CalendarEntry
     {
-        public DateTime Date { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
         public string Title { get; set; } = "";
         public string Color { get; set; } = "primary";
     }

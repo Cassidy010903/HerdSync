@@ -28,10 +28,18 @@ namespace DAL.Repositories.Implementation
 
         public async Task<CalendarEventModel> UpdateAsync(CalendarEventModel calendarEvent)
         {
-            context.CalendarEvents.Update(calendarEvent);
+            var existing = await context.CalendarEvents.FirstOrDefaultAsync(c => c.CalendarEventId == calendarEvent.CalendarEventId);
+            if (existing == null) throw new KeyNotFoundException($"CalendarEvent {calendarEvent.CalendarEventId} not found.");
+
+            existing.Title = calendarEvent.Title;
+            existing.EventDate = calendarEvent.EventDate;
+            existing.EndDate = calendarEvent.EndDate;
+            existing.Color = calendarEvent.Color;
+            existing.Description = calendarEvent.Description;
+
             await context.SaveChangesAsync();
-            logger.LogInformation("Updated calendar event {CalendarEventId}", calendarEvent.CalendarEventId);
-            return calendarEvent;
+            logger.LogInformation("Updated calendar event {CalendarEventId}", existing.CalendarEventId);
+            return existing;
         }
 
         public async Task SoftDeleteAsync(Guid calendarEventId)

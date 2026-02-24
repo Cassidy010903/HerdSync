@@ -37,7 +37,11 @@
                     </div>
                 </div>
                 <div class="card-body" style="height: 100%; min-height: 400px;">
-                    <HerdCalendar Entries="@calendarEntries" MaxEntriesPerDay="3" />
+                    <HerdCalendar Entries="@calendarEntries"
+                          MaxEntriesPerDay="3"
+                          OnEntryAdded="AddCalendarEntry"
+                          OnEntryUpdated="UpdateCalendarEntry"
+                          OnEntryDeleted="DeleteCalendarEntry" />
                 </div>
             </div>
         </div>

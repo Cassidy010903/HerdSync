@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using DAL.Models.Animal;
 using DAL.Models.Authentication;
+using DAL.Models.Calendar;
 using DAL.Models.Farm;
 using DAL.Models.Program.ProgramRun;
 using DAL.Models.Program.ProgramTemplate;
 using DAL.Models.Treatment;
 using HerdSync.Shared.DTO.Animal;
 using HerdSync.Shared.DTO.Authentication;
+using HerdSync.Shared.DTO.Calendar;
 using HerdSync.Shared.DTO.Farm;
 using HerdSync.Shared.DTO.Program;
 using HerdSync.Shared.DTO.Treatment;
@@ -21,6 +23,7 @@ namespace BLL.Mappings
             CreateMap<AnimalEventTypeModel, AnimalEventTypeDTO>().ReverseMap();
             CreateMap<AnimalTagModel, AnimalTagDTO>().ReverseMap();
             CreateMap<AnimalTypeModel, AnimalTypeDTO>().ReverseMap();
+            CreateMap<CalendarEventModel, CalendarEventDTO>().ReverseMap();
             CreateMap<ConditionModel, ConditionDTO>().ReverseMap();
             CreateMap<FarmModel, FarmDTO>().ReverseMap();
             CreateMap<FarmActivityModel, FarmActivityDTO>().ReverseMap();

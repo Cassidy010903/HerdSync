@@ -30,16 +30,16 @@ namespace BLL.Services.Implementation
             var entity = mapper.Map<CalendarEventModel>(calendarEventDTO);
             if (entity == null) throw new InvalidOperationException("Mapping from DTO to entity failed.");
             var created = await repository.AddAsync(entity);
-            logger.LogInformation("Created calendar event {CalendarEventId}", created.CalendarEventId);
             return mapper.Map<CalendarEventDTO>(created);
         }
 
         public async Task<CalendarEventDTO> UpdateAsync(CalendarEventDTO calendarEventDTO)
         {
+            calendarEventDTO.ModifiedDate = DateTime.UtcNow;
+            //calendarEventDTO.ModifiedBy = GetCurrentUser(); //Implement later
             var entity = mapper.Map<CalendarEventModel>(calendarEventDTO);
             if (entity == null) throw new InvalidOperationException("Mapping from DTO to entity failed.");
             var updated = await repository.UpdateAsync(entity);
-            logger.LogInformation("Updated calendar event {CalendarEventId}", updated.CalendarEventId);
             return mapper.Map<CalendarEventDTO>(updated);
         }
 

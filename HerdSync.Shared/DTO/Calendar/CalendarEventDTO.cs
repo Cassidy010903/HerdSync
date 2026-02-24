@@ -14,6 +14,6 @@ namespace HerdSync.Shared.DTO.Calendar
         public DateTime EventDate { get; set; }
         public DateTime? EndDate { get; set; }
         public string Color { get; set; } = "primary";
-        public string? Description { get; set; }
+        public string? Description { get; set; } = string.Empty;
     }
 }
