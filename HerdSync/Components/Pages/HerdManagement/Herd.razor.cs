@@ -10,6 +10,7 @@ namespace HerdSync.Components.Pages.HerdManagement
         [Inject] public IAnimalService AnimalService { get; set; } = default!;
         private bool _loading = true;
         public List<AnimalDTO> HerdList { get; set; } = new();
+
         private int CowCount;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -33,10 +34,13 @@ namespace HerdSync.Components.Pages.HerdManagement
 
         private async Task OpenDialogAsync()
         {
+            var parameters = new DialogParameters
+            {
+                ["HerdList"] = HerdList
+            };
             var options = new DialogOptions { CloseOnEscapeKey = true };
-            var dialog = await DialogService.ShowAsync<NewCow>("Add New Cow", options);
+            var dialog = await DialogService.ShowAsync<NewCow>("Add New Cow", parameters, options);
             var result = await dialog.Result;
-
             if (!result.Canceled)
             {
                 HerdList = await AnimalService.GetAllAsync();

@@ -15,7 +15,7 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        @if (Cards.Count > 1) // Only show remove button if there's more than one card
+                        @if (Cards.Count > 1)
                         {
                             <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small"
                                            OnClick="@(() => RemoveCard(card))" />
@@ -58,14 +58,12 @@
 
     </div>
     <div class="col-lg-4">
-        <!-- Status -->
         <div class="card mb-4">
             <div class="card-body">
                 <h3 class="h6">Program Name</h3>
                 <input type="text" class="form-control">
             </div>
         </div>
-        <!-- Notification settings -->
         <div class="card mb-4">
             <div class="card-body">
                 <h3 class="h6">Settings</h3>
@@ -116,15 +114,11 @@
         Cards.Add(new CardData());
     }
 
-    // New method to remove a card
     private void RemoveCard(CardData cardToRemove)
     {
-        // Check to make sure we don't remove the last card if you always want at least one
-        // Or you can remove this check if you want to allow all cards to be removed
         if (Cards.Count > 1)
         {
             Cards.Remove(cardToRemove);
         }
-        // If you want to allow removing the last card, just use: Cards.Remove(cardToRemove);
     }
 }

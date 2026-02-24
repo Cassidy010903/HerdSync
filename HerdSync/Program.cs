@@ -10,7 +10,6 @@ using HerdSync.Components;
 using HerdSync.Shared.DTO.Animal;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
-using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseStaticWebAssets();
@@ -86,8 +85,6 @@ builder.Services.AddScoped<ITreatmentService, TreatmentService>();
 builder.Services.AddScoped<ITreatmentCategoryService, TreatmentCategoryService>();
 builder.Services.AddScoped<ITreatmentProductService, TreatmentProductService>();
 builder.Services.AddScoped<IConditionService, ConditionService>();
-
-builder.Services.AddRadzenComponents();
 
 var app = builder.Build();
 

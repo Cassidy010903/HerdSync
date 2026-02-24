@@ -10,96 +10,12 @@
     </div>
 
    
-    <div class="row">
-
-        
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Stock count
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@StockCount</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-secondary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Next Vaccination Date
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">2025-07-08</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Lost stock
-                            </div>
-                            <div class="row no-gutters align-items-center">
-                                <div class="col-auto">
-                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">1</div>
-                                </div>
-                                <div class="col">
-                                    <div class="progress progress-sm mr-2">
-                                        <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-tags fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pending Requests Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-secondary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Pregnancies
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@PregnancyCount</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-child fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+ <div class="row">     
+    <SummaryCard Title="Stock Count"           Icon="fas fa-clipboard-list" BorderHex="#90b499" Value="@StockCount.ToString()" />
+    <SummaryCard Title="Next Vaccination Date" Icon="fas fa-calendar"       BorderHex="#748f7a" Value="2025-07-08" />
+    <SummaryCard Title="Lost Stock"            Icon="fas fa-tags"           BorderHex="#90b499" Value="1" />
+    <SummaryCard Title="Pregnancies"           Icon="fas fa-child"          BorderHex="#748f7a" Value="@PregnancyCount.ToString()" />
     </div>
-
-    
-
     <div class="row align-items-stretch">
     <div class="col-xl-8 col-lg-7 d-flex flex-column">
         <div class="card shadow mb-4 flex-grow-1">
@@ -120,26 +36,15 @@
                         </div>
                     </div>
                 </div>
-                <!-- Card Body -->
                 <div class="card-body" style="height: 100%; min-height: 400px;">
-                    @* <RadzenScheduler @ref=@scheduler SlotRender=@OnSlotRender style="height: 100%;" TItem="Appointment" Data=@appointments StartProperty="Start" EndProperty="End" ShowHeader=@showHeader
-                                     TextProperty="Text" SelectedIndex="2"
-                                     AppointmentRender=@OnAppointmentRender
-                                     AppointmentMove=@OnAppointmentMove >
-                        <RadzenDayView />
-                        <RadzenWeekView />
-                        <RadzenMonthView />
-                    </RadzenScheduler> *@
                     <HerdCalendar Entries="@calendarEntries" MaxEntriesPerDay="3" />
                 </div>
             </div>
         </div>
 
 
-        <!-- Pie Chart -->
         <div class="col-xl-4 col-lg-5 d-flex flex-column">
         <div class="card shadow mb-4 flex-grow-1">
-                <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">Observations</h6>
                     <div class="dropdown no-arrow">
@@ -157,7 +62,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Card Body -->
                 <div class="card-body">
                     <MudDropContainer T="KanbanTaskItem" @ref="_dropContainer" Items="@_tasks" ItemsSelector="@((item, column) => column == "Board")"  Class="d-flex flex-row">
                         <ChildContent>
@@ -185,13 +89,8 @@
         </div>
     </div>
 
-    <!-- Content Row -->
     <div class="row">
-
-        <!-- Content Column -->
         <div class="col-lg-6 mb-4">
-
-            <!-- Project Card Example -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Recent issues</h6>
@@ -219,7 +118,6 @@
                     </div>
                 </div>
             </div>
-            <!-- Approach -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Upcoming developments</h6>

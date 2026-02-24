@@ -25,8 +25,22 @@ namespace HerdSync.Components.Pages.HerdManagement
         private ISnackbar Snackbar { get; set; } = default!;
 
         public AnimalDTO species = new();
+        public List<AnimalDTO> staticParentList { get; set; } = new();
         public bool IsEditMode => ExistingCow != Guid.Empty;
         List<AnimalTypeDTO> animalTypes = new List<AnimalTypeDTO>();
+        private AnimalDTO? _selectedMother;
+        private AnimalDTO? SelectedMother
+        {
+            get => _selectedMother;
+            set { _selectedMother = value; species.MotherAnimalId = value?.AnimalId; }
+        }
+
+        private AnimalDTO? _selectedFather;
+        private AnimalDTO? SelectedFather
+        {
+            get => _selectedFather;
+            set { _selectedFather = value; species.FatherAnimalId = value?.AnimalId; }
+        }
 
         private async Task Submit()
         {
@@ -55,12 +69,25 @@ namespace HerdSync.Components.Pages.HerdManagement
             var types = await AnimalTypeService.GetAllAsync();
             animalTypes = types.ToList();
 
+            staticParentList = HerdList;
+
             if (IsEditMode)
             {
                 species = HerdList.FirstOrDefault(c => c.AnimalId == ExistingCow) ?? new AnimalDTO();
+                _selectedMother = HerdList.FirstOrDefault(c => c.AnimalId == species.MotherAnimalId);
+                _selectedFather = HerdList.FirstOrDefault(c => c.AnimalId == species.FatherAnimalId);
             }
         }
 
         private void Cancel() => MudDialog.Cancel();
+
+        private async Task<IEnumerable<AnimalDTO>> Search(string value, CancellationToken token)
+        {
+            await Task.Delay(5, token);
+            if (string.IsNullOrEmpty(value))
+                return staticParentList;
+
+            return staticParentList.Where(x => x.DisplayIdentifier.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+        }
     }
 }

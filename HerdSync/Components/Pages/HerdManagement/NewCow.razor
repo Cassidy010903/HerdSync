@@ -1,4 +1,6 @@
-﻿<MudDialog>
+﻿@using HerdSync.Shared.DTO.Animal
+
+<MudDialog>
     <DialogContent>
         <MudGrid>
             <MudItem xs="12" sm="6" md="6">
@@ -37,17 +39,27 @@
                                     <MudRadio Value="@("U")" Color="Color.Primary">Unknown</MudRadio>
                                 </MudRadioGroup>
 
-                              <MudTextField ShrinkLabel
-                              @bind-Value="species.MotherAnimalId"
-                              Label="Mother"
-                              Variant="MudBlazor.Variant.Outlined" /> <!--CHANGE TO SELECT SEARCH LATER-->
+                                <MudAutocomplete T="AnimalDTO"
+                 @bind-Value="SelectedMother"
+                 SearchFunc="Search"
+                 ToStringFunc="@(a => a?.DisplayIdentifier ?? string.Empty)"
+                 MinCharacters="0"
+                 Variant="Variant.Outlined"
+                 Label="Mother"
+                 Placeholder="Please select mother" />
             </MudItem>
 
             <MudItem xs="12" sm="6" md="6">
-                              <MudTextField ShrinkLabel
-                              @bind-Value="species.FatherAnimalId"
-                              Label="Father"
-                              Variant="MudBlazor.Variant.Outlined" /> <!--CHANGE TO SELECT SEARCH LATER-->
+                              
+<MudAutocomplete T="AnimalDTO"
+                 @bind-Value="SelectedFather"
+                 SearchFunc="Search"
+                 ToStringFunc="@(a => a?.DisplayIdentifier ?? string.Empty)"
+                 MinCharacters="0"
+                 Variant="Variant.Outlined"
+                 Label="Father"
+                 Placeholder="Please select father" />
+
 
                               <MudSwitch @bind-Value="species.IsBranded" Label="Branded" Color="Color.Primary" />
 
