@@ -1,0 +1,152 @@
+﻿@page "/herd"
+@using HerdSync.Shared.DTO.Animal
+@rendermode @(new InteractiveServerRenderMode(prerender: true))
+
+<PageTitle>Herd</PageTitle>
+
+@if (_loading)
+{
+    <HerdLoader />
+}
+else
+{
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <h5 class="card-title">Animal List <span class="text-muted fw-normal ms-2">@FilteredHerdList.Count()</span></h5>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mb-3">
+                    <MudButton OnClick="@OpenDialogAsync" Variant="MudBlazor.Variant.Outlined" Color="Color.Secondary">
+                        <i class="bx bx-plus me-1"></i> Add Animal
+                    </MudButton>
+                </div>
+            </div>
+        </div>
+
+        <div class="row align-items-center mb-3">
+            <div class="col-md-6">
+                <input class="hs-input"
+                       value="@_searchTerm"
+                       @oninput="@((e) => OnSearchChanged(e.Value?.ToString() ?? string.Empty))"
+                       placeholder="Search by identifier or code..." />
+            </div>
+            <div class="col-md-6 d-flex justify-content-end gap-2">
+                <div class="hs-filter-dropdown">
+                    <button class="hs-btn hs-btn--outline" @onclick="ToggleFilterPanel">
+                        <i class="bx bx-filter-alt me-1"></i> Filter
+                        @if (!string.IsNullOrEmpty(_genderFilter) || !string.IsNullOrEmpty(_brandedFilter))
+                        {
+                            <span class="hs-filter-badge"></span>
+                        }
+                    </button>
+                    @if (_filterPanelOpen)
+                    {
+                        <div class="hs-filter-dropdown__backdrop" @onclick="() => _filterPanelOpen = false"></div>
+                        <div class="hs-filter-dropdown__panel">
+                            <p class="hs-filter-dropdown__panel-title">Filter Animals</p>
+
+                            <label class="hs-filter-dropdown__label">Gender</label>
+                            <div class="hs-filter-dropdown__options">
+                                <button class="hs-filter-option @(string.IsNullOrEmpty(_genderFilter) ? "hs-filter-option--active" : "")"
+                                        @onclick='() => OnGenderFilterChanged("")'>
+                                    All
+                                </button>
+                                <button class="hs-filter-option @(_genderFilter == "Male" ? "hs-filter-option--active" : "")"
+                                        @onclick='() => OnGenderFilterChanged("Male")'>
+                                    Male
+                                </button>
+                                <button class="hs-filter-option @(_genderFilter == "Female" ? "hs-filter-option--active" : "")"
+                                        @onclick='() => OnGenderFilterChanged("Female")'>
+                                    Female
+                                </button>
+                            </div>
+
+                            <label class="hs-filter-dropdown__label mt-2">Branded</label>
+                            <div class="hs-filter-dropdown__options">
+                                <button class="hs-filter-option @(string.IsNullOrEmpty(_brandedFilter) ? "hs-filter-option--active" : "")"
+                                        @onclick='() => OnBrandedFilterChanged("")'>
+                                    All
+                                </button>
+                                <button class="hs-filter-option @(_brandedFilter == "Yes" ? "hs-filter-option--active" : "")"
+                                        @onclick='() => OnBrandedFilterChanged("Yes")'>
+                                    Yes
+                                </button>
+                                <button class="hs-filter-option @(_brandedFilter == "No" ? "hs-filter-option--active" : "")"
+                                        @onclick='() => OnBrandedFilterChanged("No")'>
+                                    No
+                                </button>
+                            </div>
+
+                            <button class="hs-filter-dropdown__clear" @onclick="ClearFilters">
+                                Clear all filters
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="table-responsive">
+                    <table class="table project-list-table table-nowrap align-middle table-borderless">
+                        <thead>
+                            <tr>
+                                <th scope="col">Identifier</th>
+                                <th scope="col">Animal Code</th>
+                                <th scope="col">Birth Year</th>
+                                <th scope="col">Weight (kg)</th>
+                                <th scope="col">Gender</th>
+                                <th scope="col">Branded</th>
+                                <th scope="col" style="width: 200px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var cow in FilteredHerdList)
+                            {
+                                <tr>
+                                    <td>
+                                        <img src="/HerdSync_Cow.png" alt="" class="avatar-sm rounded-circle me-2" />
+                                        <a href="#" class="text-body">#@cow.DisplayIdentifier</a>
+                                    </td>
+                                    <td>@cow.AnimalTypeCode</td>
+                                    <td>@cow.BirthYear</td>
+                                    <td>@(cow.Weight.HasValue ? $"{cow.Weight:0.##} kg" : "-")</td>
+                                    <td>
+                                        <MudIcon Icon="@GetGenderIcon(cow.Gender)"
+                                                 Color="@GetGenderColor(cow.Gender)"
+                                                 Size="Size.Small" />
+                                    </td>
+                                    <td>@(cow.IsBranded ? "YES" : "NO")</td>
+                                    <td>
+                                        <ul class="list-inline mb-0">
+                                            <li class="list-inline-item">
+                                                <a class="px-2 text-primary" @onclick="() => EditDialog(cow.AnimalId)">
+                                                    <i class="bx bx-pencil font-size-18"></i>
+                                                </a>
+                                            </li>
+                                            <li class="list-inline-item">
+                                                <a href="javascript:void(0);" class="px-2 text-danger">
+                                                    <i class="bx bx-trash-alt font-size-18"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-0 align-items-center pb-4">
+            <div class="col-sm-6">
+                <p class="mb-sm-0">Showing 1 to @FilteredHerdList.Count() entries</p>
+            </div>
+        </div>
+    </div>
+}

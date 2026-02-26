@@ -1,0 +1,250 @@
+﻿@page "/TagManagement"
+@using HerdSync.Shared.DTO.Animal
+@rendermode @(new InteractiveServerRenderMode(prerender: true))
+
+<PageTitle>Tag Management</PageTitle>
+
+<div class="container">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <h5 class="card-title">Tag List <span class="text-muted fw-normal ms-2">@FilteredTagList.Count() Registered tags</span></h5>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mb-3">
+                <MudButton OnClick="@OpenDialogAsync" Variant="MudBlazor.Variant.Outlined" Color="Color.Secondary">
+                    <i class="bx bx-plus me-1"></i> New Tag
+                </MudButton>
+            </div>
+        </div>
+    </div>
+
+    <div class="row align-items-center mb-3">
+        <div class="col-md-6">
+            <input class="hs-input"
+                   value="@_searchTerm"
+                   @oninput="@((e) => OnSearchChanged(e.Value?.ToString() ?? string.Empty))"
+                   placeholder="Search by RFID code or animal..." />
+        </div>
+        <div class="col-md-6 d-flex justify-content-end gap-2">
+            <div class="hs-filter-dropdown">
+                <button class="hs-btn hs-btn--outline" @onclick="ToggleFilterPanel">
+                    <i class="bx bx-filter-alt me-1"></i> Filter
+                    @if (!string.IsNullOrEmpty(_currentFilter))
+                    {
+                        <span class="hs-filter-badge"></span>
+                    }
+                </button>
+                @if (_filterPanelOpen)
+                {
+                    <div class="hs-filter-dropdown__backdrop" @onclick="() => _filterPanelOpen = false"></div>
+                    <div class="hs-filter-dropdown__panel">
+                        <p class="hs-filter-dropdown__panel-title">Filter Tags</p>
+
+                        <label class="hs-filter-dropdown__label">Current Tag</label>
+                        <div class="hs-filter-dropdown__options">
+                            <button class="hs-filter-option @(string.IsNullOrEmpty(_currentFilter) ? "hs-filter-option--active" : "")"
+                                    @onclick='() => OnCurrentFilterChanged("")'>
+                                All
+                            </button>
+                            <button class="hs-filter-option @(_currentFilter == "Yes" ? "hs-filter-option--active" : "")"
+                                    @onclick='() => OnCurrentFilterChanged("Yes")'>
+                                Yes
+                            </button>
+                            <button class="hs-filter-option @(_currentFilter == "No" ? "hs-filter-option--active" : "")"
+                                    @onclick='() => OnCurrentFilterChanged("No")'>
+                                No
+                            </button>
+                        </div>
+
+                        <button class="hs-filter-dropdown__clear" @onclick="ClearFilters">
+                            Clear all filters
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="table-responsive">
+                <table class="table project-list-table table-nowrap align-middle table-borderless">
+                    <thead>
+                        <tr>
+                            <th scope="col">RFID Code</th>
+                            <th scope="col">Assigned To</th>
+                            <th scope="col">Assigned Date</th>
+                            <th scope="col">Current</th>
+                            <th scope="col" style="width: 200px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var tag in FilteredTagList)
+                        {
+                            <tr>
+                                <td>@tag.RFIDTagCode</td>
+                                <td>@GetAnimalInfo(tag.AnimalId)</td>
+                                <td>@tag.AssignedDate.ToString("dd MMM yyyy")</td>
+                                <td>@(tag.IsCurrent ? "Yes" : "No")</td>
+                                <td>
+                                    <ul class="list-inline mb-0">
+                                        <li class="list-inline-item">
+                                            <a class="px-2 text-primary" @onclick="() => EditDialog(tag.AnimalTagId)">
+                                                <i class="bx bx-pencil font-size-18"></i>
+                                            </a>
+                                        </li>
+                                        <li class="list-inline-item">
+                                            <a class="px-2 text-danger" @onclick="() => DeleteTag(tag.AnimalTagId)" style="cursor:pointer;">
+                                                <i class="bx bx-trash-alt font-size-18"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .hs-input {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #e2e8e4;
+        border-radius: 6px;
+        font-size: 13px;
+        outline: none;
+        background: #fff;
+        color: #2d3a31;
+        box-sizing: border-box;
+    }
+
+        .hs-input:focus {
+            border-color: #4a7c59;
+        }
+
+    .hs-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        transition: opacity 0.15s ease;
+        position: relative;
+    }
+
+    .hs-btn--outline {
+        background: transparent;
+        border: 1px solid #e2e8e4;
+        color: #2d3a31;
+    }
+
+        .hs-btn--outline:hover {
+            opacity: 0.85;
+        }
+
+    .hs-filter-badge {
+        width: 7px;
+        height: 7px;
+        background: #4a7c59;
+        border-radius: 50%;
+        position: absolute;
+        top: 6px;
+        right: 6px;
+    }
+
+    .hs-filter-dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .hs-filter-dropdown__backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+    }
+
+    .hs-filter-dropdown__panel {
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        background: #fff;
+        border: 1px solid #e2e8e4;
+        border-radius: 10px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        z-index: 101;
+        width: 220px;
+        padding: 14px;
+    }
+
+    .hs-filter-dropdown__panel-title {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: #7a8f80;
+        margin: 0 0 10px;
+    }
+
+    .hs-filter-dropdown__label {
+        display: block;
+        font-size: 12px;
+        font-weight: 500;
+        color: #2d3a31;
+        margin-bottom: 6px;
+    }
+
+    .hs-filter-dropdown__options {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .hs-filter-option {
+        padding: 4px 12px;
+        border: 1px solid #e2e8e4;
+        border-radius: 20px;
+        background: #fff;
+        font-size: 12px;
+        color: #2d3a31;
+        cursor: pointer;
+        transition: all 0.12s ease;
+    }
+
+        .hs-filter-option:hover {
+            border-color: #4a7c59;
+            color: #4a7c59;
+        }
+
+    .hs-filter-option--active {
+        background: #4a7c59;
+        border-color: #4a7c59;
+        color: #fff;
+    }
+
+    .hs-filter-dropdown__clear {
+        display: block;
+        width: 100%;
+        margin-top: 12px;
+        padding: 10px 6px 6px;
+        background: none;
+        border: none;
+        border-top: 1px solid #e2e8e4;
+        font-size: 12px;
+        color: #7a8f80;
+        cursor: pointer;
+        text-align: center;
+        transition: color 0.12s;
+    }
+
+        .hs-filter-dropdown__clear:hover {
+            color: #c0392b;
+        }
+</style>

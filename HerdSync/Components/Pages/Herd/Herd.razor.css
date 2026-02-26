@@ -1,0 +1,224 @@
+﻿.hs-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: var(--hs-radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.15s ease;
+    position: relative;
+}
+
+    .hs-btn:hover {
+        opacity: 0.85;
+    }
+
+.hs-btn--outline {
+    background: transparent;
+    border: 1px solid var(--hs-border);
+    color: var(--hs-text);
+}
+
+.hs-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--hs-border);
+    border-radius: var(--hs-radius-sm);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+    background: #fff;
+    color: var(--hs-text);
+    box-sizing: border-box;
+}
+
+    .hs-input:focus {
+        border-color: var(--hs-green-dark);
+    }
+
+.hs-btn--primary {
+    background: var(--hs-green-dark);
+    color: #fff;
+}
+
+.hs-btn--sm {
+    padding: 5px 12px;
+    font-size: 12px;
+}
+
+.hs-filter-badge {
+    width: 7px;
+    height: 7px;
+    background: var(--hs-green-dark);
+    border-radius: 50%;
+    position: absolute;
+    top: 6px;
+    right: 6px;
+}
+
+.hs-filter-dropdown__panel {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: #fff;
+    border: 1px solid var(--hs-border);
+    border-radius: var(--hs-radius);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    z-index: 101;
+    width: 220px;
+    padding: 14px;
+}
+
+.hs-filter-dropdown__panel-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--hs-text-muted);
+    margin: 0 0 10px;
+}
+
+.hs-filter-dropdown__label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--hs-text);
+    margin-bottom: 6px;
+}
+
+.hs-filter-dropdown__options {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.hs-filter-option {
+    padding: 4px 12px;
+    border: 1px solid var(--hs-border);
+    border-radius: 20px;
+    background: #fff;
+    font-size: 12px;
+    color: var(--hs-text);
+    cursor: pointer;
+    transition: all 0.12s ease;
+}
+
+    .hs-filter-option:hover {
+        border-color: var(--hs-green-dark);
+        color: var(--hs-green-dark);
+    }
+
+.hs-filter-option--active {
+    background: var(--hs-green-dark);
+    border-color: var(--hs-green-dark);
+    color: #fff;
+}
+
+.hs-filter-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.hs-filter-dropdown__clear {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+    padding: 6px;
+    background: none;
+    border: none;
+    font-size: 12px;
+    color: var(--hs-text-muted);
+    cursor: pointer;
+    text-align: center;
+    border-top: 1px solid var(--hs-border);
+    padding-top: 10px;
+    transition: color 0.12s;
+}
+
+    .hs-filter-dropdown__clear:hover {
+        color: var(--hs-danger);
+    }
+
+.project-list-table {
+    border-collapse: separate;
+    border-spacing: 0 12px
+}
+
+    .project-list-table tr {
+        background-color: #fff
+    }
+
+.table-nowrap td, .table-nowrap th {
+    white-space: nowrap;
+}
+
+.table-borderless > :not(caption) > * > * {
+    border-bottom-width: 0;
+}
+
+.table > :not(caption) > * > * {
+    padding: 0.75rem 0.75rem;
+    background-color: var(--bs-table-bg);
+    border-bottom-width: 1px;
+    box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg);
+}
+
+.avatar-sm {
+    height: 2rem;
+    width: 2rem;
+}
+
+.rounded-circle {
+    border-radius: 50% !important;
+}
+
+.me-2 {
+    margin-right: 0.5rem !important;
+}
+
+img, svg {
+    vertical-align: middle;
+}
+
+.badge-soft-danger {
+    color: #f56e6e !important;
+    background-color: rgba(245,110,110,.1);
+}
+
+.badge-soft-success {
+    color: #63ad6f !important;
+    background-color: rgba(99,173,111,.1);
+}
+
+.badge-soft-primary {
+    color: #3b76e1 !important;
+    background-color: rgba(59,118,225,.1);
+}
+
+.badge-soft-info {
+    color: #57c9eb !important;
+    background-color: rgba(87,201,235,.1);
+}
+
+.avatar-title {
+    align-items: center;
+    background-color: #3b76e1;
+    color: #fff;
+    display: flex;
+    font-weight: 500;
+    height: 100%;
+    justify-content: center;
+    width: 100%;
+}
+
+.bg-soft-primary {
+    background-color: rgba(59,118,225,.25) !important;
+}
+
+.badge-soft-info {
+    background-color: var(--bs-warning-bg-subtle, #fff3cd) !important;
+    color: var(--bs-warning-text-emphasis, #664d03) !important;
+}

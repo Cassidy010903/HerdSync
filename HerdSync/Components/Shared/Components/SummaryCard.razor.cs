@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace HerdSync.Components.UniversalComponents.Cards
+namespace HerdSync.Components.Shared.Components
 {
     public partial class SummaryCard
     {

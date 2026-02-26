@@ -22,10 +22,20 @@ namespace DAL.Repositories.Implementation
 
         public async Task<AnimalModel> UpdateAsync(AnimalModel animal)
         {
-            context.Animals.Update(animal);
+            var existing = await context.Animals.FirstOrDefaultAsync(a => a.AnimalId == animal.AnimalId);
+            if (existing == null) throw new KeyNotFoundException($"Animal {animal.AnimalId} not found.");
+
+            existing.DisplayIdentifier = animal.DisplayIdentifier;
+            existing.AnimalTypeCode = animal.AnimalTypeCode;
+            existing.BirthYear = animal.BirthYear;
+            existing.Gender = animal.Gender;
+            existing.MotherAnimalId = animal.MotherAnimalId;
+            existing.FatherAnimalId = animal.FatherAnimalId;
+            existing.IsDeleted = animal.IsDeleted;
+
             await context.SaveChangesAsync();
-            logger.LogInformation("Updated animal with ID {AnimalId}", animal.AnimalId);
-            return animal;
+            logger.LogInformation("Updated animal with ID {AnimalId}", existing.AnimalId);
+            return existing;
         }
 
         public async Task SoftDeleteAsync(Guid animalId)

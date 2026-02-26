@@ -22,17 +22,23 @@ namespace DAL.Repositories.Implementation
 
         public async Task<ProgramTemplateRuleTreatmentModel> AddAsync(ProgramTemplateRuleTreatmentModel programTemplateRuleTreatment)
         {
-            context.ProgramTemplateRuleTreatments.Add(programTemplateRuleTreatment);
+            var local = context.ProgramTemplateRuleTreatments.Local
+                .FirstOrDefault(p => p.ProgramTemplateRuleTreatmentId == programTemplateRuleTreatment.ProgramTemplateRuleTreatmentId);
+            if (local != null) context.Entry(local).State = EntityState.Detached;
+
+            context.Entry(programTemplateRuleTreatment).State = EntityState.Added;
             await context.SaveChangesAsync();
-            logger.LogInformation("Added new program template rule treatment with ID {ProgramTemplateRuleTreatmentId}", programTemplateRuleTreatment.ProgramTemplateRuleTreatmentId);
             return programTemplateRuleTreatment;
         }
 
         public async Task<ProgramTemplateRuleTreatmentModel> UpdateAsync(ProgramTemplateRuleTreatmentModel programTemplateRuleTreatment)
         {
-            context.ProgramTemplateRuleTreatments.Update(programTemplateRuleTreatment);
+            var local = context.ProgramTemplateRuleTreatments.Local
+                .FirstOrDefault(p => p.ProgramTemplateRuleTreatmentId == programTemplateRuleTreatment.ProgramTemplateRuleTreatmentId);
+            if (local != null) context.Entry(local).State = EntityState.Detached;
+
+            context.Entry(programTemplateRuleTreatment).State = EntityState.Modified;
             await context.SaveChangesAsync();
-            logger.LogInformation("Updated program template rule treatment with ID {ProgramTemplateRuleTreatmentId}", programTemplateRuleTreatment.ProgramTemplateRuleTreatmentId);
             return programTemplateRuleTreatment;
         }
 

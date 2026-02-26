@@ -22,17 +22,23 @@ namespace DAL.Repositories.Implementation
 
         public async Task<ProgramTemplateModel> AddAsync(ProgramTemplateModel programTemplate)
         {
-            context.ProgramTemplates.Add(programTemplate);
+            var local = context.ProgramTemplates.Local
+                .FirstOrDefault(p => p.ProgramTemplateCode == programTemplate.ProgramTemplateCode);
+            if (local != null) context.Entry(local).State = EntityState.Detached;
+
+            context.Entry(programTemplate).State = EntityState.Added;
             await context.SaveChangesAsync();
-            logger.LogInformation("Added new program template with code {Code}", programTemplate.ProgramTemplateCode);
             return programTemplate;
         }
 
         public async Task<ProgramTemplateModel> UpdateAsync(ProgramTemplateModel programTemplate)
         {
-            context.ProgramTemplates.Update(programTemplate);
+            var local = context.ProgramTemplates.Local
+                .FirstOrDefault(p => p.ProgramTemplateCode == programTemplate.ProgramTemplateCode);
+            if (local != null) context.Entry(local).State = EntityState.Detached;
+
+            context.Entry(programTemplate).State = EntityState.Modified;
             await context.SaveChangesAsync();
-            logger.LogInformation("Updated program template with code {Code}", programTemplate.ProgramTemplateCode);
             return programTemplate;
         }
 

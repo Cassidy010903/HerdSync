@@ -30,10 +30,18 @@ namespace DAL.Repositories.Implementation
 
         public async Task<AnimalTagModel> UpdateAsync(AnimalTagModel animalTag)
         {
-            context.AnimalTags.Update(animalTag);
+            var existing = await context.AnimalTags.FirstOrDefaultAsync(a => a.AnimalTagId == animalTag.AnimalTagId);
+            if (existing == null) throw new KeyNotFoundException($"AnimalTag {animalTag.AnimalTagId} not found.");
+
+            existing.RFIDTagCode = animalTag.RFIDTagCode;
+            existing.AnimalId = animalTag.AnimalId;
+            existing.AssignedDate = animalTag.AssignedDate;
+            existing.UnassignedDate = animalTag.UnassignedDate;
+            existing.IsCurrent = animalTag.IsCurrent;
+
             await context.SaveChangesAsync();
-            logger.LogInformation("Updated animal tag with ID {AnimalTagId}", animalTag.AnimalTagId);
-            return animalTag;
+            logger.LogInformation("Updated animal tag with ID {AnimalTagId}", existing.AnimalTagId);
+            return existing;
         }
 
         public async Task SoftDeleteAsync(Guid animalTagId)

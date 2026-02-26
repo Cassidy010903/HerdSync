@@ -29,7 +29,23 @@
     <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
     <img src="/HerdSync_Long_Logo_Cropped.png" alt="HerdSync" style="height: 40px;" />
     <MudSpacer />
-    <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+        <div class="hs-appbar-menu">
+            <button class="hs-appbar-menu__trigger" @onclick="ToggleProfileMenu">
+                <i class="bx bx-dots-vertical-rounded" style="font-size:22px; color:white;"></i>
+            </button>
+            @if (_profileMenuOpen)
+            {
+                <div class="hs-appbar-menu__backdrop" @onclick="CloseProfileMenu"></div>
+                <div class="hs-appbar-menu__dropdown">
+                    <button class="hs-appbar-menu__item">
+                        <i class="bx bx-building me-2"></i> Farm Profile
+                    </button>
+                    <button class="hs-appbar-menu__item">
+                        <i class="bx bx-user me-2"></i> User Profile
+                    </button>
+                </div>
+            }
+        </div>
 </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <NavMenu />
@@ -46,3 +62,9 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+@code{
+    private bool _profileMenuOpen = false;
+    private void ToggleProfileMenu() => _profileMenuOpen = !_profileMenuOpen;
+    private void CloseProfileMenu() => _profileMenuOpen = false;
+}

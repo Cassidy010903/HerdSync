@@ -3,7 +3,7 @@ using HerdSync.Shared.DTO.Animal;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace HerdSync.Components.Pages.HerdManagement
+namespace HerdSync.Components.Pages.Herd
 {
     public partial class NewCow
     {

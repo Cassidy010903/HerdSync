@@ -1,124 +1,525 @@
 ﻿@page "/newprogram"
+@using HerdSync.Shared.DTO.Program
+@using HerdSync.Shared.DTO.Treatment
+@using HerdSync.Shared.DTO.Animal
+@inject IProgramTemplateService ProgramTemplateService
+@inject IProgramTemplateRuleService ProgramTemplateRuleService
+@inject IProgramTemplateRuleTreatmentService ProgramTemplateRuleTreatmentService
+@inject ITreatmentService TreatmentService
+@inject IAnimalTypeService AnimalTypeService
+@inject ICalendarEventService CalendarEventService
+@inject NavigationManager NavigationManager
+@rendermode @(new InteractiveServerRenderMode(prerender: true))
 
 <PageTitle>New Program</PageTitle>
 
-<div class="pa-4">
-    <MudText Typo="Typo.h4">New Program</MudText>
-    <MudText Typo="Typo.caption">Set up new treatment program</MudText>
-</div>
+@if (_loading)
+{
+    <HerdLoader />
+}
+else
+{
+    <div class="pa-4">
+        <MudText Typo="Typo.h4">New Program</MudText>
+        <MudText Typo="Typo.caption">Set up new treatment program</MudText>
+    </div>
 
+    <div class="row">
+        <div class="col-lg-8">
 
-<div class="row">
-    <div class="col-lg-8">
-        @foreach (var card in Cards)
-        {
-            <div class="card mb-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        @if (Cards.Count > 1)
-                        {
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small"
-                                           OnClick="@(() => RemoveCard(card))" />
-                        }
-                    </div>
-
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="mb-3">
-                                <label class="form-label">Group</label>
-                                <MudCheckBox @bind-Value="Label_CheckBox1" Label="Cows"></MudCheckBox>
-                                <MudCheckBox @bind-Value="Label_CheckBox2" Label="Calfs"></MudCheckBox>
-                                <MudCheckBox @bind-Value="Label_CheckBox3" Label="Bulls"></MudCheckBox>
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="mb-3">
-                                <label class="form-label">Treatments</label>
-                                <MudCheckBox @bind-Value="Label_CheckBox1" Label="Dip"></MudCheckBox>
-                                <MudCheckBox @bind-Value="Label_CheckBox2" Label="Ivermectin"></MudCheckBox>
-                                <MudCheckBox @bind-Value="Label_CheckBox2" Label="Multimin"></MudCheckBox>
-                                <MudCheckBox @bind-Value="Label_CheckBox1" Label="Tag"></MudCheckBox>
-                                <MudCheckBox @bind-Value="Label_CheckBox2" Label="Eye"></MudCheckBox>
-                                <MudCheckBox @bind-Value="Label_CheckBox2" Label="Injury"></MudCheckBox>
-                            </div>
-                        </div>
+            @if (string.IsNullOrEmpty(SelectedAnimalTypeCode))
+            {
+                <div class="card mb-4">
+                    <div class="card-body text-center py-5">
+                        <MudText Typo="Typo.body1" Color="Color.Secondary">
+                            Please select an animal type in the sidebar to begin adding rules.
+                        </MudText>
                     </div>
                 </div>
-            </div>
-        }
+            }
+            else
+            {
+                @foreach (var rule in Rules)
+                {
+                    <div class="card mb-4">
+                        <div class="card-body">
 
-        <div class="text-center mt-4">
-            <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary" OnClick="AddCard">
-                Add Another Card
-            </MudButton>
-            <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary">
-                Submit
-            </MudButton>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <MudText Typo="Typo.subtitle1" Class="fw-semibold">
+                                    @GetRuleSummary(rule)
+                                </MudText>
+                                @if (Rules.Count > 1)
+                                {
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                   Color="Color.Error"
+                                                   Size="Size.Small"
+                                                   OnClick="@(() => RemoveRule(rule))" />
+                                }
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-lg-6">
+                                    <MudSelect T="AgeGroup?"
+                                               @bind-Value="rule.AgeGroup"
+                                               Label="Age Group"
+                                               Variant="Variant.Outlined"
+                                               Margin="Margin.Dense"
+                                               Clearable="true"
+                                               Class="w-100"
+                                               ToStringFunc="@(g => GetAgeGroupLabel(g))">
+                                        <MudSelectItem T="AgeGroup?" Value="@((AgeGroup?)null)">All Ages</MudSelectItem>
+                                        <MudSelectItem T="AgeGroup?" Value="@((AgeGroup?)AgeGroup.CurrentYear)">
+                                            Current Year Calves (@CurrentYear)
+                                        </MudSelectItem>
+                                        <MudSelectItem T="AgeGroup?" Value="@((AgeGroup?)AgeGroup.PreviousYear)">
+                                            Previous Year (@(CurrentYear - 1))
+                                        </MudSelectItem>
+                                        <MudSelectItem T="AgeGroup?" Value="@((AgeGroup?)AgeGroup.YearBeforeThat)">
+                                            Year Before That (@(CurrentYear - 2))
+                                        </MudSelectItem>
+                                        <MudSelectItem T="AgeGroup?" Value="@((AgeGroup?)AgeGroup.Adults)">
+                                            Adults (born @(CurrentYear - 3) or earlier)
+                                        </MudSelectItem>
+                                    </MudSelect>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <label class="form-label fw-semibold d-block mb-1">Gender</label>
+                                    <MudCheckBox @bind-Value="rule.IncludeMale"   Label="Male" />
+                                    <MudCheckBox @bind-Value="rule.IncludeFemale" Label="Female" />
+                                </div>
+                            </div>
+
+                            <MudDivider Class="my-3" />
+
+                            <label class="form-label fw-semibold d-block mb-2">Treatments</label>
+                            <div class="row">
+                                @foreach (var treatment in AvailableTreatments)
+                                {
+                                    var isChecked = rule.SelectedTreatments
+                                        .Any(t => t.TreatmentCode == treatment.TreatmentCode);
+
+                                    <div class="col-lg-4 mb-2">
+                                        <MudCheckBox Value="@isChecked"
+                                                     ValueChanged="@((bool val) => ToggleTreatment(rule, treatment, val))"
+                                                     Label="@treatment.TreatmentName" />
+                                    </div>
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+                }
+
+                <div class="d-flex justify-content-center gap-2 mt-4">
+                    <MudButton Variant="Variant.Outlined"
+                               Color="Color.Primary"
+                               OnClick="AddRule">
+                        <i class="bx bx-plus me-1"></i> Add Rule
+                    </MudButton>
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               OnClick="Submit"
+                               Disabled="@_submitting">
+                        @if (_submitting)
+                        {
+                            <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="me-2" />
+                        }
+                        Save Program
+                    </MudButton>
+                </div>
+            }
         </div>
 
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="h6">Program Name</h3>
+                    <MudTextField @bind-Value="Template.TemplateName"
+                                  Placeholder="Enter program name"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense"
+                                  Disabled="@AutoGenerateName"
+                                  Class="w-100" />
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="h6 mb-3">Animal Type</h3>
+                    <MudSelect T="string"
+                               @bind-Value="SelectedAnimalTypeCode"
+                               Label="Select Animal Type"
+                               Variant="Variant.Outlined"
+                               Margin="Margin.Dense"
+                               Class="w-100">
+                        @foreach (var animalType in AvailableAnimalTypes)
+                        {
+                            <MudSelectItem Value="@animalType.AnimalTypeCode">
+                                @animalType.AnimalTypeName
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="h6 mb-3">Frequency</h3>
+                    <MudSelect T="ProgramFrequency"
+                               @bind-Value="SelectedFrequency"
+                               Label="Repeat Frequency"
+                               Variant="Variant.Outlined"
+                               Margin="Margin.Dense"
+                               Class="w-100"
+                               ToStringFunc="@(f => GetFrequencyLabel(f))">
+                        <MudSelectItem Value="ProgramFrequency.OnceOff">Once-off</MudSelectItem>
+                        <MudSelectItem Value="ProgramFrequency.Monthly">Monthly</MudSelectItem>
+                        <MudSelectItem Value="ProgramFrequency.Quarterly">Quarterly</MudSelectItem>
+                        <MudSelectItem Value="ProgramFrequency.BiYearly">Bi-yearly</MudSelectItem>
+                        <MudSelectItem Value="ProgramFrequency.Yearly">Yearly</MudSelectItem>
+                    </MudSelect>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="h6">Settings</h3>
+                    <ul class="list-group list-group-flush mx-n2">
+                        <li class="list-group-item px-0 d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <h6 class="mb-0">Auto generate name</h6>
+                                <small>Name will be auto generated on save.</small>
+                            </div>
+                            <MudSwitch @bind-Value="AutoGenerateName" Color="Color.Primary" />
+                        </li>
+                        <li class="list-group-item px-0 d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <h6 class="mb-0">Active</h6>
+                                <small>Available for program runs.</small>
+                            </div>
+                            <MudSwitch @bind-Value="Template.IsActive" Color="Color.Primary" />
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="h6">Description / Notes</h3>
+                    <MudTextField @bind-Value="_programNotes"
+                                  Lines="3"
+                                  Variant="Variant.Outlined"
+                                  Placeholder="Add notes..."
+                                  Class="w-100" />
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="h6 mb-3">Program Summary</h3>
+                    @if (string.IsNullOrEmpty(SelectedAnimalTypeCode))
+                    {
+                        <MudText Typo="Typo.caption" Color="Color.Default">No animal type selected.</MudText>
+                    }
+                    else
+                    {
+                        <MudText Typo="Typo.body2" Class="fw-semibold mb-2">
+                            @(AvailableAnimalTypes.FirstOrDefault(a => a.AnimalTypeCode == SelectedAnimalTypeCode)?.AnimalTypeName)
+                            · @GetFrequencyLabel(SelectedFrequency)
+                        </MudText>
+                        <MudDivider Class="mb-2" />
+                        @foreach (var rule in Rules.Where(r => r.SelectedTreatments.Any() || r.AgeGroup.HasValue))
+                        {
+                            <div class="mb-2">
+                                <MudText Typo="Typo.body2" Class="fw-semibold">@GetRuleSummary(rule)</MudText>
+                                @if (rule.SelectedTreatments.Any())
+                                {
+                                    <MudText Typo="Typo.caption" Color="Color.Secondary">
+                                        @string.Join(", ", rule.SelectedTreatments.Select(t =>
+                                            AvailableTreatments.FirstOrDefault(x => x.TreatmentCode == t.TreatmentCode)?.TreatmentName ?? t.TreatmentCode
+                                        ))
+                                    </MudText>
+                                }
+                                else
+                                {
+                                    <MudText Typo="Typo.caption" Color="Color.Error">No treatments selected</MudText>
+                                }
+                            </div>
+                            <MudDivider Class="mb-2" />
+                        }
+                    }
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(_errorMessage))
+            {
+                <MudAlert Severity="Severity.Error" Class="mb-3">@_errorMessage</MudAlert>
+            }
+        </div>
     </div>
-    <div class="col-lg-4">
-        <div class="card mb-4">
-            <div class="card-body">
-                <h3 class="h6">Program Name</h3>
-                <input type="text" class="form-control">
-            </div>
-        </div>
-        <div class="card mb-4">
-            <div class="card-body">
-                <h3 class="h6">Settings</h3>
-                <ul class="list-group list-group-flush mx-n2">
-                    <li class="list-group-item px-0 d-flex justify-content-between align-items-start">
-                        <div class="ms-2 me-auto">
-                            <h6 class="mb-0">Auto generate program name</h6>
-                            <small>Name of program will be auto generated.</small>
-                        </div>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" role="switch">
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="card mb-4">
-            <div class="card-body">
-                <h3 class="h6">Notes</h3>
-                <textarea class="form-control" rows="3"></textarea>
-            </div>
-        </div>
-    </div>
-</div>
+}
 
 @code {
-    public bool Label_CheckBox1 { get; set; } = true;
-    public bool Label_CheckBox2 { get; set; } = true;
-    public bool Label_CheckBox3 { get; set; } = true;
+    private bool _loading    = true;
+    private bool _submitting = false;
+    private string _errorMessage = string.Empty;
+    private string _programNotes = string.Empty;
 
-    public class CardData
+    private static readonly int CurrentYear = DateTime.Now.Year;
+
+    public enum AgeGroup
     {
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string PhoneNumber { get; set; } = string.Empty;
+        CurrentYear,
+        PreviousYear,
+        YearBeforeThat,
+        Adults
     }
 
-    private List<CardData> Cards { get; set; } = new List<CardData>();
-
-    protected override void OnInitialized()
+    public enum ProgramFrequency
     {
-        Cards.Add(new CardData());
+        OnceOff,
+        Monthly,
+        Quarterly,
+        BiYearly,
+        Yearly
     }
 
-    private void AddCard()
+    private ProgramTemplateDTO Template         { get; set; } = new() { IsActive = true };
+    private bool               AutoGenerateName { get; set; } = false;
+    private string             SelectedAnimalTypeCode { get; set; } = string.Empty;
+    private ProgramFrequency   SelectedFrequency      { get; set; } = ProgramFrequency.OnceOff;
+
+    private List<AnimalTypeDTO> AvailableAnimalTypes { get; set; } = new();
+    private List<TreatmentDTO>  AvailableTreatments  { get; set; } = new();
+    private List<RuleViewModel> Rules                { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
     {
-        Cards.Add(new CardData());
+        var animalTypes = await AnimalTypeService.GetAllAsync();
+        AvailableAnimalTypes = animalTypes.ToList();
+
+        var treatments = await TreatmentService.GetAllAsync();
+        AvailableTreatments = treatments.ToList();
+
+        Rules.Add(new RuleViewModel());
+        _loading = false;
     }
 
-    private void RemoveCard(CardData cardToRemove)
+    private void AddRule()  => Rules.Add(new RuleViewModel());
+
+    private void RemoveRule(RuleViewModel rule)
     {
-        if (Cards.Count > 1)
+        if (Rules.Count > 1)
+            Rules.Remove(rule);
+    }
+
+    private void ToggleTreatment(RuleViewModel rule, TreatmentDTO treatment, bool selected)
+    {
+        if (selected)
         {
-            Cards.Remove(cardToRemove);
+            if (!rule.SelectedTreatments.Any(t => t.TreatmentCode == treatment.TreatmentCode))
+            {
+                rule.SelectedTreatments.Add(new ProgramTemplateRuleTreatmentDTO
+                {
+                    TreatmentCode = treatment.TreatmentCode,
+                    IsMandatory   = true
+                });
+            }
         }
+        else
+        {
+            var existing = rule.SelectedTreatments
+                .FirstOrDefault(t => t.TreatmentCode == treatment.TreatmentCode);
+            if (existing != null)
+                rule.SelectedTreatments.Remove(existing);
+        }
+    }
+
+    private (int? Min, int? Max) ResolveYearRange(AgeGroup? group) => group switch
+    {
+        AgeGroup.CurrentYear    => (CurrentYear,     CurrentYear),
+        AgeGroup.PreviousYear   => (CurrentYear - 1, CurrentYear - 1),
+        AgeGroup.YearBeforeThat => (CurrentYear - 2, CurrentYear - 2),
+        AgeGroup.Adults         => (null,             CurrentYear - 3),
+        _                       => (null, null)
+    };
+
+    private string GetAgeGroupLabel(AgeGroup? group) => group switch
+    {
+        AgeGroup.CurrentYear    => $"Current Year Calves ({CurrentYear})",
+        AgeGroup.PreviousYear   => $"Previous Year ({CurrentYear - 1})",
+        AgeGroup.YearBeforeThat => $"Year Before That ({CurrentYear - 2})",
+        AgeGroup.Adults         => $"Adults (born {CurrentYear - 3} or earlier)",
+        _                       => "All Ages"
+    };
+
+    private string GetFrequencyLabel(ProgramFrequency frequency) => frequency switch
+    {
+        ProgramFrequency.OnceOff   => "Once-off",
+        ProgramFrequency.Monthly   => "Monthly",
+        ProgramFrequency.Quarterly => "Quarterly",
+        ProgramFrequency.BiYearly  => "Bi-yearly",
+        ProgramFrequency.Yearly    => "Yearly",
+        _                          => "Once-off"
+    };
+
+    private string GetRuleSummary(RuleViewModel rule)
+    {
+        var agePart    = GetAgeGroupLabel(rule.AgeGroup);
+        var genderPart = (rule.IncludeMale, rule.IncludeFemale) switch
+        {
+            (true,  false) => "Male",
+            (false, true)  => "Female",
+            (true,  true)  => "Male & Female",
+            _              => "No gender selected"
+        };
+        return $"{agePart} · {genderPart}";
+    }
+
+    private async Task Submit()
+    {
+        _errorMessage = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(Template.TemplateName) && !AutoGenerateName)
+        {
+            _errorMessage = "Please enter a program name or enable auto-generate.";
+            return;
+        }
+
+        if (string.IsNullOrEmpty(SelectedAnimalTypeCode))
+        {
+            _errorMessage = "Please select an animal type.";
+            return;
+        }
+
+        if (Rules.Any(r => !r.IncludeMale && !r.IncludeFemale))
+        {
+            _errorMessage = "All rules must have at least one gender selected.";
+            return;
+        }
+
+        if (Rules.Any(r => !r.SelectedTreatments.Any()))
+        {
+            _errorMessage = "All rules must have at least one treatment selected.";
+            return;
+        }
+
+        try
+        {
+            _submitting = true;
+
+            var programName = AutoGenerateName
+                ? $"Program_{DateTime.Now:yyyyMMdd_HHmm}"
+                : Template.TemplateName;
+
+            var templateToSave = new ProgramTemplateDTO
+            {
+                ProgramTemplateCode = DateTime.Now.ToString("yyMMddHHmm"),
+                TemplateName        = programName,
+                Description         = string.IsNullOrWhiteSpace(_programNotes)
+                                        ? $"{programName} | {GetFrequencyLabel(SelectedFrequency)}"
+                                        : $"{programName} | {GetFrequencyLabel(SelectedFrequency)} | {_programNotes}",
+                IsActive            = Template.IsActive
+            };
+
+            var createdTemplate = await ProgramTemplateService.CreateAsync(templateToSave);
+
+            foreach (var ruleVm in Rules)
+            {
+                var (minYear, maxYear) = ResolveYearRange(ruleVm.AgeGroup);
+
+                var ruleDto = new ProgramTemplateRuleDTO
+                {
+                    ProgramTemplateCode = createdTemplate.ProgramTemplateCode,
+                    AnimalTypeCode      = SelectedAnimalTypeCode,
+                    Gender              = (ruleVm.IncludeMale, ruleVm.IncludeFemale) switch
+                    {
+                        (true,  false) => "M",
+                        (false, true)  => "F",
+                        _              => null
+                    },
+                    MinBirthYear = minYear,
+                    MaxBirthYear = maxYear
+                };
+
+                var createdRule = await ProgramTemplateRuleService.CreateAsync(ruleDto);
+
+                foreach (var treatment in ruleVm.SelectedTreatments)
+                {
+                    await ProgramTemplateRuleTreatmentService.CreateAsync(new ProgramTemplateRuleTreatmentDTO
+                    {
+                        ProgramTemplateRuleId = createdRule.ProgramTemplateRuleId,
+                        TreatmentCode         = treatment.TreatmentCode,
+                        IsMandatory           = true
+                    });
+                }
+            }
+
+            await CreateCalendarEvents(createdTemplate.ProgramTemplateCode);
+            NavigationManager.NavigateTo("/programs");
+        }
+        catch (Exception ex)
+        {
+            var inner = ex.InnerException?.Message ?? ex.Message;
+            _errorMessage = $"Failed to save program: {inner}";
+        }
+        finally
+        {
+            _submitting = false;
+        }
+    }
+
+    private async Task CreateCalendarEvents(string templateCode)
+{
+    var dates = new List<DateTime>();
+    var from  = DateTime.Today;
+
+    switch (SelectedFrequency)
+    {
+        case ProgramFrequency.OnceOff:
+            break;
+
+        case ProgramFrequency.Monthly:
+            for (int i = 1; i <= 12; i++)
+                dates.Add(from.AddMonths(i));
+            break;
+
+        case ProgramFrequency.Quarterly:
+            dates.Add(from.AddMonths(3));
+            dates.Add(from.AddMonths(6));
+            dates.Add(from.AddMonths(9));
+            dates.Add(from.AddMonths(12));
+            break;
+
+        case ProgramFrequency.BiYearly:
+            dates.Add(from.AddMonths(6));
+            dates.Add(from.AddMonths(12));
+            break;
+
+        case ProgramFrequency.Yearly:
+            dates.Add(from.AddYears(1));
+            break;
+    }
+
+    foreach (var date in dates)
+    {
+        await CalendarEventService.CreateAsync(new CalendarEventDTO
+        {
+            CalendarEventId = Guid.NewGuid(),
+            Title           = templateCode,
+            EventDate       = date,
+            Color           = "primary",
+            Description     = $"Scheduled program run for {templateCode}"
+        });
+    }
+}
+
+    private class RuleViewModel
+    {
+        public AgeGroup? AgeGroup      { get; set; }
+        public bool      IncludeMale   { get; set; }
+        public bool      IncludeFemale { get; set; }
+        public List<ProgramTemplateRuleTreatmentDTO> SelectedTreatments { get; set; } = new();
     }
 }

@@ -9,7 +9,6 @@
                               Adornment="Adornment.Start"
                               AdornmentIcon="@Icons.Material.Filled.Nfc"
                               AdornmentColor="Color.Primary" />
-
                 <MudSelect T="Guid"
                            @bind-Value="tag.AnimalId"
                            Label="Select Animal"
@@ -22,6 +21,7 @@
                         </MudSelectItem>
                     }
                 </MudSelect>
+                <MudCheckBox @bind-Value="tag.IsCurrent" Label="Current Tag" />
             </MudItem>
         </MudGrid>
     </DialogContent>

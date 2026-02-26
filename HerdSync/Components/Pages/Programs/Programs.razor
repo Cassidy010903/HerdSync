@@ -1,0 +1,83 @@
+﻿@page "/programs"
+@using BLL.Services
+@using HerdSync.Shared.DTO.Program
+@rendermode @(new InteractiveServerRenderMode(prerender: true))
+
+<PageTitle>Programs</PageTitle>
+
+<div class="d-flex justify-content-between align-items-center pa-4">
+    <div>
+        <MudText Typo="Typo.h4">Programs</MudText>
+        <MudText Typo="Typo.caption">Treatment programs set up for your farm.</MudText>
+    </div>
+    <MudButton Href="/newprogram"
+               Color="Color.Primary"
+               Variant="Variant.Filled"
+               StartIcon="@Icons.Material.Filled.Add">
+        New Program
+    </MudButton>
+</div>
+
+<div class="container mt-3">
+    @if (_loading)
+    {
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+    }
+    else if (_programs.Count == 0)
+    {
+        <MudAlert Severity="Severity.Info" Class="mb-3">
+            No programs found. Create your first program to get started.
+        </MudAlert>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var program in _programs)
+            {
+                <div class="col-lg-4 col-md-6 col-12 mt-4">
+                    <div class="card border-0 rounded shadow h-100">
+                        <div class="card-body p-4 d-flex flex-column">
+
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="mb-0">@program.TemplateName</h5>
+                                @if (program.IsActive)
+                                {
+                                    <span class="badge rounded-pill bg-success">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge rounded-pill bg-secondary">Inactive</span>
+                                }
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(program.Description))
+                            {
+                                <p class="text-muted small mb-3">@program.Description</p>
+                            }
+
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center text-muted small mb-3">
+                                    <span><i class="bx bx-code me-1"></i>@program.ProgramTemplateCode</span>
+                                    @if (program.CreatedDate != default)
+                                    {
+                                        <span>@program.CreatedDate.ToString("dd MMM yyyy")</span>
+                                    }
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <MudButton Href="@($"/newprogram/edit/{program.ProgramTemplateCode}")"
+                                               Color="Color.Primary"
+                                               Variant="Variant.Outlined"
+                                               Size="Size.Small"
+                                               FullWidth="true">
+                                        Edit
+                                    </MudButton>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

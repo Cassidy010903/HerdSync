@@ -1,9 +1,4 @@
-﻿body {
-    margin-top: 20px;
-    background-color: #eee;
-}
-
-.project-list-table {
+﻿.project-list-table {
     border-collapse: separate;
     border-spacing: 0 12px
 }
@@ -44,11 +39,6 @@ img, svg {
     vertical-align: middle;
 }
 
-a {
-    color: #c4c4c4;
-    text-decoration: none;
-}
-
 .badge-soft-danger {
     color: #f56e6e !important;
     background-color: rgba(245,110,110,.1);
@@ -85,15 +75,6 @@ a {
 }
 
 .badge-soft-info {
-    /* These colors are similar to Bootstrap's default 'warning' palette */
-    background-color: var(--bs-warning-bg-subtle, #fff3cd) !important; /* Light yellow background */
-    color: var(--bs-warning-text-emphasis, #664d03) !important; /* Darker yellow text */
-    /* Optional: If you want a border to match the warning style */
-    /* border-color: var(--bs-warning-border-subtle, #ffe69c) !important; */
-}
-
-.btn-primary {
-    background-color: #90b499;
-    color: white;
-    border-color: #748f7a;
+    background-color: var(--bs-warning-bg-subtle, #fff3cd) !important;
+    color: var(--bs-warning-text-emphasis, #664d03) !important;
 }
