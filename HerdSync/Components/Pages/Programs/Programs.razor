@@ -5,18 +5,12 @@
 
 <PageTitle>Programs</PageTitle>
 
-<div class="d-flex justify-content-between align-items-center pa-4">
-    <div>
-        <MudText Typo="Typo.h4">Programs</MudText>
-        <MudText Typo="Typo.caption">Treatment programs set up for your farm.</MudText>
-    </div>
-    <MudButton Href="/newprogram"
-               Color="Color.Primary"
-               Variant="Variant.Filled"
-               StartIcon="@Icons.Material.Filled.Add">
-        New Program
-    </MudButton>
-</div>
+<PageHeader Title="Programs"
+            Subtitle="Treatment programs set up for your farm."
+            SubtitleInline="false"
+            ButtonText="New Program"
+            ButtonIcon="bx bx-plus"
+            Href="/newprogram" />
 
 <div class="container mt-3">
     @if (_loading)

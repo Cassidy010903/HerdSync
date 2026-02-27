@@ -1,0 +1,29 @@
+﻿@* Parameters: Icon (optional icon class), Title, Elevated, Compact, FullHeight, ChildContent *@
+
+<div class="db-card @(Elevated ? "db-card--elevated" : "") @(FullHeight ? "h-100" : "") @(CssClass ?? "")">
+    @if (!string.IsNullOrEmpty(Title))
+    {
+        <div class="db-card__header">
+            <h6 class="db-card__title">
+                @if (!string.IsNullOrEmpty(Icon))
+                {
+                    <i class="@Icon me-2"></i>
+                }
+                @Title
+            </h6>
+        </div>
+    }
+    <div class="db-card__body @(Compact ? "db-card__body--compact" : "")">
+        @ChildContent
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public string Title { get; set; } = string.Empty;
+    [Parameter] public bool Elevated { get; set; }
+    [Parameter] public bool Compact { get; set; }
+    [Parameter] public bool FullHeight { get; set; }
+    [Parameter] public string? CssClass { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

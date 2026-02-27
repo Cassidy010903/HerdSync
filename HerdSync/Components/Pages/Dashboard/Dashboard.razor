@@ -4,19 +4,11 @@
 
 <PageTitle>HerdSync</PageTitle>
 
-<div class="container-fluid">
+<div class="container-fluid db-dashboard">
+    <PageHeader Title="Dashboard"
+                Subtitle="@DateTime.Now.ToString("dddd, dd MMMM yyyy")"
+                SubtitleInline="false" />
 
-    <div class="db-page-header">
-        <div>
-            <h1 class="db-page-title">Dashboard</h1>
-            <p class="db-page-subtitle">@DateTime.Now.ToString("dddd, dd MMMM yyyy")</p>
-        </div>
-        <a href="/livelist" class="db-btn db-btn--primary">
-            <i class="bx bx-qr-scan me-1"></i> Start Scan
-        </a>
-    </div>
-
-    @* Summary Cards *@
     <div class="row g-3 mb-4">
         <SummaryCard Title="Total Stock" Icon="fas fa-cow" BorderHex="#4a7c59" Value="@StockCount.ToString()" />
         <SummaryCard Title="Pregnancies" Icon="fas fa-child" BorderHex="#6a9e78" Value="@PregnancyCount.ToString()" />
@@ -24,477 +16,125 @@
         <SummaryCard Title="Flagged Stock" Icon="fas fa-flag" BorderHex="#c0392b" Value="0" />
     </div>
 
-    @* Main Row: Calendar + Right Column *@
-    <div class="row align-items-stretch g-3 mb-4">
-
+    <div class="row align-items-stretch db-fluid-row mb-4">
         <div class="col-xl-8 col-lg-7 d-flex flex-column">
-            <div class="db-card db-card--elevated h-100">
-                <div class="db-card__header">
-                    <h6 class="db-card__title"><i class="bx bx-calendar me-2"></i>Farm Calendar</h6>
-                </div>
-                <div class="db-card__body" style="min-height: 420px;">
+            <HerdSyncCard Title="Farm Calendar" Icon="bx bx-calendar" Elevated="true" FullHeight="true">
+                <div style="min-height: 420px;">
                     <HerdCalendar Entries="@calendarEntries"
                                   MaxEntriesPerDay="3"
                                   OnEntryAdded="AddCalendarEntry"
                                   OnEntryUpdated="UpdateCalendarEntry"
                                   OnEntryDeleted="DeleteCalendarEntry" />
                 </div>
-            </div>
+            </HerdSyncCard>
         </div>
 
-        <div class="col-xl-4 col-lg-5 d-flex flex-column gap-3">
-
-            <div class="db-card">
-                <div class="db-card__header">
-                    <h6 class="db-card__title"><i class="bx bx-time-five me-2"></i>Upcoming Events</h6>
-                </div>
-                <div class="db-card__body db-card__body--compact">
-                    @if (!UpcomingEvents.Any())
+        <div class="col-xl-4 col-lg-5 d-flex flex-column db-right-col">
+            <HerdSyncCard Title="Upcoming Events" Icon="bx bx-time-five" Compact="true">
+                @if (!UpcomingEvents.Any())
+                {
+                    <p class="db-empty-msg">No upcoming events scheduled.</p>
+                }
+                else
+                {
+                    @foreach (var ev in UpcomingEvents)
                     {
-                        <p class="db-empty-msg">No upcoming events scheduled.</p>
-                    }
-                    else
-                    {
-                        @foreach (var ev in UpcomingEvents)
-                        {
-                            <div class="db-event">
-                                <div class="db-event__date">
-                                    <span class="db-event__day">@ev.Start.ToString("dd")</span>
-                                    <span class="db-event__month">@ev.Start.ToString("MMM")</span>
-                                </div>
-                                <div class="db-event__info">
-                                    <span class="db-event__title">@ev.Title</span>
-                                    <span class="db-event__relative">@GetRelativeDate(ev.Start)</span>
-                                </div>
+                        <div class="db-event">
+                            <div class="db-event__date">
+                                <span class="db-event__day">@ev.Start.ToString("dd")</span>
+                                <span class="db-event__month">@ev.Start.ToString("MMM")</span>
                             </div>
-                        }
-                    }
-                </div>
-            </div>
-
-            <div class="db-card">
-                <div class="db-card__header">
-                    <h6 class="db-card__title"><i class="bx bx-history me-2"></i>Recent Activity</h6>
-                </div>
-                <div class="db-card__body db-card__body--compact">
-                    @foreach (var item in RecentActivity)
-                    {
-                        <div class="db-activity">
-                            <span class="db-activity__dot" style="background: @item.Color;"></span>
-                            <div class="db-activity__content">
-                                <span class="db-activity__text">@item.Text</span>
-                                <span class="db-activity__time">@item.Time</span>
+                            <div class="db-event__info">
+                                <span class="db-event__title">@ev.Title</span>
+                                <span class="db-event__relative">@GetRelativeDate(ev.Start)</span>
                             </div>
                         </div>
                     }
-                </div>
-            </div>
+                }
+            </HerdSyncCard>
 
+            <HerdSyncCard Title="Recent Activity" Icon="bx bx-history" Compact="true" FullHeight="true">
+                @foreach (var item in RecentActivity)
+                {
+                    <div class="db-activity">
+                        <span class="db-activity__dot" style="background: @item.Color;"></span>
+                        <div class="db-activity__content">
+                            <span class="db-activity__text">@item.Text</span>
+                            <span class="db-activity__time">@item.Time</span>
+                        </div>
+                    </div>
+                }
+            </HerdSyncCard>
         </div>
     </div>
 
-    @* Bottom Row: Snapshot + Observations *@
-    <div class="row g-3 mb-4">
-
+    <div class="row db-fluid-row mb-4">
         <div class="col-lg-6">
-            <div class="db-card">
-                <div class="db-card__header">
-                    <h6 class="db-card__title"><i class="bx bx-bar-chart-alt-2 me-2"></i>Herd Snapshot</h6>
+            <HerdSyncCard Title="Herd Snapshot" Icon="bx bx-bar-chart-alt-2">
+                <p class="db-section-label">Age Groups</p>
+                <div class="db-bar-row">
+                    <span class="db-bar-label">Calves (0–1yr)</span>
+                    <div class="db-bar-wrap"><div class="db-bar db-bar--calf" style="width: @GetPercent(CalfCount)%"></div></div>
+                    <span class="db-bar-count">@CalfCount</span>
                 </div>
-                <div class="db-card__body">
-
-                    <p class="db-section-label">Age Groups</p>
-
-                    <div class="db-bar-row">
-                        <span class="db-bar-label">Calves (0–1yr)</span>
-                        <div class="db-bar-wrap"><div class="db-bar db-bar--calf" style="width: @GetPercent(CalfCount)%"></div></div>
-                        <span class="db-bar-count">@CalfCount</span>
-                    </div>
-                    <div class="db-bar-row">
-                        <span class="db-bar-label">Yearlings (1–2yr)</span>
-                        <div class="db-bar-wrap"><div class="db-bar db-bar--yearling" style="width: @GetPercent(YearlingCount)%"></div></div>
-                        <span class="db-bar-count">@YearlingCount</span>
-                    </div>
-                    <div class="db-bar-row">
-                        <span class="db-bar-label">Adults (2+yr)</span>
-                        <div class="db-bar-wrap"><div class="db-bar db-bar--adult" style="width: @GetPercent(AdultCount)%"></div></div>
-                        <span class="db-bar-count">@AdultCount</span>
-                    </div>
-
-                    <hr class="my-3" />
-                    <p class="db-section-label">Gender Split</p>
-
-                    <div class="db-bar-row">
-                        <span class="db-bar-label">♂ Male</span>
-                        <div class="db-bar-wrap"><div class="db-bar db-bar--male" style="width: @GetPercent(MaleCount)%"></div></div>
-                        <span class="db-bar-count">@MaleCount</span>
-                    </div>
-                    <div class="db-bar-row">
-                        <span class="db-bar-label">♀ Female</span>
-                        <div class="db-bar-wrap"><div class="db-bar db-bar--female" style="width: @GetPercent(FemaleCount)%"></div></div>
-                        <span class="db-bar-count">@FemaleCount</span>
-                    </div>
-
+                <div class="db-bar-row">
+                    <span class="db-bar-label">Yearlings (1–2yr)</span>
+                    <div class="db-bar-wrap"><div class="db-bar db-bar--yearling" style="width: @GetPercent(YearlingCount)%"></div></div>
+                    <span class="db-bar-count">@YearlingCount</span>
                 </div>
-            </div>
+                <div class="db-bar-row">
+                    <span class="db-bar-label">Adults (2+yr)</span>
+                    <div class="db-bar-wrap"><div class="db-bar db-bar--adult" style="width: @GetPercent(AdultCount)%"></div></div>
+                    <span class="db-bar-count">@AdultCount</span>
+                </div>
+                <hr class="my-3" />
+                <p class="db-section-label">Gender Split</p>
+                <div class="db-bar-row">
+                    <span class="db-bar-label">♂ Male</span>
+                    <div class="db-bar-wrap"><div class="db-bar db-bar--male" style="width: @GetPercent(MaleCount)%"></div></div>
+                    <span class="db-bar-count">@MaleCount</span>
+                </div>
+                <div class="db-bar-row">
+                    <span class="db-bar-label">♀ Female</span>
+                    <div class="db-bar-wrap"><div class="db-bar db-bar--female" style="width: @GetPercent(FemaleCount)%"></div></div>
+                    <span class="db-bar-count">@FemaleCount</span>
+                </div>
+            </HerdSyncCard>
         </div>
 
         <div class="col-lg-6">
-            <div class="db-card h-100">
-                <div class="db-card__header">
-                    <h6 class="db-card__title"><i class="bx bx-note me-2"></i>Observations</h6>
-                </div>
-                <div class="db-card__body">
-                    <div class="db-notes">
-                        @foreach (var note in _notes)
-                        {
-                            <div class="db-note">
-                                <i class="bx bx-circle db-note__icon"></i>
-                                <span>@note</span>
-                            </div>
-                        }
-                    </div>
-                    @if (_addingNote)
+            <HerdSyncCard Title="Observations" Icon="bx bx-note" FullHeight="true">
+                <div class="db-notes">
+                    @foreach (var note in _notes)
                     {
-                        <div class="mt-2">
-                            <input class="db-input"
-                                   @bind="_newNoteText"
-                                   placeholder="Type observation..."
-                                   @onkeydown="HandleNoteKeyDown" />
-                            <div class="d-flex justify-content-end gap-2 mt-2">
-                                <button class="db-btn db-btn--sm db-btn--primary" @onclick="AddNote">Add</button>
-                                <button class="db-btn db-btn--sm db-btn--outline" @onclick="() => _addingNote = false">Cancel</button>
-                            </div>
+                        <div class="db-note">
+                            <i class="bx bx-circle db-note__icon"></i>
+                            <span>@note</span>
                         </div>
                     }
-                    else
-                    {
-                        <button class="db-btn db-btn--sm db-btn--outline mt-3 w-100" @onclick="() => _addingNote = true">
-                            <i class="bx bx-plus me-1"></i> Add Observation
-                        </button>
-                    }
                 </div>
-            </div>
+                @if (_addingNote)
+                {
+                    <div class="mt-2">
+                        <input class="db-input"
+                               @bind="_newNoteText"
+                               placeholder="Type observation..."
+                               @onkeydown="HandleNoteKeyDown" />
+                        <div class="d-flex justify-content-end gap-2 mt-2">
+                            <button class="db-btn db-btn--sm db-btn--primary" @onclick="AddNote">Add</button>
+                            <button class="db-btn db-btn--sm db-btn--outline" @onclick="() => _addingNote = false">Cancel</button>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <button class="db-btn db-btn--sm db-btn--outline mt-3 w-100" @onclick="() => _addingNote = true">
+                        <i class="bx bx-plus me-1"></i> Add Observation
+                    </button>
+                }
+            </HerdSyncCard>
         </div>
 
     </div>
 
 </div>
-
-<style>
-    /* ── Tokens ── */
-    .container-fluid {
-        --c-green: #4a7c59;
-        --c-green-md: #6a9e78;
-        --c-green-bg: #f0f6f2;
-        --c-border: #e2e8e4;
-        --c-text: #2d3a31;
-        --c-muted: #7a8f80;
-        --c-warning: #d4a843;
-        --c-info: #3a7fa8;
-        --c-radius: 10px;
-        --c-radius-s: 6px;
-        --c-shadow: 0 1px 4px rgba(0,0,0,0.08);
-        --c-shadow-md: 0 3px 12px rgba(0,0,0,0.11);
-    }
-
-    /* ── Page Header ── */
-    .db-page-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 16px 0 20px;
-    }
-
-    .db-page-title {
-        font-size: 22px;
-        font-weight: 600;
-        color: var(--c-text);
-        margin: 0;
-    }
-
-    .db-page-subtitle {
-        font-size: 13px;
-        color: var(--c-muted);
-        margin: 2px 0 0;
-    }
-
-    /* ── Card ── */
-    .db-card {
-        background: #fff;
-        border: 1px solid var(--c-border);
-        border-radius: var(--c-radius);
-        box-shadow: var(--c-shadow);
-        overflow: hidden;
-    }
-
-    .db-card--elevated {
-        box-shadow: var(--c-shadow-md);
-    }
-
-    .db-card__header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 12px 16px;
-        border-bottom: 1px solid var(--c-border);
-        background: #fff;
-    }
-
-    .db-card__title {
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--c-text);
-        margin: 0;
-    }
-
-    .db-card__body {
-        padding: 16px;
-    }
-
-    .db-card__body--compact {
-        padding: 10px 16px;
-    }
-
-    /* ── Buttons ── */
-    .db-btn {
-        display: inline-flex;
-        align-items: center;
-        padding: 8px 16px;
-        border-radius: var(--c-radius-s);
-        font-size: 13px;
-        font-weight: 500;
-        border: none;
-        cursor: pointer;
-        text-decoration: none;
-        transition: opacity 0.15s;
-    }
-
-        .db-btn:hover {
-            opacity: 0.85;
-            text-decoration: none;
-        }
-
-    .db-btn--primary {
-        background: var(--c-green);
-        color: #fff;
-    }
-
-    .db-btn--outline {
-        background: transparent;
-        border: 1px solid var(--c-border);
-        color: var(--c-text);
-    }
-
-    .db-btn--sm {
-        padding: 5px 12px;
-        font-size: 12px;
-    }
-
-    /* ── Input ── */
-    .db-input {
-        width: 100%;
-        padding: 8px 12px;
-        border: 1px solid var(--c-border);
-        border-radius: var(--c-radius-s);
-        font-size: 13px;
-        outline: none;
-        transition: border-color 0.15s;
-    }
-
-        .db-input:focus {
-            border-color: var(--c-green);
-        }
-
-    /* ── Upcoming Events ── */
-    .db-event {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 8px 0;
-        border-bottom: 1px solid var(--c-border);
-    }
-
-        .db-event:last-child {
-            border-bottom: none;
-        }
-
-    .db-event__date {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-        background: var(--c-green-bg);
-        border-radius: var(--c-radius-s);
-        flex-shrink: 0;
-    }
-
-    .db-event__day {
-        font-size: 15px;
-        font-weight: 700;
-        color: var(--c-green);
-        line-height: 1;
-    }
-
-    .db-event__month {
-        font-size: 10px;
-        color: var(--c-muted);
-        text-transform: uppercase;
-    }
-
-    .db-event__info {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .db-event__title {
-        font-size: 13px;
-        font-weight: 500;
-        color: var(--c-text);
-    }
-
-    .db-event__relative {
-        font-size: 11px;
-        color: var(--c-muted);
-    }
-
-    .db-empty-msg {
-        font-size: 13px;
-        color: var(--c-muted);
-        padding: 12px 0;
-        margin: 0;
-    }
-
-    /* ── Activity ── */
-    .db-activity {
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
-        padding: 7px 0;
-        border-bottom: 1px solid var(--c-border);
-    }
-
-        .db-activity:last-child {
-            border-bottom: none;
-        }
-
-    .db-activity__dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        margin-top: 4px;
-        flex-shrink: 0;
-    }
-
-    .db-activity__content {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .db-activity__text {
-        font-size: 13px;
-        color: var(--c-text);
-    }
-
-    .db-activity__time {
-        font-size: 11px;
-        color: var(--c-muted);
-    }
-
-    /* ── Herd Snapshot ── */
-    .db-section-label {
-        font-size: 11px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: var(--c-muted);
-        margin: 0 0 10px;
-    }
-
-    .db-bar-row {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 10px;
-    }
-
-    .db-bar-label {
-        font-size: 12px;
-        width: 120px;
-        flex-shrink: 0;
-        color: var(--c-text);
-    }
-
-    .db-bar-wrap {
-        flex: 1;
-        background: var(--c-border);
-        border-radius: 20px;
-        height: 8px;
-        overflow: hidden;
-    }
-
-    .db-bar {
-        height: 100%;
-        border-radius: 20px;
-        transition: width 0.5s ease;
-        min-width: 3px;
-    }
-
-    .db-bar-count {
-        font-size: 12px;
-        font-weight: 600;
-        width: 28px;
-        text-align: right;
-        color: var(--c-text);
-    }
-
-    .db-bar--calf {
-        background: var(--c-warning);
-    }
-
-    .db-bar--yearling {
-        background: var(--c-info);
-    }
-
-    .db-bar--adult {
-        background: var(--c-green);
-    }
-
-    .db-bar--male {
-        background: var(--c-info);
-    }
-
-    .db-bar--female {
-        background: #c0719a;
-    }
-
-    /* ── Observations ── */
-    .db-notes {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-    }
-
-    .db-note {
-        display: flex;
-        align-items: flex-start;
-        gap: 8px;
-        font-size: 13px;
-        padding: 6px 0;
-        border-bottom: 1px solid var(--c-border);
-        color: var(--c-text);
-    }
-
-        .db-note:last-child {
-            border-bottom: none;
-        }
-
-    .db-note__icon {
-        color: var(--c-green-md);
-        margin-top: 2px;
-        flex-shrink: 0;
-        font-size: 10px;
-    }
-</style>

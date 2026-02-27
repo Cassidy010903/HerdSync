@@ -53,6 +53,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Components\Shared\Components\Buttons\" />
 	  <Folder Include="Components\Shared\Dialogs\" />
 	</ItemGroup>
 

@@ -1,12 +1,22 @@
-﻿namespace HerdSync.Components.Pages.Programs
+﻿using BLL.Services;
+using HerdSync.Shared.DTO.Program;
+using Microsoft.AspNetCore.Components;
+
+namespace HerdSync.Components.Pages.Programs
 {
     public partial class ProgramHistory
     {
-        public List<ProgramHist> ProgramList = new()
+        [Inject] public IProgramRunService ProgramRunService { get; set; } = default!;
+
+        public List<ProgramRunDTO> ProgramList { get; set; } = new();
+        private bool _loading = true;
+
+        protected override async Task OnInitializedAsync()
         {
-            new ProgramHist {Name = "Parasite Control", TreatGroup = "ALL", Additions = "ADDITIONAL",Date = "12 July 2025"},
-            new ProgramHist {Name = "Parasite and Nutritional", TreatGroup = "ALL", Additions = "NO ADD",Date = "8 March 2025"},
-            new ProgramHist {Name = "Words of Affirmation", TreatGroup = "ALL", Additions = "NO ADD",Date = "20 April 2025"}
-        };
+            ProgramList = (await ProgramRunService.GetAllAsync())
+                .OrderByDescending(p => p.RunDate)
+                .ToList();
+            _loading = false;
+        }
     }
 }

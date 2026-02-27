@@ -1,0 +1,71 @@
+﻿<div class="row align-items-center mb-3">
+    <div class="col">
+        <div class="mb-0">
+            @if (SubtitleInline)
+            {
+                <h5 class="card-title mb-0">
+                    @Title
+                    @if (!string.IsNullOrEmpty(Subtitle))
+                    {
+                        <span class="text-muted fw-normal ms-2">@Subtitle</span>
+                    }
+                </h5>
+            }
+            else
+            {
+                <h5 class="card-title mb-0">@Title</h5>
+                @if (!string.IsNullOrEmpty(Subtitle))
+                {
+                    <p class="text-muted mb-0 mt-1" style="font-size: 13px;">@Subtitle</p>
+                }
+            }
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(ButtonText) || ButtonContent != null)
+    {
+        <div class="col-auto">
+            <div class="d-flex flex-wrap align-items-center justify-content-end gap-2">
+                @if (ButtonContent != null)
+                {
+                    @ButtonContent
+                }
+                else if (!string.IsNullOrEmpty(Href))
+                {
+                    <MudButton Href="@Href"
+                               Variant="MudBlazor.Variant.Outlined"
+                               Color="MudBlazor.Color.Secondary">
+                        @if (!string.IsNullOrEmpty(ButtonIcon))
+                        {
+                            <i class="@ButtonIcon me-1"></i>
+                        }
+                        @ButtonText
+                    </MudButton>
+                }
+                else
+                {
+                    <MudButton OnClick="OnButtonClick"
+                               Variant="MudBlazor.Variant.Outlined"
+                               Color="MudBlazor.Color.Secondary">
+                        @if (!string.IsNullOrEmpty(ButtonIcon))
+                        {
+                            <i class="@ButtonIcon me-1"></i>
+                        }
+                        @ButtonText
+                    </MudButton>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; } = string.Empty;
+    [Parameter] public string? Subtitle { get; set; }
+    [Parameter] public bool SubtitleInline { get; set; } = true;
+    [Parameter] public string? ButtonText { get; set; }
+    [Parameter] public string? ButtonIcon { get; set; }
+    [Parameter] public string? Href { get; set; }
+    [Parameter] public EventCallback OnButtonClick { get; set; }
+    [Parameter] public RenderFragment? ButtonContent { get; set; }
+}
