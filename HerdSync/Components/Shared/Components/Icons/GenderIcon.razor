@@ -1,0 +1,15 @@
+﻿@{
+    var (symbol, color) = Gender switch
+    {
+        "M" or "Male" => ("♂", "#4fc3f7"),
+        "F" or "Female" => ("♀", "#ce93d8"),
+        _ => ("?", "#bdbdbd")
+    };
+}
+
+<span style="color: @color; font-size: @(Size)px; line-height: 1; font-weight: 400;">@symbol</span>
+
+@code {
+    [Parameter] public string? Gender { get; set; }
+    [Parameter] public int Size { get; set; } = 20;
+}

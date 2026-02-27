@@ -109,11 +109,7 @@ else
                                     <td>@cow.AnimalTypeCode</td>
                                     <td>@cow.BirthYear</td>
                                     <td>@(cow.Weight.HasValue ? $"{cow.Weight:0.##} kg" : "-")</td>
-                                    <td>
-                                        <MudIcon Icon="@GetGenderIcon(cow.Gender)"
-                                                 Color="@GetGenderColor(cow.Gender)"
-                                                 Size="Size.Small" />
-                                    </td>
+                                    <td><GenderIcon Gender="@cow.Gender" /></td>
                                     <td>@(cow.IsBranded ? "YES" : "NO")</td>
                                     <td>
                                         <ul class="list-inline mb-0">
