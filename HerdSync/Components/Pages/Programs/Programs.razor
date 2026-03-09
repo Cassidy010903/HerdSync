@@ -57,10 +57,10 @@
                                     }
                                 </div>
                                 <div class="d-flex gap-2">
-                                    <HsButton Text="Edit"
+                                    <HsButton Text="View"
                                               Variant="HsButton.ButtonVariant.Outline"
-                                              Icon="bx bx-pencil"
-                                              OnClick="@(() => NavigationManager.NavigateTo($"/newprogram/edit/{program.ProgramTemplateCode}"))"
+                                              Icon="bx bx-show"
+                                              OnClick="@(() => NavigationManager.NavigateTo($"/programs/{program.ProgramTemplateCode}"))"
                                               Class="w-100" />
                                 </div>
                             </div>

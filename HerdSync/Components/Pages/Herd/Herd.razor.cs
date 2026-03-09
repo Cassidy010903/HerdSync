@@ -7,6 +7,7 @@ namespace HerdSync.Components.Pages.Herd
     public partial class Herd
     {
         [Inject] public IAnimalService AnimalService { get; set; } = default!;
+        [Inject] public NavigationManager Nav { get; set; } = default!;
 
         private bool _loading = true;
         private bool _showDialog = false;

@@ -40,4 +40,5 @@ public class AnimalModel : BaseEntity
 
     [ForeignKey("FatherAnimalId")]
     public AnimalModel? Father { get; set; }
+    public AnimalTagModel? AnimalTag { get; set; }
 }

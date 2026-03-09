@@ -15,10 +15,10 @@ namespace DAL.Models.Program.ProgramTemplate
         public string ProgramTemplateCode { get; set; }
 
         [Required, MaxLength(6)]
-        public string AnimalTypeCode { get; set; }
+        public string? AnimalTypeCode { get; set; }
 
         [MaxLength(1)]
-        public string Gender { get; set; }
+        public string? Gender { get; set; }
 
         public int? MinBirthYear { get; set; }
         public int? MaxBirthYear { get; set; }

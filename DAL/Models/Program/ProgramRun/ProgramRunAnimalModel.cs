@@ -16,13 +16,13 @@ namespace DAL.Models.Program.ProgramRun
         public bool WasHandled { get; set; }
 
         [MaxLength(200)]
-        public string SkippedReason { get; set; }
+        public string? SkippedReason { get; set; }
 
         // Navigation
         [ForeignKey("ProgramRunId")]
-        public ProgramRunModel ProgramRun { get; set; }
+        public ProgramRunModel? ProgramRun { get; set; }
 
         [ForeignKey("AnimalId")]
-        public AnimalModel Animal { get; set; }
+        public AnimalModel? Animal { get; set; }
     }
 }

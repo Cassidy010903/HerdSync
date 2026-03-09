@@ -10,6 +10,6 @@ namespace HerdSync.Shared.DTO.Program
         public Guid AnimalId { get; set; }
         public AnimalDTO? Animal { get; set; }
         public bool WasHandled { get; set; }
-        public string SkippedReason { get; set; }
+        public string? SkippedReason { get; set; }
     }
 }

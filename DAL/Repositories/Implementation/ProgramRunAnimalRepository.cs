@@ -30,10 +30,17 @@ namespace DAL.Repositories.Implementation
 
         public async Task<ProgramRunAnimalModel> UpdateAsync(ProgramRunAnimalModel programRunAnimal)
         {
-            context.ProgramRunAnimals.Update(programRunAnimal);
+            var existing = await context.ProgramRunAnimals
+                .FirstOrDefaultAsync(p => p.ProgramRunAnimalId == programRunAnimal.ProgramRunAnimalId);
+            if (existing == null) throw new KeyNotFoundException($"ProgramRunAnimal {programRunAnimal.ProgramRunAnimalId} not found.");
+
+            existing.WasHandled = programRunAnimal.WasHandled;
+            existing.SkippedReason = programRunAnimal.SkippedReason;
+            existing.IsDeleted = programRunAnimal.IsDeleted;
+
             await context.SaveChangesAsync();
-            logger.LogInformation("Updated program run animal with ID {ProgramRunAnimalId}", programRunAnimal.ProgramRunAnimalId);
-            return programRunAnimal;
+            logger.LogInformation("Updated program run animal with ID {ProgramRunAnimalId}", existing.ProgramRunAnimalId);
+            return existing;
         }
 
         public async Task SoftDeleteAsync(Guid programRunAnimalId)

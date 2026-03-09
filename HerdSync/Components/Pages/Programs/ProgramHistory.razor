@@ -12,7 +12,7 @@
     {
         <HerdLoader />
     }
-    else if (!ProgramList.Any())
+    else if (!GroupedRuns.Any())
     {
         <div class="text-center text-muted mt-5">
             <i class="bx bx-history" style="font-size: 48px;"></i>
@@ -21,32 +21,37 @@
     }
     else
     {
-        @foreach (var program in ProgramList)
+        @foreach (var group in GroupedRuns)
         {
-            <div class="card mb-3">
-                <div class="card-body">
-                    <div class="d-flex flex-column flex-lg-row">
-                        <span class="avatar avatar-text rounded-3 me-4 mb-2">PRG</span>
-                        <div class="row flex-fill">
-                            <div class="col-sm-5">
-                                <h4 class="h5">@program.ProgramTemplateCode</h4>
-                                @if (!string.IsNullOrEmpty(program.Notes))
-                                {
-                                    <span class="badge bg-secondary">@program.Notes</span>
-                                }
+            <div class="mb-2 mt-4">
+                <span class="text-muted small fw-semibold text-uppercase">
+                    <i class="bx bx-calendar me-1"></i>@group.Key.ToString("dd MMMM yyyy")
+                </span>
+                <hr class="mt-1 mb-2" />
+            </div>
+
+            @foreach (var program in group)
+            {
+                <div class="card mb-2">
+                    <div class="card-body py-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="avatar avatar-text rounded-3 px-2" style="width: auto; min-width: 40px; font-size: 11px;">@program.ProgramTemplateCode</span>
+                                <div>
+                                    <h6 class="mb-0">@GetTemplateName(program.ProgramTemplateCode)</h6>
+                                    @if (!string.IsNullOrEmpty(program.Notes))
+                                    {
+                                        <small class="text-muted">@program.Notes</small>
+                                    }
+                                </div>
                             </div>
-                            <div class="col-sm-4 py-2">
-                                <span class="badge bg-secondary">
-                                    @program.RunDate.ToString("dd MMM yyyy")
-                                </span>
-                            </div>
-                            <div class="col-sm-3 text-lg-end">
-                                <a href="#" class="btn btn-primary">View</a>
-                            </div>
+                            <button class="btn btn-outline-primary btn-sm" @onclick="() => ViewRun(program.ProgramRunId)">
+                                <i class="bx bx-show"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
-            </div>
+            }
         }
     }
 </div>

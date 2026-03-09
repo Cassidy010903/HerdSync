@@ -34,6 +34,7 @@ builder.Services.AddServerSideBlazor()
 builder.Services.AddDbContext<HerdsyncDBContext>(options =>
     options.UseSqlServer(connectionString));
 
+builder.Services.AddScoped<LiveSessionService>();
 builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
 builder.Services.AddScoped<IAnimalService, AnimalService>();
 builder.Services.AddScoped<IValidator<AnimalDTO>, SpeciesDTOValidator>();

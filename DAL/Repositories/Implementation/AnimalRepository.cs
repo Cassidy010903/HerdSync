@@ -7,7 +7,10 @@ namespace DAL.Repositories.Implementation
     public class AnimalRepository(HerdsyncDBContext context, ILogger<AnimalRepository> logger) : IAnimalRepository
     {
         public async Task<IEnumerable<AnimalModel>> GetAllAsync()
-            => await context.Animals.Where(a => !a.IsDeleted).ToListAsync();
+    => await context.Animals
+        .Include(a => a.AnimalTag)
+        .Where(a => !a.IsDeleted)
+        .ToListAsync();
 
         public async Task<AnimalModel?> GetByIdAsync(Guid animalId)
             => await context.Animals.FirstOrDefaultAsync(a => a.AnimalId == animalId && !a.IsDeleted);

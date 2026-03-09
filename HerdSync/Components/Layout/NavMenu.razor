@@ -1,9 +1,11 @@
 ﻿@rendermode @(new InteractiveServerRenderMode(prerender: true))
+@inject LiveSessionService LiveSession
+@implements IDisposable
 
 <div class="hs-nav">
     <div class="hs-nav__toggle">
         <label class="hs-nav__switch">
-            <input type="checkbox" @bind="_isCowsMode" />
+            <input type="checkbox" @bind="_isCowsMode" disabled="@LiveSession.IsActive" />
             <span class="hs-nav__switch-slider"></span>
         </label>
         <span class="hs-nav__toggle-label">@(_isCowsMode ? "Herd" : "Farmer")</span>
@@ -12,35 +14,39 @@
     @if (_isCowsMode)
     {
         <nav class="hs-nav__menu">
-            <NavLink class="hs-nav__link" href="/" Match="NavLinkMatch.All">
+            <NavLink class="@("hs-nav__link" + (LiveSession.IsActive ? " hs-nav__link--disabled" : ""))" href="/" Match="NavLinkMatch.All">
                 <i class="bx bx-home me-2"></i> Dashboard
             </NavLink>
-            <NavLink class="hs-nav__link" href="/herd" Match="NavLinkMatch.Prefix">
+            <NavLink class="@("hs-nav__link" + (LiveSession.IsActive ? " hs-nav__link--disabled" : ""))" href="/herd" Match="NavLinkMatch.Prefix">
                 <i class="bx bx-group me-2"></i> Herd
             </NavLink>
 
             <div class="hs-nav__group">
-                <button class="hs-nav__group-toggle" @onclick="ToggleProgramOptions">
+                <button class="hs-nav__group-toggle" @onclick="ToggleProgramOptions" disabled="@LiveSession.IsActive">
                     <i class="bx bx-code-alt me-2"></i> Program Options
                     <i class="bx @(_programOptionsOpen ? "bx-chevron-up" : "bx-chevron-down") ms-auto"></i>
                 </button>
                 @if (_programOptionsOpen)
                 {
                     <div class="hs-nav__group-items">
-                        <NavLink class="hs-nav__link hs-nav__link--nested" href="/programs">
+                        <NavLink class="@("hs-nav__link hs-nav__link--nested" + (LiveSession.IsActive ? " hs-nav__link--disabled" : ""))" href="/programs">
                             Programs
                         </NavLink>
-                        <NavLink class="hs-nav__link hs-nav__link--nested" href="/programhistory">
+                        <NavLink class="@("hs-nav__link hs-nav__link--nested" + (LiveSession.IsActive ? " hs-nav__link--disabled" : ""))" href="/programhistory">
                             Program History
                         </NavLink>
                         <NavLink class="hs-nav__link hs-nav__link--nested" href="/livelist">
                             LiveList
+                            @if (LiveSession.IsActive)
+                            {
+                                <span class="badge bg-success ms-2 scanning-pulse">● LIVE</span>
+                            }
                         </NavLink>
                     </div>
                 }
             </div>
 
-            <NavLink class="hs-nav__link" href="/TagManagement" Match="NavLinkMatch.Prefix">
+            <NavLink class="@("hs-nav__link" + (LiveSession.IsActive ? " hs-nav__link--disabled" : ""))" href="/TagManagement" Match="NavLinkMatch.Prefix">
                 <i class="bx bx-purchase-tag me-2"></i> Tag Management
             </NavLink>
         </nav>
@@ -48,35 +54,35 @@
     else
     {
         <nav class="hs-nav__menu">
-            <NavLink class="hs-nav__link" href="/" Match="NavLinkMatch.All">
+            <NavLink class="@("hs-nav__link" + (LiveSession.IsActive ? " hs-nav__link--disabled" : ""))" href="/" Match="NavLinkMatch.All">
                 <i class="bx bx-home me-2"></i> Dashboard
             </NavLink>
-            <NavLink class="hs-nav__link" href="/fields" Match="NavLinkMatch.Prefix">
+            <NavLink class="@("hs-nav__link" + (LiveSession.IsActive ? " hs-nav__link--disabled" : ""))" href="/fields" Match="NavLinkMatch.Prefix">
                 <i class="bx bx-calendar me-2"></i> Calendar
             </NavLink>
 
             <div class="hs-nav__group">
-                <button class="hs-nav__group-toggle" @onclick="ToggleReporting">
+                <button class="hs-nav__group-toggle" @onclick="ToggleReporting" disabled="@LiveSession.IsActive">
                     <i class="bx bx-bar-chart me-2"></i> Reporting
                     <i class="bx @(_reportingOpen ? "bx-chevron-up" : "bx-chevron-down") ms-auto"></i>
                 </button>
                 @if (_reportingOpen)
                 {
                     <div class="hs-nav__group-items">
-                        <NavLink class="hs-nav__link hs-nav__link--nested" href="/crop-planning">
+                        <NavLink class="@("hs-nav__link hs-nav__link--nested" + (LiveSession.IsActive ? " hs-nav__link--disabled" : ""))" href="/crop-planning">
                             Upcoming Events
                         </NavLink>
-                        <NavLink class="hs-nav__link hs-nav__link--nested" href="/machinery">
+                        <NavLink class="@("hs-nav__link hs-nav__link--nested" + (LiveSession.IsActive ? " hs-nav__link--disabled" : ""))" href="/machinery">
                             Inventory
                         </NavLink>
-                        <NavLink class="hs-nav__link hs-nav__link--nested" href="/sales">
+                        <NavLink class="@("hs-nav__link hs-nav__link--nested" + (LiveSession.IsActive ? " hs-nav__link--disabled" : ""))" href="/sales">
                             Custom Reporting
                         </NavLink>
                     </div>
                 }
             </div>
 
-            <NavLink class="hs-nav__link" href="/farmer-profile" Match="NavLinkMatch.Prefix">
+            <NavLink class="@("hs-nav__link" + (LiveSession.IsActive ? " hs-nav__link--disabled" : ""))" href="/farmer-profile" Match="NavLinkMatch.Prefix">
                 <i class="bx bx-user me-2"></i> My Farmer Profile
             </NavLink>
         </nav>
@@ -90,6 +96,21 @@
 
     private void ToggleProgramOptions() => _programOptionsOpen = !_programOptionsOpen;
     private void ToggleReporting() => _reportingOpen = !_reportingOpen;
+
+    protected override void OnInitialized()
+    {
+        LiveSession.OnChanged += OnSessionChanged;
+    }
+
+    private void OnSessionChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        LiveSession.OnChanged -= OnSessionChanged;
+    }
 }
 
 <style>
@@ -188,6 +209,12 @@
         font-weight: 400;
     }
 
+    .hs-nav__link--disabled {
+        pointer-events: none;
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+
     .hs-nav__group {
         display: flex;
         flex-direction: column;
@@ -214,9 +241,28 @@
             color: #4a7c59;
         }
 
+        .hs-nav__group-toggle:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
     .hs-nav__group-items {
         display: flex;
         flex-direction: column;
         gap: 2px;
+    }
+
+    .scanning-pulse {
+        animation: pulse 2s infinite;
+    }
+
+    @@keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.4;
+        }
     }
 </style>
