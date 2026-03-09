@@ -40,14 +40,13 @@
                 </div>
             </div>
             <div>
-                <MudAutocomplete T="AnimalDTO"
-                                 @bind-Value="SelectedFather"
-                                 SearchFunc="Search"
-                                 ToStringFunc="@(a => a?.DisplayIdentifier ?? string.Empty)"
-                                 MinCharacters="0"
-                                 Variant="Variant.Outlined"
-                                 Label="Father"
-                                 Placeholder="Please select father" />
+                <label>Father</label>
+                <HsAutocomplete TItem="AnimalDTO"
+                                @bind-Value="SelectedFather"
+                                SearchFunc="Search"
+                                ToStringFunc="@(a => a?.DisplayIdentifier ?? string.Empty)"
+                                MinCharacters="0"
+                                Placeholder="Please select father" />
                 <div class="form-check mt-2">
                     <input type="checkbox" class="form-check-input" @bind="species.IsBranded" id="brandedCheck" />
                     <label class="form-check-label" for="brandedCheck">Branded</label>

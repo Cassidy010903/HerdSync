@@ -1,0 +1,133 @@
+﻿@typeparam TItem
+
+<div class="hs-autocomplete">
+    <input type="text"
+           class="form-control"
+           placeholder="@Placeholder"
+           value="@_inputText"
+           @oninput="OnInput"
+           @onfocus="OnFocus"
+           @onblur="OnBlur" />
+
+    @if (_showDropdown && _suggestions.Any())
+    {
+        <div class="hs-autocomplete__dropdown">
+            @foreach (var item in _suggestions)
+            {
+                <div class="hs-autocomplete__item"
+                     @onmousedown="() => SelectItem(item)">
+                    @ToStringFunc(item)
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public TItem? Value { get; set; }
+    [Parameter] public EventCallback<TItem?> ValueChanged { get; set; }
+    [Parameter] public Func<string, CancellationToken, Task<IEnumerable<TItem>>>? SearchFunc { get; set; }
+    [Parameter] public Func<TItem?, string>? ToStringFunc { get; set; }
+    [Parameter] public string Placeholder { get; set; } = string.Empty;
+    [Parameter] public string Label { get; set; } = string.Empty;
+    [Parameter] public int MinCharacters { get; set; } = 0;
+
+    private string _inputText = string.Empty;
+    private List<TItem> _suggestions = new();
+    private bool _showDropdown = false;
+    private CancellationTokenSource _cts = new();
+
+    protected override void OnParametersSet()
+    {
+        if (Value != null && ToStringFunc != null)
+            _inputText = ToStringFunc(Value);
+    }
+
+    private async Task OnInput(ChangeEventArgs e)
+    {
+        _inputText = e.Value?.ToString() ?? string.Empty;
+
+        if (Value != null)
+        {
+            Value = default;
+            await ValueChanged.InvokeAsync(default);
+        }
+
+        _cts.Cancel();
+        _cts = new CancellationTokenSource();
+
+        if (_inputText.Length >= MinCharacters && SearchFunc != null)
+        {
+            _suggestions = (await SearchFunc(_inputText, _cts.Token)).ToList();
+            _showDropdown = _suggestions.Any();
+        }
+        else
+        {
+            _suggestions.Clear();
+            _showDropdown = false;
+        }
+    }
+
+    private async Task OnFocus()
+    {
+        if (_inputText.Length >= MinCharacters && SearchFunc != null)
+        {
+            _cts.Cancel();
+            _cts = new CancellationTokenSource();
+            _suggestions = (await SearchFunc(_inputText, _cts.Token)).ToList();
+            _showDropdown = _suggestions.Any();
+        }
+    }
+
+    private void OnBlur()
+    {
+        // Small delay so onmousedown on item fires first
+        Task.Delay(200).ContinueWith(_ =>
+        {
+            _showDropdown = false;
+            InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private async Task SelectItem(TItem item)
+    {
+        Value = item;
+        _inputText = ToStringFunc != null ? ToStringFunc(item) : item?.ToString() ?? string.Empty;
+        _showDropdown = false;
+        await ValueChanged.InvokeAsync(Value);
+    }
+}
+
+<style>
+    .hs-autocomplete {
+        position: relative;
+        width: 100%;
+    }
+
+    .hs-autocomplete__dropdown {
+        position: absolute;
+        top: calc(100% + 2px);
+        left: 0;
+        right: 0;
+        background: #fff;
+        border: 1px solid #e2e8e4;
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        z-index: 500;
+        max-height: 220px;
+        overflow-y: auto;
+    }
+
+    .hs-autocomplete__item {
+        padding: 8px 12px;
+        font-size: 13px;
+        color: #2d3a31;
+        cursor: pointer;
+        transition: background 0.12s;
+    }
+
+        .hs-autocomplete__item:hover {
+            background: #f0f4f1;
+            color: #4a7c59;
+        }
+</style>
