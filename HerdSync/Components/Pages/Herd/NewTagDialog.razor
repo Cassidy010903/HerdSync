@@ -1,33 +1,30 @@
-﻿<MudDialog>
-    <DialogContent>
-        <MudGrid>
-            <MudItem xs="12" sm="6" md="6">
-                <MudTextField ShrinkLabel
-                              @bind-Value="tag.RFIDTagCode"
-                              Label="Tag ID"
-                              Variant="MudBlazor.Variant.Outlined"
-                              Adornment="Adornment.Start"
-                              AdornmentIcon="@Icons.Material.Filled.Nfc"
-                              AdornmentColor="Color.Primary" />
-                <MudSelect T="Guid"
-                           @bind-Value="tag.AnimalId"
-                           Label="Select Animal"
-                           Variant="MudBlazor.Variant.Filled"
-                           Dense="true">
+﻿@using HerdSync.Shared.DTO.Animal
+
+<HsDialog Visible="true" Title="@(ExistingTag != Guid.Empty ? "Edit Tag" : "Add New Tag")" DialogSize="modal-md">
+    <Content>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div>
+                <input type="text"
+                       @bind="tag.RFIDTagCode"
+                       placeholder="Tag ID"
+                       class="form-control" />
+
+                <select @bind="tag.AnimalId" class="form-select mt-2">
                     @foreach (var animal in HerdList)
                     {
-                        <MudSelectItem Value="@animal.AnimalId">
-                            @animal.DisplayIdentifier
-                        </MudSelectItem>
+                        <option value="@animal.AnimalId">@animal.DisplayIdentifier</option>
                     }
-                </MudSelect>
-                <MudCheckBox @bind-Value="tag.IsCurrent" Label="Current Tag" />
-            </MudItem>
-        </MudGrid>
-    </DialogContent>
-    <DialogActions>
-        <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Style="@($"color:{MudBlazor.Colors.Teal.Lighten2}; background:{MudBlazor.Colors.Teal.Lighten5};")"
-                   OnClick="Submit">OK</MudButton>
-    </DialogActions>
-</MudDialog>
+                </select>
+
+                <div class="form-check mt-2">
+                    <input type="checkbox" class="form-check-input" @bind="tag.IsCurrent" id="currentTag" />
+                    <label class="form-check-label" for="currentTag">Current Tag</label>
+                </div>
+            </div>
+        </div>
+    </Content>
+    <Buttons>
+        <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+        <button type="button" class="btn" style="color:#4DD0E1; background:#E0F7FA;" @onclick="Submit">OK</button>
+    </Buttons>
+</HsDialog>

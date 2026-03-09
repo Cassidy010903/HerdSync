@@ -1,84 +1,70 @@
 ﻿@using HerdSync.Shared.DTO.Animal
 
-<MudDialog>
-    <DialogContent>
-        <MudGrid>
-            <MudItem xs="12" sm="6" md="6">
-                <MudSelect @bind-Value="species.AnimalTypeCode" Label="Animal Type Code" Variant="MudBlazor.Variant.Outlined" ShrinkLabel Required>
+<HsDialog Visible="true" Title="@(ExistingCow != Guid.Empty ? "Edit Animal" : "Add New Animal")">
+    <Content>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div>
+                <label>Animal Type Code</label>
+                <select @bind="species.AnimalTypeCode" class="form-control" required>
                     @foreach (var type in animalTypes)
                     {
-                        <MudSelectItem Value="@type.AnimalTypeCode">@type.AnimalTypeName</MudSelectItem>
+                        <option value="@type.AnimalTypeCode">@type.AnimalTypeName</option>
                     }
-                </MudSelect>
-
-                <MudTextField ShrinkLabel
-                              @bind-Value="species.DisplayIdentifier"
-                              Label="Display Identifier"
-                              Variant="MudBlazor.Variant.Outlined"
-                              Adornment="Adornment.Start"
-                              AdornmentText="#"
-                              AdornmentColor="Color.Primary"
-                              Required/>
-
-                <MudTextField ShrinkLabel
-                              @bind-Value="species.BirthYear"
-                              Label="Birth Year"
-                              Variant="MudBlazor.Variant.Outlined" />
-
-                <MudTextField ShrinkLabel
-                              @bind-Value="species.Weight"
-                              Label="Weight"
-                              Variant="MudBlazor.Variant.Outlined"
-                              Adornment="Adornment.End"
-                              AdornmentText="kg"
-                              AdornmentColor="Color.Info" />
-
-                              <MudRadioGroup @bind-Value="species.Gender">
-                                    <MudRadio Value="@("M")" Color="Color.Primary">Male</MudRadio>
-                                    <MudRadio Value="@("F")" Color="Color.Primary">Female</MudRadio>
-                                    <MudRadio Value="@("U")" Color="Color.Primary">Unknown</MudRadio>
-                                </MudRadioGroup>
-
-                                <MudAutocomplete T="AnimalDTO"
-                 @bind-Value="SelectedMother"
-                 SearchFunc="Search"
-                 ToStringFunc="@(a => a?.DisplayIdentifier ?? string.Empty)"
-                 MinCharacters="0"
-                 Variant="Variant.Outlined"
-                 Label="Mother"
-                 Placeholder="Please select mother" />
-            </MudItem>
-
-            <MudItem xs="12" sm="6" md="6">
-                              
-<MudAutocomplete T="AnimalDTO"
-                 @bind-Value="SelectedFather"
-                 SearchFunc="Search"
-                 ToStringFunc="@(a => a?.DisplayIdentifier ?? string.Empty)"
-                 MinCharacters="0"
-                 Variant="Variant.Outlined"
-                 Label="Father"
-                 Placeholder="Please select father" />
-
-
-                              <MudSwitch @bind-Value="species.IsBranded" Label="Branded" Color="Color.Primary" />
-
-                              <MudTextField ShrinkLabel
-                              @bind-Value="species.MedicalNote"
-                              Label="Medical Note"
-                              Variant="MudBlazor.Variant.Outlined" />
-
-                              <MudNumericField @bind-Value="species.TotalPregnancies" Label="Total Pregnancies" Variant="MudBlazor.Variant.Outlined" Min="0" />
-
-                              <MudNumericField @bind-Value="species.TotalCalves" Label="Total Offspring" Variant="MudBlazor.Variant.Outlined" Min="0" />
-
-                              <MudDatePicker Label="Last Pregnancy" Editable="true" @bind-Date="species.LastPregnancyDate" DateFormat="yyyy-MM-dd" Placeholder="Select Date" Variant="MudBlazor.Variant.Outlined" />
-            </MudItem>
-        </MudGrid>
-    </DialogContent>
-    <DialogActions>
-        <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Style="@($"color:{MudBlazor.Colors.Teal.Lighten2}; background:{MudBlazor.Colors.Teal.Lighten5};")"
-                   OnClick="Submit">OK</MudButton>
-    </DialogActions>
-</MudDialog>
+                </select>
+                <label class="mt-2">Display Identifier</label>
+                <div class="input-group">
+                    <span class="input-group-text">#</span>
+                    <input type="text" @bind="species.DisplayIdentifier" class="form-control" placeholder="Display Identifier" required />
+                </div>
+                <label class="mt-2">Birth Year</label>
+                <input type="text" @bind="species.BirthYear" class="form-control" placeholder="Birth Year" />
+                <label class="mt-2">Weight</label>
+                <div class="input-group">
+                    <input type="text" @bind="species.Weight" class="form-control" placeholder="Weight" />
+                    <span class="input-group-text">kg</span>
+                </div>
+                <div class="mt-2">
+                    <label><input type="radio" name="gender" value="M" @onchange='() => species.Gender = "M"' /> Male</label>
+                    <label class="ms-2"><input type="radio" name="gender" value="F" @onchange='() => species.Gender = "F"' /> Female</label>
+                    <label class="ms-2"><input type="radio" name="gender" value="U" @onchange='() => species.Gender = "U"' /> Unknown</label>
+                </div>
+                <div class="mt-2">
+                    <MudAutocomplete T="AnimalDTO"
+                                     @bind-Value="SelectedMother"
+                                     SearchFunc="Search"
+                                     ToStringFunc="@(a => a?.DisplayIdentifier ?? string.Empty)"
+                                     MinCharacters="0"
+                                     Variant="Variant.Outlined"
+                                     Label="Mother"
+                                     Placeholder="Please select mother" />
+                </div>
+            </div>
+            <div>
+                <MudAutocomplete T="AnimalDTO"
+                                 @bind-Value="SelectedFather"
+                                 SearchFunc="Search"
+                                 ToStringFunc="@(a => a?.DisplayIdentifier ?? string.Empty)"
+                                 MinCharacters="0"
+                                 Variant="Variant.Outlined"
+                                 Label="Father"
+                                 Placeholder="Please select father" />
+                <div class="form-check mt-2">
+                    <input type="checkbox" class="form-check-input" @bind="species.IsBranded" id="brandedCheck" />
+                    <label class="form-check-label" for="brandedCheck">Branded</label>
+                </div>
+                <label class="mt-2">Medical Note</label>
+                <input type="text" @bind="species.MedicalNote" class="form-control" placeholder="Medical Note" />
+                <label class="mt-2">Total Pregnancies</label>
+                <input type="number" @bind="species.TotalPregnancies" class="form-control" min="0" />
+                <label class="mt-2">Total Offspring</label>
+                <input type="number" @bind="species.TotalCalves" class="form-control" min="0" />
+                <label class="mt-2">Last Pregnancy</label>
+                <input type="date" @bind="species.LastPregnancyDate" class="form-control" />
+            </div>
+        </div>
+    </Content>
+    <Buttons>
+        <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+        <button type="button" class="btn" style="color:#4DD0E1; background:#E0F7FA;" @onclick="Submit">OK</button>
+    </Buttons>
+</HsDialog>

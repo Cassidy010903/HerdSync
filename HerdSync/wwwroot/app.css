@@ -403,3 +403,117 @@ h1:focus {
     height: 8px;
     overflow: hidden;
 }
+
+/* ── HsTextField ── */
+.hs-field {
+    position: relative;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.hs-field__outline {
+    position: relative;
+    width: 100%;
+}
+
+.hs-field__input {
+    width: 100%;
+    height: 56px;
+    padding: 18px 14px 6px;
+    border: 1px solid rgba(0,0,0,0.23);
+    border-radius: 4px;
+    font-size: 16px;
+    color: rgba(0,0,0,0.87);
+    background: #fff;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+    font-family: inherit;
+}
+
+.hs-field__input--pad-start {
+    padding-left: 40px;
+}
+
+.hs-field__input--pad-end {
+    padding-right: 44px;
+}
+
+.hs-field__input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: rgba(0,0,0,0.04);
+}
+
+.hs-field__label {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: rgba(0,0,0,0.6);
+    pointer-events: none;
+    transition: all 0.15s ease;
+    background: #fff;
+    padding: 0 4px;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.hs-field__label--raised {
+    top: 0px;
+    transform: translateY(-50%);
+    font-size: 12px;
+    left: 14px !important;
+}
+
+.hs-field--focused .hs-field__label {
+    color: #4a7c59;
+}
+
+.hs-field--focused .hs-field__input {
+    border-color: #4a7c59;
+    border-width: 2px;
+}
+
+.hs-field__adornment {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+}
+
+.hs-field__adornment--start {
+    left: 0;
+    padding: 0 10px;
+    color: rgba(0,0,0,0.4);
+    font-size: 18px;
+    height: 100%;
+    top: 0;
+    transform: none;
+    display: flex;
+    align-items: center;
+    border-right: 1px solid rgba(0,0,0,0.15);
+}
+
+.hs-field__input--pad-start {
+    padding-left: 52px;
+}
+
+.hs-field__adornment--end {
+    right: 12px;
+    color: #4fc3f7;
+    font-size: 18px;
+}
+
+.hs-field__adornment--text {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.hs-field--focused .hs-field__adornment--start {
+    color: #4a7c59;
+}

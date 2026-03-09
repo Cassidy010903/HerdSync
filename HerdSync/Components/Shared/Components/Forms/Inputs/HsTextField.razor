@@ -1,0 +1,74 @@
+﻿<div class="hs-field @(_focused ? "hs-field--focused" : "") @(CssClass ?? "")">
+    <div class="hs-field__outline">
+        @if (!string.IsNullOrEmpty(AdornmentStart))
+        {
+            <span class="hs-field__adornment hs-field__adornment--start" style="@(!string.IsNullOrEmpty(AdornmentStartColor) ? $"color:{AdornmentStartColor}" : "")">
+                <i class="@AdornmentStart"></i>
+            </span>
+        }
+        @if (!string.IsNullOrEmpty(AdornmentStartText))
+        {
+            <span class="hs-field__adornment hs-field__adornment--start hs-field__adornment--text" style="@(!string.IsNullOrEmpty(AdornmentStartColor) ? $"color:{AdornmentStartColor}" : "")">
+                @AdornmentStartText
+            </span>
+        }
+
+        <input class="hs-field__input @(!string.IsNullOrEmpty(AdornmentStart) || !string.IsNullOrEmpty(AdornmentStartText) ? "hs-field__input--pad-start" : "") @(!string.IsNullOrEmpty(AdornmentEnd) || !string.IsNullOrEmpty(AdornmentEndText) ? "hs-field__input--pad-end" : "")"
+               id="@_id"
+               type="@Type"
+               value="@Value"
+               placeholder=" "
+               disabled="@Disabled"
+               @oninput="OnInput"
+               @onfocus="OnFocus"
+               @onblur="OnBlur" />
+
+        @if (!string.IsNullOrEmpty(Label))
+        {
+            <label class="hs-field__label @(_focused || !string.IsNullOrEmpty(Value) ? "hs-field__label--raised" : "")" for="@_id">
+                @Label@(Required ? " *" : "")
+            </label>
+        }
+
+        @if (!string.IsNullOrEmpty(AdornmentEnd))
+        {
+            <span class="hs-field__adornment hs-field__adornment--end" style="@(!string.IsNullOrEmpty(AdornmentEndColor) ? $"color:{AdornmentEndColor}" : "")">
+                <i class="@AdornmentEnd"></i>
+            </span>
+        }
+        @if (!string.IsNullOrEmpty(AdornmentEndText))
+        {
+            <span class="hs-field__adornment hs-field__adornment--end hs-field__adornment--text" style="@(!string.IsNullOrEmpty(AdornmentEndColor) ? $"color:{AdornmentEndColor}" : "")">
+                @AdornmentEndText
+            </span>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string Type { get; set; } = "text";
+    [Parameter] public string? AdornmentStart { get; set; }
+    [Parameter] public string? AdornmentStartText { get; set; }
+    [Parameter] public string? AdornmentStartColor { get; set; }
+    [Parameter] public string? AdornmentEnd { get; set; }
+    [Parameter] public string? AdornmentEndText { get; set; }
+    [Parameter] public string? AdornmentEndColor { get; set; }
+    [Parameter] public bool Required { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public string? CssClass { get; set; }
+
+    private bool _focused = false;
+    private string _id = $"hs-field-{Guid.NewGuid():N}";
+
+    private async Task OnInput(ChangeEventArgs e)
+    {
+        Value = e.Value?.ToString();
+        await ValueChanged.InvokeAsync(Value);
+    }
+
+    private void OnFocus() => _focused = true;
+    private void OnBlur() => _focused = false;
+}

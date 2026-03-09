@@ -1,42 +1,30 @@
 ﻿using BLL.Services;
 using HerdSync.Shared.DTO.Animal;
 using Microsoft.AspNetCore.Components;
-using MudBlazor;
 
 namespace HerdSync.Components.Pages.Herd
 {
     public partial class Herd
     {
         [Inject] public IAnimalService AnimalService { get; set; } = default!;
-        [Inject] public IDialogService DialogService { get; set; } = default!;
 
         private bool _loading = true;
+        private bool _showDialog = false;
+        private Guid _editingCowId = Guid.Empty;
+
         public List<AnimalDTO> HerdList { get; set; } = new();
         private int CowCount;
 
         private string _searchTerm = string.Empty;
         private string _genderFilter = string.Empty;
         private string _brandedFilter = string.Empty;
-        private bool _genderDropdownOpen = false;
-        private bool _brandedDropdownOpen = false;
         private bool _filterPanelOpen = false;
 
-        private void ToggleFilterPanel()
-        {
-            _filterPanelOpen = !_filterPanelOpen;
-        }
+        private void ToggleFilterPanel() => _filterPanelOpen = !_filterPanelOpen;
 
-        private void OnGenderFilterChanged(string value)
-        {
-            _genderFilter = value;
-            StateHasChanged();
-        }
-
-        private void OnBrandedFilterChanged(string value)
-        {
-            _brandedFilter = value;
-            StateHasChanged();
-        }
+        private void OnGenderFilterChanged(string value) { _genderFilter = value; StateHasChanged(); }
+        private void OnBrandedFilterChanged(string value) { _brandedFilter = value; StateHasChanged(); }
+        private void OnSearchChanged(string value) { _searchTerm = value; StateHasChanged(); }
 
         private void ClearFilters()
         {
@@ -47,23 +35,6 @@ namespace HerdSync.Components.Pages.Herd
             StateHasChanged();
         }
 
-        private void ToggleGenderFilter()
-        {
-            _genderDropdownOpen = !_genderDropdownOpen;
-            _brandedDropdownOpen = false;
-        }
-
-        private void ToggleBrandedFilter()
-        {
-            _brandedDropdownOpen = !_brandedDropdownOpen;
-            _genderDropdownOpen = false;
-        }
-
-        private void OnSearchChanged(string value)
-        {
-            _searchTerm = value;
-            StateHasChanged();
-        }
         private IEnumerable<AnimalDTO> FilteredHerdList => HerdList
             .Where(c =>
                 (string.IsNullOrWhiteSpace(_searchTerm) ||
@@ -76,20 +47,6 @@ namespace HerdSync.Components.Pages.Herd
                  (_brandedFilter == "Yes" && c.IsBranded) ||
                  (_brandedFilter == "No" && !c.IsBranded))
             );
-
-        private string GetGenderIcon(string? gender) => gender switch
-        {
-            "M" or "Male" => Icons.Material.Filled.Male,
-            "F" or "Female" => Icons.Material.Filled.Female,
-            _ => Icons.Material.Filled.QuestionMark
-        };
-
-        private Color GetGenderColor(string? gender) => gender switch
-        {
-            "M" or "Male" => Color.Info,
-            "F" or "Female" => Color.Secondary,
-            _ => Color.Default
-        };
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -106,40 +63,32 @@ namespace HerdSync.Components.Pages.Herd
 
         protected override Task OnInitializedAsync() => Task.CompletedTask;
 
-        private async Task OpenDialogAsync()
+        private void OpenDialogAsync()
         {
-            var parameters = new DialogParameters { ["HerdList"] = HerdList };
-            var options = new DialogOptions { CloseOnEscapeKey = true };
-            var dialog = await DialogService.ShowAsync<NewCow>("Add New Cow", parameters, options);
-            var result = await dialog.Result;
-
-            if (!result.Canceled)
-            {
-                HerdList = await AnimalService.GetAllAsync();
-                CowCount = HerdList.Count;
-                StateHasChanged();
-            }
+            _editingCowId = Guid.Empty;
+            _showDialog = true;
         }
 
-        private async Task EditDialog(Guid animalId)
+        private void EditDialog(Guid animalId)
         {
-            var parameters = new DialogParameters
-            {
-                ["ExistingCow"] = animalId,
-                ["HerdList"] = HerdList
-            };
-            var options = new DialogOptions { CloseOnEscapeKey = true };
-            var dialog = await DialogService.ShowAsync<NewCow>("Edit Cow", parameters, options);
-            var result = await dialog.Result;
+            _editingCowId = animalId;
+            _showDialog = true;
+        }
 
-            if (result.Data is AnimalDTO updatedCow)
-            {
-                var index = HerdList.FindIndex(c => c.AnimalId == updatedCow.AnimalId);
-                if (index >= 0) HerdList[index] = updatedCow;
-                else HerdList.Add(updatedCow);
-                CowCount = HerdList.Count;
-                StateHasChanged();
-            }
+        private async Task HandleSubmit(AnimalDTO updatedCow)
+        {
+            var index = HerdList.FindIndex(c => c.AnimalId == updatedCow.AnimalId);
+            if (index >= 0) HerdList[index] = updatedCow;
+            else HerdList.Add(updatedCow);
+            CowCount = HerdList.Count;
+            _showDialog = false;
+            StateHasChanged();
+        }
+
+        private void HandleCancel()
+        {
+            _showDialog = false;
+            StateHasChanged();
         }
     }
 }

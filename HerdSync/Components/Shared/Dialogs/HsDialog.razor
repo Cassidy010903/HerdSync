@@ -1,0 +1,26 @@
+﻿@if (Visible)
+{
+    <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1050; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;">
+        <div class="modal-dialog @DialogSize" style="margin: 0; width: 100%; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@Title</h5>
+                </div>
+                <div class="modal-body">
+                    @Content
+                </div>
+                <div class="modal-footer">
+                    @Buttons
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public string Title { get; set; } = string.Empty;
+    [Parameter] public RenderFragment? Content { get; set; }
+    [Parameter] public RenderFragment? Buttons { get; set; }
+    [Parameter] public string DialogSize { get; set; } = "modal-lg";
+}

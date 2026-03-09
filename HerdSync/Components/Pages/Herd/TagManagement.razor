@@ -102,6 +102,29 @@
         </div>
     </div>
 </div>
+
+@if (_showDialog)
+{
+    <NewTagDialog ExistingTag="_editingTagId"
+                  TagList="TagList"
+                  HerdList="HerdList"
+                  OnSubmit="HandleSubmit"
+                  OnCancel="HandleCancel" />
+}
+
+@if (_showDeleteConfirm)
+{
+    <HsDialog Visible="true" Title="Delete Tag" DialogSize="modal-md">
+        <Content>
+            Are you sure you want to delete this tag? This action cannot be undone.
+        </Content>
+        <Buttons>
+            <button type="button" class="btn btn-secondary" @onclick="CancelDelete">Cancel</button>
+            <button type="button" class="btn btn-danger" @onclick="ConfirmDelete">Delete</button>
+        </Buttons>
+    </HsDialog>
+}
+
 <style>
     .hs-input {
         width: 100%;
