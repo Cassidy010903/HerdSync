@@ -1,35 +1,222 @@
 ﻿@rendermode @(new InteractiveServerRenderMode(prerender: true))
 
-<MudPaper Width="250px" Class="py-3" Elevation="0">
-    <MudNavMenu Rounded="true" Margin="Margin.Dense" Color="Color.Primary" Class="pa-2">
-        <MudSwitch @bind-Value="_isCowsMode" Label="@(_isCowsMode ? "Herd" : "Farmer")" Color="@(_isCowsMode? Color.Primary: Color.Secondary)" UncheckedColor="Color.Secondary" />
-        @if (_isCowsMode)
-        {
-            <MudNavLink Href="/">Dashboard</MudNavLink>
-            <MudNavLink Href="/herd" Match="NavLinkMatch.Prefix">Herd</MudNavLink>
-            <MudNavGroup Title="Program Options" Expanded="false">
-                @* <MudNavLink Href="/newprogram">New Program</MudNavLink> *@
-                <MudNavLink Href="/programs">Programs</MudNavLink>
-                <MudNavLink Href="/programhistory">Program History</MudNavLink>
-                <MudNavLink Href="/livelist">LiveList</MudNavLink>
-            </MudNavGroup>
-            <MudNavLink Href="/TagManagement">Tag Management</MudNavLink>
-        }
-        else 
-        {
-            <MudNavLink Href="/">Dashboard</MudNavLink>
-            <MudNavLink Href="/fields" Match="NavLinkMatch.Prefix">Calendar</MudNavLink>
-            <MudNavGroup Title="Reporting" Expanded="false">
-                <MudNavLink Href="/crop-planning">Upcoming events</MudNavLink>
-                <MudNavLink Href="/machinery">Inventory</MudNavLink>
-                <MudNavLink Href="/sales">Custom reporting</MudNavLink>
-            </MudNavGroup>
-            <MudNavLink Href="/farmer-profile">My Farmer Profile</MudNavLink>
-        }
-    </MudNavMenu>
-</MudPaper>
+<div class="hs-nav">
+    <div class="hs-nav__toggle">
+        <label class="hs-nav__switch">
+            <input type="checkbox" @bind="_isCowsMode" />
+            <span class="hs-nav__switch-slider"></span>
+        </label>
+        <span class="hs-nav__toggle-label">@(_isCowsMode ? "Herd" : "Farmer")</span>
+    </div>
+
+    @if (_isCowsMode)
+    {
+        <nav class="hs-nav__menu">
+            <NavLink class="hs-nav__link" href="/" Match="NavLinkMatch.All">
+                <i class="bx bx-home me-2"></i> Dashboard
+            </NavLink>
+            <NavLink class="hs-nav__link" href="/herd" Match="NavLinkMatch.Prefix">
+                <i class="bx bx-group me-2"></i> Herd
+            </NavLink>
+
+            <div class="hs-nav__group">
+                <button class="hs-nav__group-toggle" @onclick="ToggleProgramOptions">
+                    <i class="bx bx-code-alt me-2"></i> Program Options
+                    <i class="bx @(_programOptionsOpen ? "bx-chevron-up" : "bx-chevron-down") ms-auto"></i>
+                </button>
+                @if (_programOptionsOpen)
+                {
+                    <div class="hs-nav__group-items">
+                        <NavLink class="hs-nav__link hs-nav__link--nested" href="/programs">
+                            Programs
+                        </NavLink>
+                        <NavLink class="hs-nav__link hs-nav__link--nested" href="/programhistory">
+                            Program History
+                        </NavLink>
+                        <NavLink class="hs-nav__link hs-nav__link--nested" href="/livelist">
+                            LiveList
+                        </NavLink>
+                    </div>
+                }
+            </div>
+
+            <NavLink class="hs-nav__link" href="/TagManagement" Match="NavLinkMatch.Prefix">
+                <i class="bx bx-purchase-tag me-2"></i> Tag Management
+            </NavLink>
+        </nav>
+    }
+    else
+    {
+        <nav class="hs-nav__menu">
+            <NavLink class="hs-nav__link" href="/" Match="NavLinkMatch.All">
+                <i class="bx bx-home me-2"></i> Dashboard
+            </NavLink>
+            <NavLink class="hs-nav__link" href="/fields" Match="NavLinkMatch.Prefix">
+                <i class="bx bx-calendar me-2"></i> Calendar
+            </NavLink>
+
+            <div class="hs-nav__group">
+                <button class="hs-nav__group-toggle" @onclick="ToggleReporting">
+                    <i class="bx bx-bar-chart me-2"></i> Reporting
+                    <i class="bx @(_reportingOpen ? "bx-chevron-up" : "bx-chevron-down") ms-auto"></i>
+                </button>
+                @if (_reportingOpen)
+                {
+                    <div class="hs-nav__group-items">
+                        <NavLink class="hs-nav__link hs-nav__link--nested" href="/crop-planning">
+                            Upcoming Events
+                        </NavLink>
+                        <NavLink class="hs-nav__link hs-nav__link--nested" href="/machinery">
+                            Inventory
+                        </NavLink>
+                        <NavLink class="hs-nav__link hs-nav__link--nested" href="/sales">
+                            Custom Reporting
+                        </NavLink>
+                    </div>
+                }
+            </div>
+
+            <NavLink class="hs-nav__link" href="/farmer-profile" Match="NavLinkMatch.Prefix">
+                <i class="bx bx-user me-2"></i> My Farmer Profile
+            </NavLink>
+        </nav>
+    }
+</div>
 
 @code {
-
     private bool _isCowsMode = true;
+    private bool _programOptionsOpen = false;
+    private bool _reportingOpen = false;
+
+    private void ToggleProgramOptions() => _programOptionsOpen = !_programOptionsOpen;
+    private void ToggleReporting() => _reportingOpen = !_reportingOpen;
 }
+
+<style>
+    .hs-nav {
+        width: 250px;
+        padding: 12px;
+    }
+
+    .hs-nav__toggle {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        margin-bottom: 8px;
+    }
+
+    .hs-nav__toggle-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: #2d3a31;
+    }
+
+    .hs-nav__switch {
+        position: relative;
+        display: inline-block;
+        width: 36px;
+        height: 20px;
+    }
+
+        .hs-nav__switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .hs-nav__switch-slider {
+        position: absolute;
+        cursor: pointer;
+        inset: 0;
+        background: #ccc;
+        border-radius: 20px;
+        transition: 0.3s;
+    }
+
+        .hs-nav__switch-slider:before {
+            content: "";
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+    .hs-nav__switch input:checked + .hs-nav__switch-slider {
+        background: #4a7c59;
+    }
+
+        .hs-nav__switch input:checked + .hs-nav__switch-slider:before {
+            transform: translateX(16px);
+        }
+
+    .hs-nav__menu {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .hs-nav__link {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #2d3a31;
+        text-decoration: none;
+        transition: background 0.15s ease;
+    }
+
+        .hs-nav__link:hover {
+            background: #f0f4f1;
+            color: #4a7c59;
+        }
+
+        .hs-nav__link.active {
+            background: #e8f0ea;
+            color: #4a7c59;
+            font-weight: 600;
+        }
+
+    .hs-nav__link--nested {
+        padding-left: 36px;
+        font-weight: 400;
+    }
+
+    .hs-nav__group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .hs-nav__group-toggle {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #2d3a31;
+        background: none;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        text-align: left;
+        transition: background 0.15s ease;
+    }
+
+        .hs-nav__group-toggle:hover {
+            background: #f0f4f1;
+            color: #4a7c59;
+        }
+
+    .hs-nav__group-items {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+</style>

@@ -19,9 +19,8 @@
     }
     else if (_programs.Count == 0)
     {
-        <MudAlert Severity="Severity.Info" Class="mb-3">
-            No programs found. Create your first program to get started.
-        </MudAlert>
+        <HsAlert Message="No programs found. Create your first program to get started."
+         Variant="HsAlert.AlertVariant.Info" />
     }
     else
     {
@@ -58,13 +57,11 @@
                                     }
                                 </div>
                                 <div class="d-flex gap-2">
-                                    <MudButton Href="@($"/newprogram/edit/{program.ProgramTemplateCode}")"
-                                               Color="Color.Primary"
-                                               Variant="Variant.Outlined"
-                                               Size="Size.Small"
-                                               FullWidth="true">
-                                        Edit
-                                    </MudButton>
+                                    <HsButton Text="Edit"
+                                              Variant="HsButton.ButtonVariant.Outline"
+                                              Icon="bx bx-pencil"
+                                              OnClick="@(() => NavigationManager.NavigateTo($"/newprogram/edit/{program.ProgramTemplateCode}"))"
+                                              Class="w-100" />
                                 </div>
                             </div>
 

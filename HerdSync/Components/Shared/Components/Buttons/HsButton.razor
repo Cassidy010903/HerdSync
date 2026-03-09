@@ -1,0 +1,106 @@
+﻿<button type="@Type"
+        class="hs-btn @GetStyleClass() @Class"
+        style="@Style"
+        @onclick="OnClick"
+        disabled="@Disabled">
+    @if (!string.IsNullOrEmpty(Icon) && IconPosition == "left")
+    {
+        <i class="@Icon @(!string.IsNullOrEmpty(Text) ? "me-2" : "")"></i>
+    }
+    @if (!string.IsNullOrEmpty(Text))
+    {
+        @Text
+    }
+    @if (!string.IsNullOrEmpty(Icon) && IconPosition == "right")
+    {
+        <i class="@Icon @(!string.IsNullOrEmpty(Text) ? "ms-2" : "")"></i>
+    }
+</button>
+
+@code {
+    [Parameter] public string Text { get; set; } = string.Empty;
+    [Parameter] public string Icon { get; set; } = string.Empty;
+    [Parameter] public string IconPosition { get; set; } = "left";
+    [Parameter] public ButtonVariant Variant { get; set; } = ButtonVariant.Primary;
+    [Parameter] public EventCallback OnClick { get; set; }
+    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public string Type { get; set; } = "button";
+    [Parameter] public string Class { get; set; } = string.Empty;
+    [Parameter] public string Style { get; set; } = string.Empty;
+
+    private string GetStyleClass() => Variant switch
+    {
+        ButtonVariant.Primary => "hs-btn--primary",
+        ButtonVariant.Secondary => "hs-btn--secondary",
+        ButtonVariant.Danger => "hs-btn--danger",
+        ButtonVariant.Success => "hs-btn--success",
+        ButtonVariant.Outline => "hs-btn--outline",
+        ButtonVariant.Teal => "hs-btn--teal",
+        _ => "hs-btn--primary"
+    };
+
+    public enum ButtonVariant
+    {
+        Primary,
+        Secondary,
+        Danger,
+        Success,
+        Outline,
+        Teal
+    }
+}
+
+<style>
+    .hs-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        transition: opacity 0.15s ease;
+    }
+
+        .hs-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .hs-btn:hover:not(:disabled) {
+            opacity: 0.85;
+        }
+
+    .hs-btn--primary {
+        background: #4a7c59;
+        color: #fff;
+    }
+
+    .hs-btn--secondary {
+        background: #6c757d;
+        color: #fff;
+    }
+
+    .hs-btn--danger {
+        background: #c0392b;
+        color: #fff;
+    }
+
+    .hs-btn--success {
+        background: #2ecc71;
+        color: #fff;
+    }
+
+    .hs-btn--outline {
+        background: transparent;
+        border: 1px solid #e2e8e4;
+        color: #2d3a31;
+    }
+
+    .hs-btn--teal {
+        background: #E0F7FA;
+        color: #4DD0E1;
+    }
+</style>

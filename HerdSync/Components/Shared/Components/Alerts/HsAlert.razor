@@ -1,0 +1,71 @@
+﻿<div class="hs-alert hs-alert--@GetVariantClass()">
+    <i class="@GetIcon() me-2"></i>
+    @Message
+</div>
+
+@code {
+    [Parameter] public string Message { get; set; } = string.Empty;
+    [Parameter] public AlertVariant Variant { get; set; } = AlertVariant.Info;
+
+    private string GetVariantClass() => Variant switch
+    {
+        AlertVariant.Info => "info",
+        AlertVariant.Success => "success",
+        AlertVariant.Warning => "warning",
+        AlertVariant.Danger => "danger",
+        _ => "info"
+    };
+
+    private string GetIcon() => Variant switch
+    {
+        AlertVariant.Info => "bx bx-info-circle",
+        AlertVariant.Success => "bx bx-check-circle",
+        AlertVariant.Warning => "bx bx-error",
+        AlertVariant.Danger => "bx bx-x-circle",
+        _ => "bx bx-info-circle"
+    };
+
+    public enum AlertVariant
+    {
+        Info,
+        Success,
+        Warning,
+        Danger
+    }
+}
+
+<style>
+    .hs-alert {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 12px;
+    }
+
+    .hs-alert--info {
+        background: #E3F2FD;
+        color: #1565C0;
+        border: 1px solid #90CAF9;
+    }
+
+    .hs-alert--success {
+        background: #E8F5E9;
+        color: #2E7D32;
+        border: 1px solid #A5D6A7;
+    }
+
+    .hs-alert--warning {
+        background: #FFF8E1;
+        color: #F57F17;
+        border: 1px solid #FFE082;
+    }
+
+    .hs-alert--danger {
+        background: #FFEBEE;
+        color: #C62828;
+        border: 1px solid #EF9A9A;
+    }
+</style>
