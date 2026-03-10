@@ -2,6 +2,7 @@
 @using BLL.Services
 @using HerdSync.Shared.DTO.Animal
 @using HerdSync.Shared.DTO.Program
+@using HerdSync.Components.Pages.Herd
 @using Microsoft.AspNetCore.Components.Web
 @implements IDisposable
 @inject IProgramRunAnimalService ProgramRunAnimalService
@@ -100,7 +101,12 @@
                         <h5 class="mb-0">Live Scan Feed</h5>
                         <small class="text-muted">@animalActions.Count animals scanned</small>
                     </div>
-                    <span class="badge bg-success scanning-pulse fs-6">● SCANNING</span>
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="btn btn-outline-primary btn-sm" @onclick="() => _showNewAnimalDialog = true">
+                            <i class="bx bx-plus me-1"></i>New Animal
+                        </button>
+                        <span class="badge bg-success scanning-pulse fs-6">● SCANNING</span>
+                    </div>
                 </div>
 
                 @if (_showManualAdd)
@@ -175,7 +181,8 @@
                             @foreach (var action in animalActions.Where(a => !_pinnedIds.Contains(a.AnimalId)))
                             {
                                 var ageGroup = GetAgeGroup(action.Animal?.BirthYear);
-                                var badgeColor = ageGroup switch {
+                                var badgeColor = ageGroup switch
+                                {
                                     "Calf" => "warning text-dark",
                                     "Yearling" => "info text-dark",
                                     _ => "secondary"
@@ -215,7 +222,7 @@
                         <span class="text-muted small">Total Scanned</span>
                         <strong>@animalActions.Count</strong>
                     </div>
-                    <hr class="my-2"/>
+                    <hr class="my-2" />
                     <div class="stat-row">
                         <span class="text-muted small">♂ Male</span>
                         <strong>@animalActions.Count(a => a.Animal?.Gender == "M")</strong>
@@ -228,7 +235,7 @@
                         <span class="text-muted small">Unknown</span>
                         <strong>@animalActions.Count(a => a.Animal?.Gender != "M" && a.Animal?.Gender != "F")</strong>
                     </div>
-                    <hr class="my-2"/>
+                    <hr class="my-2" />
                     <div class="stat-row">
                         <span class="text-muted small">Calf (0-1yr)</span>
                         <strong>@animalActions.Count(a => GetAgeGroup(a.Animal?.BirthYear) == "Calf")</strong>
@@ -241,7 +248,7 @@
                         <span class="text-muted small">Adult (2+yr)</span>
                         <strong>@animalActions.Count(a => GetAgeGroup(a.Animal?.BirthYear) == "Adult")</strong>
                     </div>
-                    <hr class="my-2"/>
+                    <hr class="my-2" />
                     <div class="stat-row text-success">
                         <span class="small fw-semibold">✓ Keep</span>
                         <strong>@_statusMap.Count(s => s.Value == "keep")</strong>
@@ -277,8 +284,8 @@
                     </div>
                     <div class="card-body py-2 px-3">
                         @foreach (var vaccine in _vaccines.Where(v =>
-                            string.IsNullOrEmpty(_dosageSearch) ||
-                            v.Name.Contains(_dosageSearch, StringComparison.OrdinalIgnoreCase)))
+                                            string.IsNullOrEmpty(_dosageSearch) ||
+                                            v.Name.Contains(_dosageSearch, StringComparison.OrdinalIgnoreCase)))
                         {
                             <div class="dosage-item mb-2">
                                 <div class="d-flex justify-content-between align-items-start">
@@ -287,7 +294,7 @@
                                 </div>
                                 <div class="text-muted" style="font-size:11px">@vaccine.Notes</div>
                             </div>
-                            <hr class="my-1"/>
+                            <hr class="my-1" />
                         }
                     </div>
                 }
@@ -296,6 +303,14 @@
     </div>
 </div>
 
+@if (_showNewAnimalDialog)
+{
+    <NewCow ExistingCow="Guid.Empty"
+            HerdList="_allAnimals"
+            OnSubmit="HandleNewAnimalFromDialog"
+            OnCancel="() => _showNewAnimalDialog = false" />
+}
+
 <style>
     .livelist-layout {
         display: flex;
@@ -303,8 +318,15 @@
         height: calc(100vh - 180px);
     }
 
-    .livelist-main { flex: 1 1 70%; overflow: auto; }
-    .livelist-sidebar { flex: 0 0 280px; overflow-y: auto; }
+    .livelist-main {
+        flex: 1 1 70%;
+        overflow: auto;
+    }
+
+    .livelist-sidebar {
+        flex: 0 0 280px;
+        overflow-y: auto;
+    }
 
     .stat-row {
         display: flex;
@@ -313,8 +335,15 @@
         padding: 3px 0;
     }
 
-    .status-select { width: 80px; padding: 1px 4px; font-size: 12px; }
-    .pinned-row { background: #fff8e1 !important; }
+    .status-select {
+        width: 80px;
+        padding: 1px 4px;
+        font-size: 12px;
+    }
+
+    .pinned-row {
+        background: #fff8e1 !important;
+    }
 
     .manual-add-banner {
         background: #fff3cd;
@@ -338,15 +367,27 @@
         cursor: pointer;
     }
 
-    .suggestion-item:hover { background: #f0f4f8; }
+        .suggestion-item:hover {
+            background: #f0f4f8;
+        }
 
-    .dosage-item strong { color: #2d3748; font-size: 13px; }
+    .dosage-item strong {
+        color: #2d3748;
+        font-size: 13px;
+    }
 
-    .scanning-pulse { animation: pulse 2s infinite; }
+    .scanning-pulse {
+        animation: pulse 2s infinite;
+    }
 
     @@keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.4; }
+        0%, 100% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.4;
+        }
     }
 
     .session-disabled {
@@ -368,8 +409,15 @@
     }
 
     @@media (max-width: 992px) {
-        .livelist-layout { flex-direction: column; height: auto; }
-        .livelist-sidebar { flex: unset; width: 100%; }
+        .livelist-layout {
+            flex-direction: column;
+            height: auto;
+        }
+
+        .livelist-sidebar {
+            flex: unset;
+            width: 100%;
+        }
     }
 </style>
 
@@ -391,6 +439,7 @@
 
     // --- Scan / list state ---
     private bool _showManualAdd = false;
+    private bool _showNewAnimalDialog = false;
     private string _manualSearch = "";
     private AnimalDTO? _selectedManualAnimal;
     private List<AnimalDTO> _manualSuggestions = new();
@@ -448,16 +497,15 @@
             _activeProgram = _availablePrograms
                 .FirstOrDefault(p => p.ProgramTemplateCode == _selectedProgramCode);
 
-            // Create a ProgramRun record for this session
             _activeRun = await ProgramRunService.CreateAsync(new ProgramRunDTO
             {
                 ProgramTemplateCode = _selectedProgramCode,
-                RunDate             = DateTime.UtcNow,
-                Notes               = $"Started at {DateTime.Now:yyyy-MM-dd HH:mm}"
+                RunDate = DateTime.UtcNow,
+                Notes = $"Started at {DateTime.Now:yyyy-MM-dd HH:mm}"
             });
 
             _sessionStartTime = DateTime.Now;
-            _sessionStarted   = true;
+            _sessionStarted = true;
         }
         catch (Exception ex)
         {
@@ -472,14 +520,15 @@
 
     private void EndSession()
     {
-        _sessionStarted      = false;
+        _sessionStarted = false;
         _selectedProgramCode = string.Empty;
-        _activeProgram       = null;
-        _activeRun           = null;
-        animalActions        = new();
-        _pinnedIds           = new();
-        _statusMap           = new();
-        _showManualAdd       = false;
+        _activeProgram = null;
+        _activeRun = null;
+        animalActions = new();
+        _pinnedIds = new();
+        _statusMap = new();
+        _showManualAdd = false;
+        _showNewAnimalDialog = false;
         LiveSession.EndSession();
     }
 
@@ -527,8 +576,8 @@
     private void SelectManualAnimal(AnimalDTO animal)
     {
         _selectedManualAnimal = animal;
-        _manualSearch         = $"#{animal.DisplayIdentifier}";
-        _manualSuggestions    = new();
+        _manualSearch = $"#{animal.DisplayIdentifier}";
+        _manualSuggestions = new();
     }
 
     private async Task AddManual()
@@ -540,10 +589,20 @@
 
     private void DismissManual()
     {
-        _showManualAdd        = false;
-        _manualSearch         = "";
+        _showManualAdd = false;
+        _manualSearch = "";
         _selectedManualAnimal = null;
-        _manualSuggestions    = new();
+        _manualSuggestions = new();
+    }
+
+    private async Task HandleNewAnimalFromDialog(AnimalDTO newAnimal)
+    {
+        _showNewAnimalDialog = false;
+
+        if (!_allAnimals.Any(a => a.AnimalId == newAnimal.AnimalId))
+            _allAnimals.Add(newAnimal);
+
+        await AddAnimalToList(newAnimal);
     }
 
     private async Task AddAnimalToList(AnimalDTO animal)
@@ -565,7 +624,6 @@
             var saved = await ProgramRunAnimalService.CreateAsync(newEntry);
             saved.Animal = animal;
 
-            // Match rules and apply treatments
             await ApplyTreatmentsAsync(saved, animal);
 
             animalActions.Insert(0, saved);
@@ -605,22 +663,22 @@
                 foreach (var treatment in treatments)
                 {
                     await ProgramRunTreatmentService.CreateAsync(new ProgramRunTreatmentDTO
-                        {
-                            ProgramRunAnimalId = programRunAnimal.ProgramRunAnimalId,
-                            TreatmentCode = treatment.TreatmentCode,
-                            IsAutoApplied = true,
-                            AddedManually = false,
-                            GivenDate = DateTime.UtcNow,
-                        });
+                    {
+                        ProgramRunAnimalId = programRunAnimal.ProgramRunAnimalId,
+                        TreatmentCode = treatment.TreatmentCode,
+                        IsAutoApplied = true,
+                        AddedManually = false,
+                        GivenDate = DateTime.UtcNow,
+                    });
                 }
             }
 
-            // Mark animal as handled
             programRunAnimal.WasHandled = true;
             programRunAnimal.Animal = null;
             await ProgramRunAnimalService.UpdateAsync(programRunAnimal);
             programRunAnimal.Animal = animal;
-        }catch(Exception ex)
+        }
+        catch (Exception ex)
         {
             _errorMessage = ex.Message;
         }
@@ -646,14 +704,14 @@
         {
             <= 1 => "Calf",
             <= 2 => "Yearling",
-            _    => "Adult"
+            _ => "Adult"
         };
     }
 
     public class VaccineDosage
     {
-        public string Name  { get; set; } = "";
-        public string Dose  { get; set; } = "";
+        public string Name { get; set; } = "";
+        public string Dose { get; set; } = "";
         public string Notes { get; set; } = "";
     }
 
