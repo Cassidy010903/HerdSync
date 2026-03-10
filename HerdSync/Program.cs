@@ -37,6 +37,8 @@ builder.Services.AddDbContext<HerdsyncDBContext>(options =>
 builder.Services.AddScoped<LiveSessionService>();
 builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
 builder.Services.AddScoped<IAnimalService, AnimalService>();
+builder.Services.AddScoped<IAnimalObservationRepository, AnimalObservationRepository>();
+builder.Services.AddScoped<IAnimalObservationService, AnimalObservationService>();
 builder.Services.AddScoped<IValidator<AnimalDTO>, SpeciesDTOValidator>();
 builder.Services.AddScoped<IAnimalEventTypeRepository, AnimalEventTypeRepository>();
 builder.Services.AddScoped<IAnimalTagRepository, AnimalTagRepository>();

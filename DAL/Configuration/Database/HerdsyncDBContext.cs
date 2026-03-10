@@ -19,6 +19,7 @@ namespace DAL.Configuration.Database
         public DbSet<AnimalEventTypeModel> AnimalEventTypes { get; set; }
         public DbSet<AnimalTagModel> AnimalTags { get; set; }
         public DbSet<AnimalTypeModel> AnimalTypes { get; set; }
+        public DbSet<AnimalObservationModel> AnimalObservations { get; set; }
         public DbSet<ConditionModel> Conditions { get; set; }
         public DbSet<CalendarEventModel> CalendarEvents { get; set; }
         public DbSet<FarmModel> Farms { get; set; }
@@ -78,6 +79,17 @@ namespace DAL.Configuration.Database
                 .WithMany()
                 .HasForeignKey(p => p.CalfAnimalId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<AnimalObservationModel>(entity =>
+            {
+                entity.HasKey(e => e.AnimalObservationId);
+                entity.ToTable("AnimalObservation");
+
+                entity.HasOne(e => e.Animal)
+                      .WithMany()
+                      .HasForeignKey(e => e.AnimalId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
         }
     }
 }

@@ -30,10 +30,20 @@ namespace DAL.Repositories.Implementation
 
         public async Task<ProgramRunObservationModel> UpdateAsync(ProgramRunObservationModel programRunObservation)
         {
-            context.ProgramRunObservations.Update(programRunObservation);
+            var existing = await context.ProgramRunObservations
+                .FirstOrDefaultAsync(p => p.ProgramRunObservationId == programRunObservation.ProgramRunObservationId);
+            if (existing == null)
+                throw new KeyNotFoundException($"ProgramRunObservation {programRunObservation.ProgramRunObservationId} not found.");
+
+            existing.ConditionCode = programRunObservation.ConditionCode;
+            existing.NumericValue = programRunObservation.NumericValue;
+            existing.TextValue = programRunObservation.TextValue;
+            existing.Flag = programRunObservation.Flag;
+            existing.Notes = programRunObservation.Notes;
+
             await context.SaveChangesAsync();
-            logger.LogInformation("Updated program run observation with ID {ProgramRunObservationId}", programRunObservation.ProgramRunObservationId);
-            return programRunObservation;
+            logger.LogInformation("Updated program run observation with ID {ProgramRunObservationId}", existing.ProgramRunObservationId);
+            return existing;
         }
 
         public async Task SoftDeleteAsync(Guid programRunObservationId)

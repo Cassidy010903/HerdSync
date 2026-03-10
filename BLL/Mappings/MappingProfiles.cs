@@ -23,6 +23,7 @@ namespace BLL.Mappings
             CreateMap<AnimalEventTypeModel, AnimalEventTypeDTO>().ReverseMap();
             CreateMap<AnimalTagModel, AnimalTagDTO>().ReverseMap();
             CreateMap<AnimalTypeModel, AnimalTypeDTO>().ReverseMap();
+            CreateMap<AnimalObservationModel, AnimalObservationDTO>().ReverseMap();
             CreateMap<CalendarEventModel, CalendarEventDTO>().ReverseMap();
             CreateMap<ConditionModel, ConditionDTO>().ReverseMap();
             CreateMap<FarmModel, FarmDTO>().ReverseMap();

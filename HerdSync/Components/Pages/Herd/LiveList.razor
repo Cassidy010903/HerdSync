@@ -2,6 +2,7 @@
 @using BLL.Services
 @using HerdSync.Shared.DTO.Animal
 @using HerdSync.Shared.DTO.Program
+@using HerdSync.Shared.DTO.Treatment
 @using HerdSync.Components.Pages.Herd
 @using Microsoft.AspNetCore.Components.Web
 @implements IDisposable
@@ -9,6 +10,7 @@
 @inject IProgramRunService ProgramRunService
 @inject IProgramTemplateService ProgramTemplateService
 @inject IAnimalService AnimalService
+@inject ITreatmentService TreatmentService
 @inject NavigationManager Nav
 @inject IProgramTemplateRuleService ProgramTemplateRuleService
 @inject IProgramTemplateRuleTreatmentService ProgramTemplateRuleTreatmentService
@@ -81,7 +83,6 @@
     </div>
 </div>
 
-@* Main Layout — disabled overlay when no session *@
 <div class="@(!_sessionStarted ? "session-disabled" : "")">
     @if (!_sessionStarted)
     {
@@ -172,9 +173,14 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm btn-warning" @onclick="() => TogglePin(action.AnimalId)">
-                                            <i class="bx bx-pin"></i>
-                                        </button>
+                                        <div class="d-flex gap-1">
+                                            <button class="btn btn-sm btn-warning" @onclick="() => TogglePin(action.AnimalId)">
+                                                <i class="bx bx-pin"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-primary" @onclick="() => OpenAddTreatment(action)">
+                                                <i class="bx bx-plus-medical"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             }
@@ -200,9 +206,14 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm btn-outline-secondary" @onclick="() => TogglePin(action.AnimalId)">
-                                            <i class="bx bx-pin"></i>
-                                        </button>
+                                        <div class="d-flex gap-1">
+                                            <button class="btn btn-sm btn-outline-secondary" @onclick="() => TogglePin(action.AnimalId)">
+                                                <i class="bx bx-pin"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-primary" @onclick="() => OpenAddTreatment(action)">
+                                                <i class="bx bx-plus-medical"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             }
@@ -302,6 +313,30 @@
         </div>
     </div>
 </div>
+
+@if (_showAddTreatmentDialog && _treatmentTargetAnimal != null)
+{
+    <HsDialog Visible="true" Title="@("Add Treatment — #" + (_treatmentTargetAnimal.Animal?.DisplayIdentifier ?? ""))">
+        <Content>
+            <label class="fw-semibold mb-2 d-block">Select Treatment</label>
+            <select class="form-select" @bind="_selectedExtraTreatmentCode">
+                <option value="">-- Select a treatment --</option>
+                @foreach (var t in _availableTreatments)
+                {
+                    <option value="@t.TreatmentCode">@t.TreatmentName</option>
+                }
+            </select>
+            @if (!string.IsNullOrEmpty(_addTreatmentError))
+            {
+                <small class="text-danger mt-1 d-block">@_addTreatmentError</small>
+            }
+        </Content>
+        <Buttons>
+            <HsButton Text="Cancel" Variant="HsButton.ButtonVariant.Secondary" OnClick="() => CloseAddTreatment()" />
+            <HsButton Text="Add" Variant="HsButton.ButtonVariant.Teal" OnClick="SubmitExtraTreatment" />
+        </Buttons>
+    </HsDialog>
+}
 
 @if (_showNewAnimalDialog)
 {
@@ -444,6 +479,13 @@
     private AnimalDTO? _selectedManualAnimal;
     private List<AnimalDTO> _manualSuggestions = new();
 
+    // --- Extra treatment state ---
+    private bool _showAddTreatmentDialog = false;
+    private ProgramRunAnimalDTO? _treatmentTargetAnimal;
+    private string _selectedExtraTreatmentCode = string.Empty;
+    private string _addTreatmentError = string.Empty;
+    private List<TreatmentDTO> _availableTreatments = new();
+
     private bool _dosageOpen = true;
     private string _dosageSearch = "";
     private string _errorMessage = "";
@@ -468,6 +510,9 @@
 
         var programs = await ProgramTemplateService.GetAllAsync();
         _availablePrograms = programs.Where(p => p.IsActive).ToList();
+
+        var treatments = await TreatmentService.GetAllAsync();
+        _availableTreatments = treatments.ToList();
 
         _loadingPrograms = false;
     }
@@ -529,6 +574,7 @@
         _statusMap = new();
         _showManualAdd = false;
         _showNewAnimalDialog = false;
+        CloseAddTreatment();
         LiveSession.EndSession();
     }
 
@@ -603,6 +649,49 @@
             _allAnimals.Add(newAnimal);
 
         await AddAnimalToList(newAnimal);
+    }
+
+    private void OpenAddTreatment(ProgramRunAnimalDTO animal)
+    {
+        _treatmentTargetAnimal = animal;
+        _selectedExtraTreatmentCode = string.Empty;
+        _addTreatmentError = string.Empty;
+        _showAddTreatmentDialog = true;
+    }
+
+    private void CloseAddTreatment()
+    {
+        _showAddTreatmentDialog = false;
+        _treatmentTargetAnimal = null;
+        _selectedExtraTreatmentCode = string.Empty;
+        _addTreatmentError = string.Empty;
+    }
+
+    private async Task SubmitExtraTreatment()
+    {
+        if (string.IsNullOrEmpty(_selectedExtraTreatmentCode))
+        {
+            _addTreatmentError = "Please select a treatment.";
+            return;
+        }
+
+        try
+        {
+            await ProgramRunTreatmentService.CreateAsync(new ProgramRunTreatmentDTO
+            {
+                ProgramRunAnimalId = _treatmentTargetAnimal!.ProgramRunAnimalId,
+                TreatmentCode = _selectedExtraTreatmentCode,
+                IsAutoApplied = false,
+                AddedManually = true,
+                GivenDate = DateTime.UtcNow,
+            });
+
+            CloseAddTreatment();
+        }
+        catch (Exception ex)
+        {
+            _addTreatmentError = ex.Message;
+        }
     }
 
     private async Task AddAnimalToList(AnimalDTO animal)

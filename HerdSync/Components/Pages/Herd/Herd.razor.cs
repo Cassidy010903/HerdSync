@@ -7,22 +7,26 @@ namespace HerdSync.Components.Pages.Herd
     public partial class Herd
     {
         [Inject] public IAnimalService AnimalService { get; set; } = default!;
+        [Inject] public IAnimalObservationService AnimalObservationService { get; set; } = default!;
         [Inject] public NavigationManager Nav { get; set; } = default!;
 
         private bool _loading = true;
         private bool _showDialog = false;
         private Guid _editingCowId = Guid.Empty;
-
         public List<AnimalDTO> HerdList { get; set; } = new();
         private int CowCount;
-
         private string _searchTerm = string.Empty;
         private string _genderFilter = string.Empty;
         private string _brandedFilter = string.Empty;
         private bool _filterPanelOpen = false;
 
-        private void ToggleFilterPanel() => _filterPanelOpen = !_filterPanelOpen;
+        // --- Observation state ---
+        private bool _showObservationDialog = false;
+        private AnimalDTO? _observationTarget;
+        private AnimalObservationDTO _observation = new();
+        private string _observationError = string.Empty;
 
+        private void ToggleFilterPanel() => _filterPanelOpen = !_filterPanelOpen;
         private void OnGenderFilterChanged(string value) { _genderFilter = value; StateHasChanged(); }
         private void OnBrandedFilterChanged(string value) { _brandedFilter = value; StateHasChanged(); }
         private void OnSearchChanged(string value) { _searchTerm = value; StateHasChanged(); }
@@ -90,6 +94,48 @@ namespace HerdSync.Components.Pages.Herd
         {
             _showDialog = false;
             StateHasChanged();
+        }
+
+        private void OpenObservationDialog(AnimalDTO animal)
+        {
+            _observationTarget = animal;
+            _observationError = string.Empty;
+            _observation = new AnimalObservationDTO
+            {
+                AnimalId = animal.AnimalId,
+                ObservationDate = DateTime.Today
+            };
+            _showObservationDialog = true;
+        }
+
+        private void CloseObservationDialog()
+        {
+            _showObservationDialog = false;
+            _observationTarget = null;
+            _observation = new();
+            _observationError = string.Empty;
+        }
+
+        private async Task SubmitObservation()
+        {
+            if (string.IsNullOrWhiteSpace(_observation.ConditionCode) &&
+                string.IsNullOrWhiteSpace(_observation.Notes) &&
+                string.IsNullOrWhiteSpace(_observation.TextValue) &&
+                !_observation.NumericValue.HasValue)
+            {
+                _observationError = "Please fill in at least one observation field.";
+                return;
+            }
+
+            try
+            {
+                await AnimalObservationService.CreateAsync(_observation);
+                CloseObservationDialog();
+            }
+            catch (Exception ex)
+            {
+                _observationError = ex.Message;
+            }
         }
     }
 }

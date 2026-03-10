@@ -114,7 +114,7 @@ else
                                     <td>
                                         <ul class="list-inline mb-0">
                                             <li class="list-inline-item">
-                                                <a class="px-2 text-primary" @onclick="() => EditDialog(cow.AnimalId)">
+                                                <a class="px-2 text-primary" style="cursor:pointer" @onclick="() => EditDialog(cow.AnimalId)">
                                                     <i class="bx bx-pencil font-size-18"></i>
                                                 </a>
                                             </li>
@@ -124,11 +124,15 @@ else
                                                 </a>
                                             </li>
                                             <li class="list-inline-item">
+                                                <a class="px-2 text-success" style="cursor:pointer" @onclick="() => OpenObservationDialog(cow)">
+                                                    <i class="bx bx-notepad font-size-18"></i>
+                                                </a>
+                                            </li>
+                                            <li class="list-inline-item">
                                                 <a href="javascript:void(0);" class="px-2 text-danger">
                                                     <i class="bx bx-trash-alt font-size-18"></i>
                                                 </a>
                                             </li>
-
                                         </ul>
                                     </td>
                                 </tr>
@@ -153,4 +157,48 @@ else
             HerdList="HerdList"
             OnSubmit="HandleSubmit"
             OnCancel="HandleCancel" />
+}
+
+@if (_showObservationDialog && _observationTarget != null)
+{
+    <HsDialog Visible="true" Title="@("Add Observation — #" + _observationTarget.DisplayIdentifier)">
+        <Content>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div>
+                    <label>Observation Date</label>
+                    <input type="date" class="form-control" @bind="_observation.ObservationDate" />
+
+                    <label class="mt-2">Condition Code</label>
+                    <input type="text" class="form-control" placeholder="e.g. LAME, SICK, HEALTHY" @bind="_observation.ConditionCode" />
+
+                    <label class="mt-2">Flag</label>
+                    <select class="form-control" @bind="_observation.Flag">
+                        <option value="">-- None --</option>
+                        <option value="LOW">Low</option>
+                        <option value="MEDIUM">Medium</option>
+                        <option value="HIGH">High</option>
+                        <option value="URGENT">Urgent</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Numeric Value</label>
+                    <input type="number" class="form-control" placeholder="e.g. temperature, weight" @bind="_observation.NumericValue" />
+
+                    <label class="mt-2">Text Value</label>
+                    <input type="text" class="form-control" placeholder="Short value descriptor" @bind="_observation.TextValue" />
+
+                    <label class="mt-2">Notes</label>
+                    <textarea class="form-control" rows="3" placeholder="Detailed notes about the observation" @bind="_observation.Notes"></textarea>
+                </div>
+            </div>
+            @if (!string.IsNullOrEmpty(_observationError))
+            {
+                <div class="alert alert-danger mt-2 py-1 px-2">@_observationError</div>
+            }
+        </Content>
+        <Buttons>
+            <HsButton Text="Cancel" Variant="HsButton.ButtonVariant.Secondary" OnClick="CloseObservationDialog" />
+            <HsButton Text="Save" Variant="HsButton.ButtonVariant.Teal" OnClick="SubmitObservation" />
+        </Buttons>
+    </HsDialog>
 }
