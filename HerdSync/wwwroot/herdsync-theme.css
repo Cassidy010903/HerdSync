@@ -14,3 +14,7 @@
     --hs-flag-medium: #e67e22;
     --hs-flag-low: var(--hs-primary);
 }
+
+body, table, td, th, input, select, textarea, button {
+    font-family: 'Roboto', sans-serif;
+}
