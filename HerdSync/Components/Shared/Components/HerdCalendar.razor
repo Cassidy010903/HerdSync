@@ -143,10 +143,10 @@
         transition: background 0.15s, color 0.15s;
     }
 
-    .herd-calendar__nav:hover {
-        background: #f7fafc;
-        color: #2d3748;
-    }
+        .herd-calendar__nav:hover {
+            background: var(--hs-background);
+            color: var(--hs-primary-dark);
+        }
 
     .herd-calendar__grid {
         display: grid;
@@ -179,7 +179,10 @@
 
     .herd-calendar__cell:hover { background: #fafafa; }
     .herd-calendar__cell--empty { background: #fafafa; min-height: 80px; cursor: default; }
-    .herd-calendar__cell--today { background: #f0fff4; }
+
+    .herd-calendar__cell--today {
+        background: var(--hs-background);
+    }
 
     .herd-calendar__date {
         display: inline-block;
@@ -195,8 +198,8 @@
     }
 
     .herd-calendar__date--today {
-        background: #38a169;
-        color: #fff;
+        background: var(--hs-primary);
+        color: var(--hs-white);
         font-weight: 700;
     }
 
@@ -230,12 +233,33 @@
 
     .herd-calendar__entry--primary { background: #ebf8ff; color: #2b6cb0; }
     .herd-calendar__entry--primary .herd-calendar__entry-dot { background: #3182ce; }
-    .herd-calendar__entry--success { background: #f0fff4; color: #276749; }
-    .herd-calendar__entry--success .herd-calendar__entry-dot { background: #38a169; }
-    .herd-calendar__entry--warning { background: #fffff0; color: #975a16; }
-    .herd-calendar__entry--warning .herd-calendar__entry-dot { background: #d69e2e; }
-    .herd-calendar__entry--danger { background: #fff5f5; color: #9b2c2c; }
-    .herd-calendar__entry--danger .herd-calendar__entry-dot { background: #e53e3e; }
+
+    .herd-calendar__entry--success {
+        background: var(--hs-background);
+        color: var(--hs-primary-dark);
+    }
+
+        .herd-calendar__entry--success .herd-calendar__entry-dot {
+            background: var(--hs-primary);
+        }
+
+    .herd-calendar__entry--warning {
+        background: #fef9ec;
+        color: #975a16;
+    }
+
+        .herd-calendar__entry--warning .herd-calendar__entry-dot {
+            background: var(--hs-flag-medium);
+        }
+
+    .herd-calendar__entry--danger {
+        background: #fff5f5;
+        color: #9b2c2c;
+    }
+
+        .herd-calendar__entry--danger .herd-calendar__entry-dot {
+            background: var(--hs-flag-high);
+        }
     .herd-calendar__entry--info { background: #e9d8fd; color: #553c9a; }
     .herd-calendar__entry--info .herd-calendar__entry-dot { background: #805ad5; }
 

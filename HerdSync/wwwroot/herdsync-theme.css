@@ -1,0 +1,16 @@
+﻿:root {
+    --hs-primary: #748f7a;
+    --hs-primary-light: #90b499;
+    --hs-primary-dark: #5a7260;
+    --hs-white: #FFFFFF;
+    --hs-background: #f8faf8;
+    --hs-surface: #fff;
+    --hs-border: #e2e8e4;
+    --hs-text-primary: #2d3a31;
+    --hs-text-secondary: #6b7c70;
+    --hs-shadow-sm: 0 2px 4px rgba(0,0,0,0.15);
+    --hs-shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+    --hs-flag-high: #c0392b;
+    --hs-flag-medium: #e67e22;
+    --hs-flag-low: var(--hs-primary);
+}

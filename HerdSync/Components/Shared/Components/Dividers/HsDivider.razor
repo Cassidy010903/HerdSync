@@ -1,0 +1,14 @@
+﻿<hr class="hs-divider @Class" style="@Style" />
+
+@code {
+    [Parameter] public string Class { get; set; } = string.Empty;
+    [Parameter] public string Style { get; set; } = string.Empty;
+}
+
+<style>
+    .hs-divider {
+        border: none;
+        border-top: 1px solid #e2e8e4;
+        margin: 0;
+    }
+</style>

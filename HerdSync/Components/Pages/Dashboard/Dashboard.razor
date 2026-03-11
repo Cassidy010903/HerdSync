@@ -2,17 +2,15 @@
 @rendermode @(new InteractiveServerRenderMode(prerender: true))
 
 <PageTitle>HerdSync</PageTitle>
-
+<PageHeader Title="Dashboard"
+            Subtitle="@DateTime.Now.ToString("dddd, dd MMMM yyyy")"
+            SubtitleInline="false" />
 <div class="container-fluid db-dashboard">
-    <PageHeader Title="Dashboard"
-                Subtitle="@DateTime.Now.ToString("dddd, dd MMMM yyyy")"
-                SubtitleInline="false" />
-
     <div class="row g-3 mb-4">
-        <SummaryCard Title="Total Stock" Icon="fas fa-cow" BorderHex="#4a7c59" Value="@StockCount.ToString()" />
-        <SummaryCard Title="Pregnancies" Icon="fas fa-child" BorderHex="#6a9e78" Value="@PregnancyCount.ToString()" />
-        <SummaryCard Title="Next Program" Icon="fas fa-calendar-alt" BorderHex="#4a7c59" Value="@NextEventDate" />
-        <SummaryCard Title="Flagged Stock" Icon="fas fa-flag" BorderHex="#c0392b" Value="0" />
+        <SummaryCard Title="Total Stock" Icon="fas fa-cow" BorderHex="@HerdSyncColors.Primary" Value="@StockCount.ToString()" />
+        <SummaryCard Title="Pregnancies" Icon="fas fa-child" BorderHex="@HerdSyncColors.PrimaryLight" Value="@PregnancyCount.ToString()" />
+        <SummaryCard Title="Next Program" Icon="fas fa-calendar-alt" BorderHex="@HerdSyncColors.Primary" Value="@NextEventDate" />
+        <SummaryCard Title="Flagged Stock" Icon="fas fa-flag" BorderHex="@HerdSyncColors.FlagHigh" Value="0" />
     </div>
 
     <div class="row align-items-stretch db-fluid-row mb-4">
@@ -104,33 +102,38 @@
         <div class="col-lg-6">
             <HerdSyncCard Title="Observations" Icon="bx bx-note" FullHeight="true">
                 <div class="db-notes">
-                    @foreach (var note in _notes)
+                    @if (!_observations.Any())
                     {
-                        <div class="db-note">
-                            <i class="bx bx-circle db-note__icon"></i>
-                            <span>@note</span>
-                        </div>
+                        <p class="db-empty-msg">No observations recorded.</p>
+                    }
+                    else
+                    {
+                        @foreach (var obs in _observations)
+                        {
+                            <div class="db-note">
+                                <span class="db-activity__dot" style="background: @GetObservationColor(obs.Flag);"></span>
+                                <div class="db-activity__content">
+                                    <span class="db-activity__text">
+                                        <strong>@obs.AnimalTag</strong>
+                                        @if (!string.IsNullOrWhiteSpace(obs.ConditionCode))
+                                        {
+                                            <span> — @obs.ConditionCode</span>
+                                        }
+                                        @if (!string.IsNullOrWhiteSpace(obs.TextValue))
+                                        {
+                                            <span>: @obs.TextValue</span>
+                                        }
+                                        @if (!string.IsNullOrWhiteSpace(obs.Notes))
+                                        {
+                                            <span> · @obs.Notes</span>
+                                        }
+                                    </span>
+                                    <span class="db-activity__time">@obs.ObservationDate.ToString("dd MMM yyyy")</span>
+                                </div>
+                            </div>
+                        }
                     }
                 </div>
-                @if (_addingNote)
-                {
-                    <div class="mt-2">
-                        <input class="db-input"
-                               @bind="_newNoteText"
-                               placeholder="Type observation..."
-                               @onkeydown="HandleNoteKeyDown" />
-                        <div class="d-flex justify-content-end gap-2 mt-2">
-                            <button class="db-btn db-btn--sm db-btn--primary" @onclick="AddNote">Add</button>
-                            <button class="db-btn db-btn--sm db-btn--outline" @onclick="() => _addingNote = false">Cancel</button>
-                        </div>
-                    </div>
-                }
-                else
-                {
-                    <button class="db-btn db-btn--sm db-btn--outline mt-3 w-100" @onclick="() => _addingNote = true">
-                        <i class="bx bx-plus me-1"></i> Add Observation
-                    </button>
-                }
             </HerdSyncCard>
         </div>
 

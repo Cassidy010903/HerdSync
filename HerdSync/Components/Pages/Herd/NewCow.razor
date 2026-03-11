@@ -29,14 +29,12 @@
                     <label class="ms-2"><input type="radio" name="gender" value="U" @onchange='() => species.Gender = "U"' /> Unknown</label>
                 </div>
                 <div class="mt-2">
-                    <MudAutocomplete T="AnimalDTO"
-                                     @bind-Value="SelectedMother"
-                                     SearchFunc="Search"
-                                     ToStringFunc="@(a => a?.DisplayIdentifier ?? string.Empty)"
-                                     MinCharacters="0"
-                                     Variant="Variant.Outlined"
-                                     Label="Mother"
-                                     Placeholder="Please select mother" />
+                    <HsAutocomplete TItem="AnimalDTO"
+                                    @bind-Value="SelectedMother"
+                                    SearchFunc="Search"
+                                    ToStringFunc="@(a => a?.DisplayIdentifier ?? string.Empty)"
+                                    MinCharacters="0"
+                                    Placeholder="Please select mother" />
                 </div>
             </div>
             <div>

@@ -1,6 +1,5 @@
 ﻿@page "/herd"
 @using HerdSync.Shared.DTO.Animal
-@rendermode @(new InteractiveServerRenderMode(prerender: true))
 
 <PageTitle>Herd</PageTitle>
 
@@ -10,15 +9,14 @@
 }
 else
 {
+    <PageHeader Title="Animal List"
+                Subtitle="@FilteredHerdList.Count().ToString()"
+                SubtitleInline="true"
+                ButtonText="Add Animal"
+                ButtonIcon="bx bx-plus"
+                OnButtonClick="OpenDialogAsync" />
     <div class="container">
-        <div class="row align-items-center">
-            <PageHeader Title="Animal List"
-                        Subtitle="@FilteredHerdList.Count().ToString()"
-                        SubtitleInline="true"
-                        ButtonText="Add Animal"
-                        ButtonIcon="bx bx-plus"
-                        OnButtonClick="OpenDialogAsync" />
-        </div>
+            
 
         <div class="row align-items-center mb-3">
             <div class="col-md-6">
@@ -90,7 +88,7 @@ else
                         <thead>
                             <tr>
                                 <th scope="col">Identifier</th>
-                                <th scope="col">Animal Code</th>
+                                <th scope="col">Animal Type</th>
                                 <th scope="col">Birth Year</th>
                                 <th scope="col">Weight (kg)</th>
                                 <th scope="col">Gender</th>
@@ -106,11 +104,20 @@ else
                                         <img src="/HerdSync_Cow.png" alt="" class="avatar-sm rounded-circle me-2" />
                                         <a href="#" class="text-body">#@cow.DisplayIdentifier</a>
                                     </td>
-                                    <td>@cow.AnimalTypeCode</td>
+                                    <td>@(_animalTypeNames.GetValueOrDefault(cow.AnimalTypeCode ?? "", cow.AnimalTypeCode ?? "-"))</td>
                                     <td>@cow.BirthYear</td>
                                     <td>@(cow.Weight.HasValue ? $"{cow.Weight:0.##} kg" : "-")</td>
                                     <td><GenderIcon Gender="@cow.Gender" /></td>
-                                    <td>@(cow.IsBranded ? "YES" : "NO")</td>
+                                    <td>
+                                        @if (cow.IsBranded)
+                                        {
+                                            <i class="bx bx-check-circle text-success font-size-18"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bx bx-x-circle text-danger font-size-18"></i>
+                                        }
+                                    </td>
                                     <td>
                                         <ul class="list-inline mb-0">
                                             <li class="list-inline-item">
@@ -125,7 +132,7 @@ else
                                             </li>
                                             <li class="list-inline-item">
                                                 <a class="px-2 text-success" style="cursor:pointer" @onclick="() => OpenObservationDialog(cow)">
-                                                    <i class="bx bx-notepad font-size-18"></i>
+                                                    <i class="bx bx-search-alt font-size-18"></i>
                                                 </a>
                                             </li>
                                             <li class="list-inline-item">
@@ -168,8 +175,14 @@ else
                     <label>Observation Date</label>
                     <input type="date" class="form-control" @bind="_observation.ObservationDate" />
 
-                    <label class="mt-2">Condition Code</label>
-                    <input type="text" class="form-control" placeholder="e.g. LAME, SICK, HEALTHY" @bind="_observation.ConditionCode" />
+                    <label class="mt-2">Condition</label>
+                    <select class="form-control" @bind="_observation.ConditionCode">
+                        <option value="">-- Select a condition --</option>
+                        @foreach (var condition in _conditions)
+                        {
+                            <option value="@condition.ConditionCode">@condition.ConditionName</option>
+                        }
+                    </select>
 
                     <label class="mt-2">Flag</label>
                     <select class="form-control" @bind="_observation.Flag">

@@ -1,6 +1,6 @@
 ﻿<div class="hs-alert hs-alert--@GetVariantClass()">
-    <i class="@GetIcon() me-2"></i>
-    @Message
+    <i class="@GetIcon() hs-alert__icon"></i>
+    <span>@Message</span>
 </div>
 
 @code {
@@ -13,6 +13,7 @@
         AlertVariant.Success => "success",
         AlertVariant.Warning => "warning",
         AlertVariant.Danger => "danger",
+        AlertVariant.Error => "error",
         _ => "info"
     };
 
@@ -22,6 +23,7 @@
         AlertVariant.Success => "bx bx-check-circle",
         AlertVariant.Warning => "bx bx-error",
         AlertVariant.Danger => "bx bx-x-circle",
+        AlertVariant.Error => "bx bx-error-circle",
         _ => "bx bx-info-circle"
     };
 
@@ -30,42 +32,57 @@
         Info,
         Success,
         Warning,
-        Danger
+        Danger,
+        Error
     }
 }
 
 <style>
     .hs-alert {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
+        gap: 10px;
         padding: 12px 16px;
         border-radius: 6px;
         font-size: 13px;
         font-weight: 500;
         margin-bottom: 12px;
+        border: 1px solid transparent;
+    }
+
+    .hs-alert__icon {
+        font-size: 18px;
+        flex-shrink: 0;
+        margin-top: 1px;
     }
 
     .hs-alert--info {
         background: #E3F2FD;
         color: #1565C0;
-        border: 1px solid #90CAF9;
+        border-color: #90CAF9;
     }
 
     .hs-alert--success {
         background: #E8F5E9;
         color: #2E7D32;
-        border: 1px solid #A5D6A7;
+        border-color: #A5D6A7;
     }
 
     .hs-alert--warning {
         background: #FFF8E1;
         color: #F57F17;
-        border: 1px solid #FFE082;
+        border-color: #FFE082;
     }
 
     .hs-alert--danger {
         background: #FFEBEE;
         color: #C62828;
-        border: 1px solid #EF9A9A;
+        border-color: #EF9A9A;
+    }
+
+    .hs-alert--error {
+        background: #fdecea;
+        color: #c0392b;
+        border-color: #f5c6c2;
     }
 </style>

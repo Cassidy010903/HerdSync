@@ -1,16 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @rendermode @(new InteractiveServerRenderMode(prerender: true))
 
-<HeadContent>
-    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
-    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
-</HeadContent>
-
 <NavigationGuard />
-<MudThemeProvider Theme="_herdSyncTheme" />
-<MudPopoverProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
 
 <div class="hs-layout">
 
@@ -68,19 +59,6 @@
     private void ToggleProfileMenu() => _profileMenuOpen = !_profileMenuOpen;
     private void CloseProfileMenu() => _profileMenuOpen = false;
 
-    private MudTheme _herdSyncTheme = new MudTheme()
-    {
-        PaletteLight = new PaletteLight()
-        {
-            Primary = "#748f7a",
-            Secondary = "#90b499",
-            Tertiary = "#FFFFFF"
-        },
-        PaletteDark = new PaletteDark()
-        {
-            Primary = Colors.Gray.Darken4
-        }
-    };
 }
 
 <style>

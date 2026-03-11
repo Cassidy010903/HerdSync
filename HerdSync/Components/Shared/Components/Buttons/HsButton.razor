@@ -16,7 +16,6 @@
         <i class="@Icon @(!string.IsNullOrEmpty(Text) ? "ms-2" : "")"></i>
     }
 </button>
-
 @code {
     [Parameter] public string Text { get; set; } = string.Empty;
     [Parameter] public string Icon { get; set; } = string.Empty;
@@ -99,8 +98,13 @@
         color: #2d3a31;
     }
 
+        .hs-btn--outline:hover:not(:disabled) {
+            background: rgba(89,74,226,0.06);
+            opacity: 1;
+        }
+
     .hs-btn--teal {
-        background: #E0F7FA;
-        color: #4DD0E1;
+        background: #4a7c59;
+        color: #fff;
     }
 </style>

@@ -338,23 +338,23 @@ h1:focus {
 }
 
 .db-bar--calf {
-    background: var(--c-warning);
+    background: var(--hs-flag-medium);
 }
 
 .db-bar--yearling {
-    background: var(--c-info);
+    background: var(--hs-flag-low);
 }
 
 .db-bar--adult {
-    background: var(--c-green);
+    background: var(--hs-primary);
 }
 
 .db-bar--male {
-    background: var(--c-info);
+    background: var(--hs-primary-light);
 }
 
 .db-bar--female {
-    background: #c0719a;
+    background: var(--hs-primary-dark);
 }
 
 .db-notes {

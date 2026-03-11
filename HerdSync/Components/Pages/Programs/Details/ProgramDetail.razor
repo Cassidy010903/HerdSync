@@ -183,6 +183,16 @@ else
         _ => "Any"
     };
 
+    private string GetFrequencyLabel(string? frequency) => frequency switch
+    {
+        "OnceOff" => "Once-off",
+        "Monthly" => "Monthly",
+        "Quarterly" => "Quarterly",
+        "BiYearly" => "Bi-yearly",
+        "Yearly" => "Yearly",
+        _ => frequency ?? "Unknown"
+    };
+
     private string GetAgeRangeLabel(int? min, int? max)
     {
         if (min == null && max == null) return "Any age";

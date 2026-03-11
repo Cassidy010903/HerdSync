@@ -4,14 +4,14 @@
 
 <PageTitle>Tag Management</PageTitle>
 
-<div class="container">
-    <PageHeader Title="Tag List"
-                Subtitle="@(FilteredTagList.Count().ToString() + " Registered Tags")"
-                SubtitleInline="true"
-                ButtonText="New Tag"
-                ButtonIcon="bx bx-plus"
-                OnButtonClick="@OpenDialogAsync" />
+<PageHeader Title="Tag List"
+            Subtitle="@(FilteredTagList.Count().ToString() + " Registered Tags")"
+            SubtitleInline="true"
+            ButtonText="New Tag"
+            ButtonIcon="bx bx-plus"
+            OnButtonClick="@OpenDialogAsync" />
 
+<div class="container">
     <div class="row align-items-center mb-3">
         <div class="col-md-6">
             <input class="hs-input"

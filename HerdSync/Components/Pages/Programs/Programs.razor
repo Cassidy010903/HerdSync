@@ -2,25 +2,22 @@
 @using BLL.Services
 @using HerdSync.Shared.DTO.Program
 @rendermode @(new InteractiveServerRenderMode(prerender: true))
-
 <PageTitle>Programs</PageTitle>
-
 <PageHeader Title="Programs"
             Subtitle="Treatment programs set up for your farm."
             SubtitleInline="false"
             ButtonText="New Program"
             ButtonIcon="bx bx-plus"
             Href="/newprogram" />
-
 <div class="container mt-3">
     @if (_loading)
     {
-        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+        <HerdLoader />
     }
     else if (_programs.Count == 0)
     {
         <HsAlert Message="No programs found. Create your first program to get started."
-         Variant="HsAlert.AlertVariant.Info" />
+                 Variant="HsAlert.AlertVariant.Info" />
     }
     else
     {
@@ -30,8 +27,7 @@
                 <div class="col-lg-4 col-md-6 col-12 mt-4">
                     <div class="card border-0 rounded shadow h-100">
                         <div class="card-body p-4 d-flex flex-column">
-
-                            <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h5 class="mb-0">@program.TemplateName</h5>
                                 @if (program.IsActive)
                                 {
@@ -40,6 +36,15 @@
                                 else
                                 {
                                     <span class="badge rounded-pill bg-secondary">Inactive</span>
+                                }
+                            </div>
+
+                            <div class="mb-3">
+                                @if (!string.IsNullOrEmpty(program.Frequency))
+                                {
+                                    <span class="badge bg-info text-dark me-1">
+                                        <i class="bx bx-refresh me-1"></i>@GetFrequencyLabel(program.Frequency)
+                                    </span>
                                 }
                             </div>
 
@@ -64,7 +69,6 @@
                                               Class="w-100" />
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -72,3 +76,15 @@
         </div>
     }
 </div>
+
+@code {
+    private string GetFrequencyLabel(string? frequency) => frequency switch
+    {
+        "OnceOff" => "Once-off",
+        "Monthly" => "Monthly",
+        "Quarterly" => "Quarterly",
+        "BiYearly" => "Bi-yearly",
+        "Yearly" => "Yearly",
+        _ => frequency ?? "Unknown"
+    };
+}

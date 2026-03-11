@@ -1,5 +1,6 @@
 ﻿using BLL.Services;
 using HerdSync.Shared.DTO.Animal;
+using HerdSync.Shared.DTO.Treatment;
 using Microsoft.AspNetCore.Components;
 
 namespace HerdSync.Components.Pages.Herd
@@ -9,6 +10,10 @@ namespace HerdSync.Components.Pages.Herd
         [Inject] public IAnimalService AnimalService { get; set; } = default!;
         [Inject] public IAnimalObservationService AnimalObservationService { get; set; } = default!;
         [Inject] public NavigationManager Nav { get; set; } = default!;
+        [Inject] public IAnimalTypeService AnimalTypeService { get; set; } = default!;
+        private Dictionary<string, string> _animalTypeNames = new();
+        [Inject] public IConditionService ConditionService { get; set; } = default!;
+        private List<ConditionDTO> _conditions = new();
 
         private bool _loading = true;
         private bool _showDialog = false;
@@ -53,20 +58,27 @@ namespace HerdSync.Components.Pages.Herd
                  (_brandedFilter == "No" && !c.IsBranded))
             );
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+        protected override async Task OnInitializedAsync()
         {
-            if (firstRender)
+            try
             {
-                _loading = true;
-                StateHasChanged();
                 HerdList = await AnimalService.GetAllAsync();
+                var types = await AnimalTypeService.GetAllAsync();
+                _animalTypeNames = types.ToDictionary(t => t.AnimalTypeCode, t => t.AnimalTypeName);
+                var conditions = await ConditionService.GetAllAsync();
+                _conditions = conditions.ToList();
                 CowCount = HerdList.Count;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            finally
+            {
                 _loading = false;
                 StateHasChanged();
             }
         }
-
-        protected override Task OnInitializedAsync() => Task.CompletedTask;
 
         private void OpenDialogAsync()
         {

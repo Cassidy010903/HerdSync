@@ -21,10 +21,14 @@ namespace DAL.Repositories.Implementation
 
         public async Task<AnimalObservationModel> AddAsync(AnimalObservationModel animalObservation)
         {
-            context.AnimalObservations.Add(animalObservation);
-            await context.SaveChangesAsync();
-            logger.LogInformation("Added new animal observation with ID {AnimalObservationId}", animalObservation.AnimalObservationId);
-            return animalObservation;
+            try
+            {
+                context.AnimalObservations.Add(animalObservation);
+                await context.SaveChangesAsync();
+                logger.LogInformation("Added new animal observation with ID {AnimalObservationId}", animalObservation.AnimalObservationId);
+                return animalObservation;
+            }
+            catch (Exception ex) { Console.WriteLine(ex); return null; }
         }
 
         public async Task<AnimalObservationModel> UpdateAsync(AnimalObservationModel animalObservation)

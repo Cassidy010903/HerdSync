@@ -33,13 +33,19 @@ namespace DAL.Repositories.Implementation
 
         public async Task<ProgramTemplateModel> UpdateAsync(ProgramTemplateModel programTemplate)
         {
-            var local = context.ProgramTemplates.Local
-                .FirstOrDefault(p => p.ProgramTemplateCode == programTemplate.ProgramTemplateCode);
-            if (local != null) context.Entry(local).State = EntityState.Detached;
+            var existing = await context.ProgramTemplates
+                .FirstOrDefaultAsync(p => p.ProgramTemplateCode == programTemplate.ProgramTemplateCode);
+            if (existing == null)
+                throw new KeyNotFoundException($"ProgramTemplate '{programTemplate.ProgramTemplateCode}' not found.");
 
-            context.Entry(programTemplate).State = EntityState.Modified;
+            existing.TemplateName = programTemplate.TemplateName;
+            existing.Description = programTemplate.Description;
+            existing.IsActive = programTemplate.IsActive;
+            existing.Frequency = programTemplate.Frequency;
+
             await context.SaveChangesAsync();
-            return programTemplate;
+            logger.LogInformation("Updated program template with code {Code}", existing.ProgramTemplateCode);
+            return existing;
         }
 
         public async Task SoftDeleteAsync(string code)

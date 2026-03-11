@@ -1,5 +1,6 @@
 ﻿using BLL.Services;
 using HerdSync.Components.Shared.Components;
+using HerdSync.Components.Shared.Theme;
 using HerdSync.Shared.DTO.Animal;
 using HerdSync.Shared.DTO.Calendar;
 using Microsoft.AspNetCore.Components;
@@ -12,6 +13,7 @@ namespace HerdSync.Components.Pages.Dashboard
         [Inject] public IAnimalService AnimalService { get; set; } = default!;
         [Inject] public IPregnancyService PregnancyService { get; set; } = default!;
         [Inject] public ICalendarEventService CalendarEventService { get; set; } = default!;
+        [Inject] public IAnimalObservationService AnimalObservationService { get; set; } = default!;
 
         private int StockCount;
         private int PregnancyCount;
@@ -24,6 +26,7 @@ namespace HerdSync.Components.Pages.Dashboard
         private int FemaleCount => _allAnimals.Count(a => a.Gender == "F");
 
         private List<HerdCalendar.CalendarEntry> calendarEntries = new();
+        private List<ObservationDisplayItem> _observations = new();
 
         private IEnumerable<HerdCalendar.CalendarEntry> UpcomingEvents =>
             calendarEntries
@@ -37,14 +40,6 @@ namespace HerdSync.Components.Pages.Dashboard
                 .OrderBy(e => e.Start)
                 .FirstOrDefault()?.Start.ToString("dd MMM yyyy") ?? "None";
 
-        private bool _addingNote = false;
-        private string _newNoteText = string.Empty;
-        private List<string> _notes = new()
-        {
-            "Check water troughs in the north paddock.",
-            "Bull #B-0055 showing signs of lameness.",
-        };
-
         private List<ActivityItem> RecentActivity = new()
         {
             new() { Text = "Annual Dip — 42 animals treated",   Time = "2 days ago",  Color = "#4a7c59" },
@@ -52,6 +47,14 @@ namespace HerdSync.Components.Pages.Dashboard
             new() { Text = "Cow #C-0088 added to herd",         Time = "5 days ago",  Color = "#6a9e78" },
             new() { Text = "Quarterly Vitamin Run — 38 treated", Time = "2 weeks ago", Color = "#4a7c59" },
             new() { Text = "Tag #RFID-00412 reassigned",         Time = "3 weeks ago", Color = "#d4a843" },
+        };
+
+        private string GetObservationColor(string? flag) => flag?.ToLower() switch
+        {
+            "high" => "#c0392b",
+            "medium" => "#e67e22",
+            "low" => HerdSyncColors.Primary,
+            _ => HerdSyncColors.Primary
         };
 
         protected override async Task OnInitializedAsync()
@@ -71,6 +74,22 @@ namespace HerdSync.Components.Pages.Dashboard
                 End = e.EndDate ?? e.EventDate,
                 Color = e.Color
             }).ToList();
+
+            var observations = await AnimalObservationService.GetAllAsync();
+            _observations = observations
+                .OrderByDescending(o => o.ObservationDate)
+                .Take(10)
+                .Select(o => new ObservationDisplayItem
+                {
+                    AnimalTag = _allAnimals.FirstOrDefault(a => a.AnimalId == o.AnimalId)?.DisplayIdentifier ?? o.AnimalId.ToString(),
+                    ObservationDate = o.ObservationDate,
+                    ConditionCode = o.ConditionCode,
+                    Flag = o.Flag,
+                    NumericValue = o.NumericValue,
+                    TextValue = o.TextValue,
+                    Notes = o.Notes,
+                })
+                .ToList();
         }
 
         private async Task AddCalendarEntry(HerdCalendar.CalendarEntry entry)
@@ -124,22 +143,6 @@ namespace HerdSync.Components.Pages.Dashboard
             StateHasChanged();
         }
 
-        private void AddNote()
-        {
-            if (!string.IsNullOrWhiteSpace(_newNoteText))
-            {
-                _notes.Add(_newNoteText.Trim());
-                _newNoteText = string.Empty;
-                _addingNote = false;
-            }
-        }
-
-        private void HandleNoteKeyDown(KeyboardEventArgs e)
-        {
-            if (e.Key == "Enter") AddNote();
-            if (e.Key == "Escape") _addingNote = false;
-        }
-
         private string GetAgeGroup(int? birthYear)
         {
             if (birthYear == null) return "Unknown";
@@ -173,6 +176,17 @@ namespace HerdSync.Components.Pages.Dashboard
             public string Text { get; set; } = "";
             public string Time { get; set; } = "";
             public string Color { get; set; } = "#4a7c59";
+        }
+
+        public class ObservationDisplayItem
+        {
+            public string? AnimalTag { get; set; }
+            public DateTime ObservationDate { get; set; }
+            public string? ConditionCode { get; set; }
+            public string? Flag { get; set; }
+            public decimal? NumericValue { get; set; }
+            public string? TextValue { get; set; }
+            public string? Notes { get; set; }
         }
     }
 }
