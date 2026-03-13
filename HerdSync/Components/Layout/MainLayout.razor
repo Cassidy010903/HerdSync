@@ -1,5 +1,5 @@
 ﻿@inherits LayoutComponentBase
-@rendermode @(new InteractiveServerRenderMode(prerender: true))
+@inject NavigationManager Nav
 
 <NavigationGuard />
 
@@ -13,23 +13,7 @@
             <img src="/HerdSync_Long_Logo_Cropped.png" alt="HerdSync" style="height: 40px;" />
         </div>
         <div class="hs-appbar__right">
-            <div class="hs-appbar-menu">
-                <button class="hs-appbar-menu__trigger" @onclick="ToggleProfileMenu">
-                    <i class="bx bx-dots-vertical-rounded" style="font-size: 22px; color: white;"></i>
-                </button>
-                @if (_profileMenuOpen)
-                {
-                    <div class="hs-appbar-menu__backdrop" @onclick="CloseProfileMenu"></div>
-                    <div class="hs-appbar-menu__dropdown">
-                        <button class="hs-appbar-menu__item">
-                            <i class="bx bx-building me-2"></i> Farm Profile
-                        </button>
-                        <button class="hs-appbar-menu__item">
-                            <i class="bx bx-user me-2"></i> User Profile
-                        </button>
-                    </div>
-                }
-            </div>
+            <ProfileMenu />
         </div>
     </header>
 
@@ -82,7 +66,7 @@
         background: #748f7a;
         padding: 0 16px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-        z-index: 200;
+        z-index: 1100;
         flex-shrink: 0;
     }
 

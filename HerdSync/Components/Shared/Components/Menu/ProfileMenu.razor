@@ -1,0 +1,26 @@
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: true))
+@inject NavigationManager Nav
+
+<div class="hs-appbar-menu">
+    <button class="hs-appbar-menu__trigger" @onclick="ToggleProfileMenu">
+        <i class="bx bx-dots-vertical-rounded" style="font-size: 22px; color: white;"></i>
+    </button>
+    @if (_profileMenuOpen)
+    {
+        <div class="hs-appbar-menu__backdrop" @onclick="CloseProfileMenu"></div>
+        <div class="hs-appbar-menu__dropdown">
+            <button class="hs-appbar-menu__item" @onclick='() => { Nav.NavigateTo("/farm-profile"); CloseProfileMenu(); }'>
+                <i class="bx bx-building me-2"></i> Farm Profile
+            </button>
+            <button class="hs-appbar-menu__item" @onclick='() => { Nav.NavigateTo("/user-profile"); CloseProfileMenu(); }'>
+                <i class="bx bx-user me-2"></i> User Profile
+            </button>
+        </div>
+    }
+</div>
+
+@code {
+    private bool _profileMenuOpen = false;
+    private void ToggleProfileMenu() => _profileMenuOpen = !_profileMenuOpen;
+    private void CloseProfileMenu() => _profileMenuOpen = false;
+}
