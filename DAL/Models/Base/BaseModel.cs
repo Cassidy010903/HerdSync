@@ -20,5 +20,6 @@ namespace DAL.Models.Base
 
         [MaxLength(100)]
         public string? UpdatedUser { get; set; }
+        public bool IsDeleted { get; set; } = false;
     }
 }

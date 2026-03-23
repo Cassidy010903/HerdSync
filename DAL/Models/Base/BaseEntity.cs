@@ -5,9 +5,9 @@ namespace DAL.Models.Base
     public abstract class BaseEntity
     {
         [MaxLength(100)]
-        public string? CreatedBy { get; set; }
+        public string? CreatedBy { get; set; } = new Guid().ToString();
 
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
         [MaxLength(100)]
         public string? ModifiedBy { get; set; }

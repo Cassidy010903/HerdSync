@@ -17,14 +17,15 @@ namespace DAL.Models.Authentication
         public string DisplayName { get; set; }
 
         [MaxLength(150)]
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         [MaxLength(30)]
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
 
         [Required]
         public byte[] PasswordHash { get; set; }
 
         public bool IsActive { get; set; }
+        public bool IsSystemAdmin { get; set; }
     }
 }

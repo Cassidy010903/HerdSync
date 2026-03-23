@@ -39,6 +39,7 @@ namespace DAL.Configuration.Database
         public DbSet<TreatmentProductModel> TreatmentProducts { get; set; }
         public DbSet<UserAccountModel> UserAccounts { get; set; }
         public DbSet<UserRoleModel> UserRoles { get; set; }
+        public DbSet<FarmInviteModel> FarmInvites { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -90,6 +91,23 @@ namespace DAL.Configuration.Database
                       .HasForeignKey(e => e.AnimalId)
                       .OnDelete(DeleteBehavior.Restrict);
             });
+            modelBuilder.Entity<FarmUserModel>()
+                .HasOne(fu => fu.User)
+                .WithMany()
+                .HasForeignKey(fu => fu.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<FarmUserModel>()
+                .HasOne(fu => fu.Farm)
+                .WithMany()
+                .HasForeignKey(fu => fu.FarmId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<FarmModel>()
+                .HasOne(f => f.Owner)
+                .WithMany()
+                .HasForeignKey(f => f.OwnerUserId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

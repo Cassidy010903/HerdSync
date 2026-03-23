@@ -1,0 +1,62 @@
+﻿@page "/register/owner"
+@layout AuthLayout
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+<h5 class="text-center mb-1" style="color:#748f7a;">Register Your Farm</h5>
+<p class="text-center text-muted mb-4" style="font-size:0.875rem;">Create your account and farm in one step</p>
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="auth-error">@_errorMessage</div>
+}
+
+<p class="section-label">Farm Details</p>
+
+<div class="mb-3">
+    <label class="form-label">Farm Name</label>
+    <input class="form-control" @bind="_dto.FarmName" disabled="@_loading" placeholder="Enter your farm name" />
+</div>
+
+<hr class="auth-divider" />
+<p class="section-label">Your Account</p>
+
+<div class="mb-3">
+    <label class="form-label">Full Name</label>
+    <input class="form-control" @bind="_dto.DisplayName" disabled="@_loading" placeholder="Your full name" />
+</div>
+<div class="mb-3">
+    <label class="form-label">Username</label>
+    <input class="form-control" @bind="_dto.Username" disabled="@_loading" placeholder="Choose a username" />
+</div>
+<div class="mb-3">
+    <label class="form-label">Email <span class="text-muted">(optional)</span></label>
+    <input class="form-control" @bind="_dto.Email" disabled="@_loading" placeholder="your@email.com" />
+</div>
+<div class="mb-3">
+    <label class="form-label">Phone Number <span class="text-muted">(optional)</span></label>
+    <input class="form-control" @bind="_dto.PhoneNumber" disabled="@_loading" placeholder="+27..." />
+</div>
+<div class="mb-3">
+    <label class="form-label">Password</label>
+    <div class="password-wrapper">
+        <input class="form-control" type="@(_showPassword ? "text" : "password")"
+               @bind="_dto.Password" disabled="@_loading" placeholder="Min. 8 characters" />
+        <button class="password-toggle" type="button" @onclick="TogglePasswordVisibility">
+            <i class="@(_showPassword ? "bi bi-eye-slash" : "bi bi-eye")"></i>
+        </button>
+    </div>
+</div>
+<div class="mb-4">
+    <label class="form-label">Confirm Password</label>
+    <input class="form-control" type="password" @bind="_confirmPassword" disabled="@_loading" placeholder="Repeat password" />
+</div>
+
+<button class="btn btn-primary w-100 mb-3" @onclick="HandleRegister" disabled="@_loading">
+    @if (_loading)
+    {
+        <span class="spinner-border spinner-border-sm me-2"></span>
+    }
+    Register Farm
+</button>
+
+<p class="auth-footer">Already have an account? <a href="/login">Sign in</a></p>

@@ -1,0 +1,43 @@
+﻿@page "/login"
+@layout AuthLayout
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+<h5 class="text-center mb-4" style="color:#748f7a;">Sign In</h5>
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="auth-error">@_errorMessage</div>
+}
+
+<div class="mb-3">
+    <label class="form-label">Username</label>
+    <input class="form-control" @bind="_username" disabled="@_loading" placeholder="Enter your username" />
+</div>
+
+<div class="mb-4">
+    <label class="form-label">Password</label>
+    <div class="password-wrapper">
+        <input class="form-control" type="@(_showPassword ? "text" : "password")"
+               @bind="_password" disabled="@_loading" placeholder="Enter your password" />
+        <button class="password-toggle" type="button" @onclick="TogglePasswordVisibility">
+            <i class="@(_showPassword ? "bi bi-eye-slash" : "bi bi-eye")"></i>
+        </button>
+    </div>
+</div>
+
+<button class="btn btn-primary w-100 mb-3" @onclick="HandleLogin" disabled="@_loading">
+    @if (_loading)
+    {
+        <span class="spinner-border spinner-border-sm me-2"></span>
+    }
+    Sign In
+</button>
+
+<hr class="auth-divider" />
+
+<p class="auth-footer">
+    Registering a new farm? <a href="/register/owner">Register here</a>
+</p>
+<p class="auth-footer">
+    Have an invite code? <a href="/register/invite">Join a farm</a>
+</p>
