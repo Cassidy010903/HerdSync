@@ -13,5 +13,6 @@ namespace BLL.Services
         Task<UserAccountDTO> UpdateAsync(UserAccountDTO userAccountDTO);
 
         Task SoftDeleteAsync(Guid userAccountId);
+        Task<bool> ChangePasswordAsync(Guid userId, string currentPassword, string newPassword);
     }
 }

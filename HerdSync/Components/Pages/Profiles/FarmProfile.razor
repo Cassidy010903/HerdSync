@@ -1,4 +1,5 @@
 ﻿@page "/farm-profile"
+@attribute [Authorize]
 @rendermode @(new InteractiveServerRenderMode(prerender: true))
 @using HerdSync.Shared.DTO.Authentication
 @using HerdSync.Shared.DTO.Farm

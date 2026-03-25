@@ -1,0 +1,169 @@
+﻿@page "/invites"
+@attribute [Authorize(Policy = "FarmManager")]
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@using Microsoft.AspNetCore.Components.Authorization
+@using HerdSync.Components.Auth
+
+<div class="hs-page-header">
+    <h4>Invite Users</h4>
+    <p class="text-muted" style="font-size:0.875rem;">Generate invite codes for people to join your farm.</p>
+</div>
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger">@_errorMessage</div>
+}
+
+<div class="row g-4">
+
+    <!-- Generate Invite -->
+    <div class="col-md-5">
+        <div class="hs-card">
+            <div class="hs-card__header">Generate New Invite</div>
+            <div class="hs-card__body">
+
+                <div class="mb-3">
+                    <label class="form-label">Role</label>
+                    <select class="form-select" @bind="_selectedRole" disabled="@_generating">
+                        @foreach (var role in _roles)
+                        {
+                            <option value="@role.Key">@role.Value</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Expires In</label>
+                    <select class="form-select" @bind="_expiryHours" disabled="@_generating">
+                        <option value="24">24 hours</option>
+                        <option value="48">48 hours</option>
+                        <option value="72">72 hours</option>
+                        <option value="168">7 days</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary w-100" @onclick="GenerateInvite" disabled="@_generating">
+                    @if (_generating)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2"></span>
+                    }
+                    <i class="bx bx-plus me-1"></i> Generate Code
+                </button>
+
+                @if (_newInviteCode != null)
+                {
+                    <div class="invite-result mt-4">
+                        <div class="invite-result__label">Share this code:</div>
+                        <div class="invite-result__code">@_newInviteCode</div>
+                        <div class="invite-result__expiry">
+                            Expires: @_newInviteExpiry?.ToLocalTime().ToString("dd MMM yyyy HH:mm")
+                        </div>
+                        <div class="invite-result__link mt-2">
+                            <small class="text-muted">Or share this link:</small><br />
+                            <code style="font-size:0.75rem; word-break:break-all;">
+                                /register/invite?code=@_newInviteCode
+                            </code>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Invites -->
+    <div class="col-md-7">
+        <div class="hs-card">
+            <div class="hs-card__header">Active Invites</div>
+            <div class="hs-card__body">
+                @if (_loading)
+                {
+                    <div class="text-center py-3">
+                        <span class="spinner-border spinner-border-sm"></span>
+                    </div>
+                }
+                else if (!_activeInvites.Any())
+                {
+                    <p class="text-muted text-center py-3" style="font-size:0.875rem;">No active invites.</p>
+                }
+                else
+                {
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Expires</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var invite in _activeInvites)
+                            {
+                                <tr>
+                                    <td><code>@invite.InviteCode</code></td>
+                                    <td style="font-size:0.8rem; color:#888;">
+                                        @invite.ExpiresAt.ToLocalTime().ToString("dd MMM yyyy HH:mm")
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .hs-page-header {
+        margin-bottom: 1.5rem;
+    }
+
+    .hs-card {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        overflow: hidden;
+    }
+
+    .hs-card__header {
+        padding: 0.875rem 1.25rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        background: #f8faf8;
+        border-bottom: 1px solid #e8ede9;
+        color: #2d3a31;
+    }
+
+    .hs-card__body {
+        padding: 1.25rem;
+    }
+
+    .invite-result {
+        background: #f0f6f2;
+        border: 1px solid #c3ddc9;
+        border-radius: 8px;
+        padding: 1rem;
+        text-align: center;
+    }
+
+    .invite-result__label {
+        font-size: 0.75rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+    }
+
+    .invite-result__code {
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: 0.3em;
+        color: #748f7a;
+    }
+
+    .invite-result__expiry {
+        font-size: 0.75rem;
+        color: #888;
+        margin-top: 0.25rem;
+    }
+</style>

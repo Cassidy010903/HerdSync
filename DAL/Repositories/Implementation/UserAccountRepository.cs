@@ -1,4 +1,5 @@
-﻿using DAL.Configuration.Database;
+﻿using BCrypt.Net;
+using DAL.Configuration.Database;
 using DAL.Models.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -43,6 +44,19 @@ namespace DAL.Repositories.Implementation
             entity.IsDeleted = true;
             await context.SaveChangesAsync();
             logger.LogInformation("Soft deleted user account with ID {UserAccountId}", userAccountId);
+        }
+        public async Task<bool> ChangePasswordAsync(Guid userId, string currentPassword, string newPassword)
+        {
+            var user = await context.UserAccounts.FirstOrDefaultAsync(u => u.UserId == userId && !u.IsDeleted);
+            if (user == null) return false;
+
+            var currentHash = System.Text.Encoding.UTF8.GetString(user.PasswordHash);
+            if (!BCrypt.Net.BCrypt.Verify(currentPassword, currentHash))
+                return false;
+
+            user.PasswordHash = System.Text.Encoding.UTF8.GetBytes(BCrypt.Net.BCrypt.HashPassword(newPassword));
+            await context.SaveChangesAsync();
+            return true;
         }
     }
 }

@@ -156,9 +156,17 @@ app.MapGet("/auth/complete", async (string token, LoginSessionStore store, HttpC
     return Results.Redirect("/");
 });
 
+app.MapGet("/auth/logout", async (HttpContext ctx) =>
+{
+    await ctx.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+    return Results.Redirect("/login");
+});
+
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseStaticFiles();
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();

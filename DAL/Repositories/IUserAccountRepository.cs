@@ -13,5 +13,6 @@ namespace DAL.Repositories
         Task<UserAccountModel> UpdateAsync(UserAccountModel userAccount);
 
         Task SoftDeleteAsync(Guid userAccountId);
+        Task<bool> ChangePasswordAsync(Guid userId, string currentPassword, string newPassword);
     }
 }

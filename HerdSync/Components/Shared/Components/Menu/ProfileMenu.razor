@@ -1,26 +1,54 @@
 ﻿@rendermode @(new InteractiveServerRenderMode(prerender: true))
 @inject NavigationManager Nav
+@using Microsoft.AspNetCore.Components.Authorization
 
-<div class="hs-appbar-menu">
-    <button class="hs-appbar-menu__trigger" @onclick="ToggleProfileMenu">
-        <i class="bx bx-dots-vertical-rounded" style="font-size: 22px; color: white;"></i>
-    </button>
-    @if (_profileMenuOpen)
-    {
-        <div class="hs-appbar-menu__backdrop" @onclick="CloseProfileMenu"></div>
-        <div class="hs-appbar-menu__dropdown">
-            <button class="hs-appbar-menu__item" @onclick='() => { Nav.NavigateTo("/farm-profile"); CloseProfileMenu(); }'>
-                <i class="bx bx-building me-2"></i> Farm Profile
+<AuthorizeView>
+    <Authorized>
+        <div class="hs-appbar-menu">
+            <button class="hs-appbar-menu__trigger" @onclick="ToggleProfileMenu">
+                <i class="bx bx-dots-vertical-rounded" style="font-size: 22px; color: white;"></i>
             </button>
-            <button class="hs-appbar-menu__item" @onclick='() => { Nav.NavigateTo("/user-profile"); CloseProfileMenu(); }'>
-                <i class="bx bx-user me-2"></i> User Profile
-            </button>
+            @if (_profileMenuOpen)
+            {
+                <div class="hs-appbar-menu__backdrop" @onclick="CloseProfileMenu"></div>
+                <div class="hs-appbar-menu__dropdown">
+                    <div style="padding:12px 16px; border-bottom:1px solid #e2e8e4;">
+                        <div style="font-weight:600; font-size:13px; color:#2d3a31;">
+                            @context.User.FindFirst("DisplayName")?.Value
+                        </div>
+                        @if (!string.IsNullOrEmpty(context.User.FindFirst("FarmName")?.Value))
+                        {
+                            <div style="font-size:11px; color:#888; margin-top:2px;">
+                                <i class="bx bx-home me-1"></i>@context.User.FindFirst("FarmName")?.Value
+                            </div>
+                        }
+                        <div style="font-size:11px; color:#748f7a; margin-top:2px;">
+                            @context.User.FindFirst("RoleCode")?.Value
+                        </div>
+                    </div>
+                    <button class="hs-appbar-menu__item" @onclick='() => { Nav.NavigateTo("/farm-profile"); CloseProfileMenu(); }'>
+                        <i class="bx bx-building me-2"></i> Farm Profile
+                    </button>
+                    <button class="hs-appbar-menu__item" @onclick='() => { Nav.NavigateTo("/user-profile"); CloseProfileMenu(); }'>
+                        <i class="bx bx-user me-2"></i> User Profile
+                    </button>
+                    <div style="border-top:1px solid #e2e8e4; margin-top:4px;"></div>
+                    <button class="hs-appbar-menu__item" @onclick="SignOut" style="color:#dc3545;">
+                        <i class="bx bx-log-out me-2"></i> Sign Out
+                    </button>
+                </div>
+            }
         </div>
-    }
-</div>
+    </Authorized>
+</AuthorizeView>
 
 @code {
     private bool _profileMenuOpen = false;
     private void ToggleProfileMenu() => _profileMenuOpen = !_profileMenuOpen;
     private void CloseProfileMenu() => _profileMenuOpen = false;
+    private void SignOut()
+    {
+        CloseProfileMenu();
+        Nav.NavigateTo("/auth/logout", forceLoad: true);
+    }
 }

@@ -1,4 +1,5 @@
 ﻿@page "/programs/{ProgramTemplateCode}"
+@attribute [Authorize]
 @rendermode @(new InteractiveServerRenderMode(prerender: true))
 @using HerdSync.Shared.DTO.Program
 @using HerdSync.Shared.DTO.Treatment

@@ -2,6 +2,7 @@
 using DAL.Models.Authentication;
 using DAL.Repositories;
 using HerdSync.Shared.DTO.Authentication;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace BLL.Services.Implementation
@@ -44,6 +45,10 @@ namespace BLL.Services.Implementation
         {
             await repository.SoftDeleteAsync(userAccountId);
             logger.LogInformation("Soft deleted user account with ID {UserAccountId}", userAccountId);
+        }
+        public async Task<bool> ChangePasswordAsync(Guid userId, string currentPassword, string newPassword)
+        {
+            return await repository.ChangePasswordAsync(userId, currentPassword, newPassword);
         }
     }
 }

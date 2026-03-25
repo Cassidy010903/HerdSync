@@ -1,6 +1,7 @@
 ﻿@rendermode @(new InteractiveServerRenderMode(prerender: true))
 @inject LiveSessionService LiveSession
 @implements IDisposable
+@using Microsoft.AspNetCore.Components.Authorization
 
 <div class="hs-nav">
     <div class="hs-nav__toggle">
@@ -49,6 +50,17 @@
             <NavLink class="@("hs-nav__link" + (LiveSession.IsActive ? " hs-nav__link--disabled" : ""))" href="/TagManagement" Match="NavLinkMatch.Prefix">
                 <i class="bx bx-purchase-tag me-2"></i> Tag Management
             </NavLink>
+
+            <AuthorizeView>
+                <Authorized>
+                    @if (context.User.FindFirst("RoleCode")?.Value is "OWNR" or "MNGR")
+                    {
+                        <NavLink class="@("hs-nav__link" + (LiveSession.IsActive ? " hs-nav__link--disabled" : ""))" href="/invites" Match="NavLinkMatch.Prefix">
+                            <i class="bx bx-user-plus me-2"></i> Invite Users
+                        </NavLink>
+                    }
+                </Authorized>
+            </AuthorizeView>
         </nav>
     }
     else
