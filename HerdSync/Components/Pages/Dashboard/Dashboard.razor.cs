@@ -4,29 +4,33 @@ using HerdSync.Components.Shared.Theme;
 using HerdSync.Shared.DTO.Animal;
 using HerdSync.Shared.DTO.Calendar;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+using static BLL.Services.ActivityFeedService;
 
 namespace HerdSync.Components.Pages.Dashboard
 {
-    public partial class Dashboard
+    public partial class Dashboard : IDisposable
     {
         [Inject] public IAnimalService AnimalService { get; set; } = default!;
         [Inject] public IPregnancyService PregnancyService { get; set; } = default!;
         [Inject] public ICalendarEventService CalendarEventService { get; set; } = default!;
         [Inject] public IAnimalObservationService AnimalObservationService { get; set; } = default!;
+        [Inject] public IUserAccountService UserAccountService { get; set; } = default!;
+        [Inject] public IProgramRunService ProgramRunService { get; set; } = default!;
+        [Inject] public IProgramTemplateService ProgramTemplateService { get; set; } = default!;
+        [Inject] public ActivityFeedService ActivityFeed { get; set; } = default!;
 
         private int StockCount;
         private int PregnancyCount;
         private List<AnimalDTO> _allAnimals = new();
+        private List<ObservationDisplayItem> _observations = new();
+        private List<HerdCalendar.CalendarEntry> calendarEntries = new();
+        private Timer? _timer;
 
         private int CalfCount => _allAnimals.Count(a => GetAgeGroup(a.BirthYear) == "Calf");
         private int YearlingCount => _allAnimals.Count(a => GetAgeGroup(a.BirthYear) == "Yearling");
         private int AdultCount => _allAnimals.Count(a => GetAgeGroup(a.BirthYear) == "Adult");
         private int MaleCount => _allAnimals.Count(a => a.Gender == "M");
         private int FemaleCount => _allAnimals.Count(a => a.Gender == "F");
-
-        private List<HerdCalendar.CalendarEntry> calendarEntries = new();
-        private List<ObservationDisplayItem> _observations = new();
 
         private IEnumerable<HerdCalendar.CalendarEntry> UpcomingEvents =>
             calendarEntries
@@ -39,23 +43,6 @@ namespace HerdSync.Components.Pages.Dashboard
                 .Where(e => e.Start > DateTime.Now)
                 .OrderBy(e => e.Start)
                 .FirstOrDefault()?.Start.ToString("dd MMM yyyy") ?? "None";
-
-        private List<ActivityItem> RecentActivity = new()
-        {
-            new() { Text = "Annual Dip — 42 animals treated",   Time = "2 days ago",  Color = "#4a7c59" },
-            new() { Text = "Tag assigned to #A-0201",            Time = "3 days ago",  Color = "#3a7fa8" },
-            new() { Text = "Cow #C-0088 added to herd",         Time = "5 days ago",  Color = "#6a9e78" },
-            new() { Text = "Quarterly Vitamin Run — 38 treated", Time = "2 weeks ago", Color = "#4a7c59" },
-            new() { Text = "Tag #RFID-00412 reassigned",         Time = "3 weeks ago", Color = "#d4a843" },
-        };
-
-        private string GetObservationColor(string? flag) => flag?.ToLower() switch
-        {
-            "high" => "#c0392b",
-            "medium" => "#e67e22",
-            "low" => HerdSyncColors.Primary,
-            _ => HerdSyncColors.Primary
-        };
 
         protected override async Task OnInitializedAsync()
         {
@@ -90,7 +77,73 @@ namespace HerdSync.Components.Pages.Dashboard
                     Notes = o.Notes,
                 })
                 .ToList();
+
+            await BuildActivityFeed();
+
+            ActivityFeed.OnChanged += OnActivityChanged;
+            _timer = new Timer(_ => InvokeAsync(StateHasChanged), null, 60_000, 60_000);
         }
+
+        private async Task BuildActivityFeed()
+        {
+            var entries = new List<ActivityEntry>();
+
+            // New animals — earthy green
+            foreach (var animal in _allAnimals.Where(a => a.CreatedDate != default).OrderByDescending(a => a.CreatedDate).Take(5))
+            {
+                entries.Add(new ActivityEntry
+                {
+                    Text = $"New animal added — #{animal.DisplayIdentifier}",
+                    Timestamp = animal.CreatedDate,
+                    Color = "#4a7c59",
+                    Type = ActivityFeedService.ActivityType.NewAnimal
+                });
+            }
+
+            // New users — muted slate
+            var users = await UserAccountService.GetAllAsync();
+            foreach (var user in users.Where(u => u.CreatedDate != default).OrderByDescending(u => u.CreatedDate).Take(5))
+            {
+                entries.Add(new ActivityEntry
+                {
+                    Text = $"New user joined — {user.DisplayName}",
+                    Timestamp = user.CreatedDate,
+                    Color = "#6b7f72",
+                    Type = ActivityFeedService.ActivityType.NewUser
+                });
+            }
+
+            // Program runs — warm brown
+            var runs = await ProgramRunService.GetAllAsync();
+            var templates = await ProgramTemplateService.GetAllAsync();
+            foreach (var run in runs.OrderByDescending(r => r.RunDate).Take(5))
+            {
+                var name = templates.FirstOrDefault(t => t.ProgramTemplateCode == run.ProgramTemplateCode)?.TemplateName ?? run.ProgramTemplateCode;
+                entries.Add(new ActivityEntry
+                {
+                    Text = $"Program run — {name}",
+                    Timestamp = run.RunDate,
+                    Color = "#8b6f47",
+                    Type = ActivityFeedService.ActivityType.ProgramRun
+                });
+            }
+
+            // Calendar events — muted golden earth
+            foreach (var ev in calendarEntries.Where(e => e.Start != default).OrderByDescending(e => e.Start).Take(5))
+            {
+                entries.Add(new ActivityEntry
+                {
+                    Text = $"Event added — {ev.Title}",
+                    Timestamp = ev.Start,
+                    Color = "#c8a96e",
+                    Type = ActivityFeedService.ActivityType.CalendarEvent
+                });
+            }
+
+            ActivityFeed.Seed(entries.OrderByDescending(e => e.Timestamp).Take(9));
+        }
+
+        private void OnActivityChanged() => InvokeAsync(StateHasChanged);
 
         private async Task AddCalendarEntry(HerdCalendar.CalendarEntry entry)
         {
@@ -111,6 +164,15 @@ namespace HerdSync.Components.Pages.Dashboard
                 End = created.EndDate ?? created.EventDate,
                 Color = created.Color
             });
+
+            ActivityFeed.Add(new ActivityEntry
+            {
+                Text = $"Event added — {created.Title}",
+                Timestamp = DateTime.Now,
+                Color = "#c8a96e",
+                Type = ActivityFeedService.ActivityType.CalendarEvent
+            });
+
             StateHasChanged();
         }
 
@@ -143,6 +205,26 @@ namespace HerdSync.Components.Pages.Dashboard
             StateHasChanged();
         }
 
+        public static string GetRelativeTime(DateTime timestamp)
+        {
+            var diff = DateTime.Now - timestamp;
+            var totalMinutes = diff.TotalMinutes;
+            var totalHours = diff.TotalHours;
+            var totalDays = diff.TotalDays;
+
+            return totalMinutes switch
+            {
+                < 1 => "just now",
+                < 2 => "1 min ago",
+                <= 5 => $"{(int)totalMinutes} mins ago",
+                _ when totalHours < 1 => "a few minutes ago",
+                _ when totalHours < 2 => "an hour ago",
+                _ when totalHours < 24 => "a few hours ago",
+                _ when totalDays < 2 => "a day ago",
+                _ => "a few days ago"
+            };
+        }
+
         private string GetAgeGroup(int? birthYear)
         {
             if (birthYear == null) return "Unknown";
@@ -171,11 +253,18 @@ namespace HerdSync.Components.Pages.Dashboard
             };
         }
 
-        public class ActivityItem
+        private string GetObservationColor(string? flag) => flag?.ToLower() switch
         {
-            public string Text { get; set; } = "";
-            public string Time { get; set; } = "";
-            public string Color { get; set; } = "#4a7c59";
+            "high" => "#c0392b",
+            "medium" => "#e67e22",
+            "low" => HerdSyncColors.Primary,
+            _ => HerdSyncColors.Primary
+        };
+
+        public void Dispose()
+        {
+            ActivityFeed.OnChanged -= OnActivityChanged;
+            _timer?.Dispose();
         }
 
         public class ObservationDisplayItem

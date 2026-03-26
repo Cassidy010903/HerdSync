@@ -17,13 +17,14 @@
 @inject IProgramTemplateRuleTreatmentService ProgramTemplateRuleTreatmentService
 @inject IProgramRunTreatmentService ProgramRunTreatmentService
 @inject LiveSessionService LiveSession
+@inject IAnimalTagService AnimalTagService
 
 <input @ref="scannerInput"
        @onkeydown="HandleKeyDown"
        style="position:fixed; left:-10000px; top:-10000px;"
        autocomplete="off" />
 
-<div class="card mb-3 @(_sessionStarted ? "border-success" : "border-warning")">
+<div class="card mb-3 @(_sessionStarted ? "border-success" : "hs-border-earth")">
     <div class="card-body py-3">
         <div class="row align-items-center g-2">
             <div class="col-auto">
@@ -33,7 +34,7 @@
                 }
                 else
                 {
-                    <span class="badge bg-warning text-dark fs-6">● STANDBY</span>
+                    <span class="badge fs-6 scanning-pulse" style="background-color:#c8a96e; color:#fff;">● STANDBY</span>
                 }
             </div>
             <div class="col">
@@ -104,7 +105,10 @@
                         <small class="text-muted">@animalActions.Count animals scanned</small>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                        <button class="btn btn-outline-primary btn-sm" @onclick="() => _showNewAnimalDialog = true">
+                        <button class="btn btn-outline-secondary btn-sm" @onclick="OpenManualAdd">
+                            <i class="bx bx-list-plus me-1"></i>Manual Add
+                        </button>
+                        <button class="btn btn-sm" style="border:1px solid #4a7c59; color:#4a7c59; background:transparent;" @onclick="() => _showNewAnimalDialog = true">
                             <i class="bx bx-plus me-1"></i>New Animal
                         </button>
                         <span class="badge bg-success scanning-pulse fs-6">● SCANNING</span>
@@ -115,8 +119,15 @@
                 {
                     <div class="manual-add-banner mx-3 mt-2">
                         <div class="d-flex align-items-center gap-2 mb-2">
-                            <i class="bx bx-error text-warning fs-5"></i>
-                            <span><strong>Tag not found.</strong> Manually select the animal to add it to the list.</span>
+                            <i class="bx bx-error fs-5" style="color:#c8a96e;"></i>
+                            @if (!string.IsNullOrEmpty(_lastUnrecognizedCode))
+                            {
+                                <span><strong>Tag not found:</strong> @_lastUnrecognizedCode — Search for the animal to link it.</span>
+                            }
+                            else
+                            {
+                                <span>Search for an animal to manually add it to the list.</span>
+                            }
                         </div>
                         <div class="input-group input-group-sm">
                             <span class="input-group-text"><i class="bx bx-search"></i></span>
@@ -125,7 +136,7 @@
                                    placeholder="Search by animal number..."
                                    value="@_manualSearch"
                                    @oninput="OnManualSearchInput" />
-                            <button class="btn btn-success btn-sm" @onclick="AddManual">Add</button>
+                            <button class="btn btn-success btn-sm" @onclick="AddManual" disabled="@(_selectedManualAnimal == null)">Add</button>
                             <button class="btn btn-outline-secondary btn-sm" @onclick="DismissManual">Cancel</button>
                         </div>
                         @if (_manualSuggestions.Any())
@@ -133,13 +144,52 @@
                             <div class="suggestions-dropdown mt-1">
                                 @foreach (var animal in _manualSuggestions)
                                 {
-                                    <div class="suggestion-item" @onclick="() => SelectManualAnimal(animal)">
+                                    <div class="suggestion-item @(_selectedManualAnimal?.AnimalId == animal.AnimalId ? "selected" : "")"
+                                         @onclick="() => SelectManualAnimal(animal)">
                                         <strong>#@animal.DisplayIdentifier</strong>
                                         @if (animal.BirthYear.HasValue)
                                         {
                                             <span class="text-muted ms-1">— @animal.BirthYear</span>
                                         }
+                                        @if (animal.AnimalTag == null)
+                                        {
+                                            <span class="badge ms-2" style="background-color:#c8a96e; color:#fff;">No Tag</span>
+                                        }
                                     </div>
+                                }
+                            </div>
+                        }
+                        @if (_selectedManualAnimal != null)
+                        {
+                            <div class="mt-2 p-2 rounded" style="font-size:0.8rem; background-color:#fdf6ec; border:1px solid #c8a96e;">
+                                @if (_selectedManualAnimal.AnimalTag != null)
+                                {
+                                    <i class="bx bx-info-circle me-1"></i>
+                                    <span>Current tag: <strong>@_selectedManualAnimal.AnimalTag.RFIDTagCode</strong>. Assigning a new tag will replace it.</span>
+                                }
+                                else
+                                {
+                                    <i class="bx bx-info-circle me-1"></i>
+                                    <span>This animal has no tag.</span>
+                                }
+                                <button class="btn btn-link btn-sm p-0 ms-2" @onclick="OpenAssignTag">
+                                    @(_selectedManualAnimal.AnimalTag != null ? "Replace Tag" : "Assign Tag")
+                                </button>
+                            </div>
+                        }
+                        @if (_assigningTag)
+                        {
+                            <div class="mt-2">
+                                <label style="font-size:0.8rem;" class="fw-semibold">Assign RFID Tag Code</label>
+                                <div class="input-group input-group-sm mt-1">
+                                    <input type="text" class="form-control" placeholder="Scan or enter RFID code"
+                                           @bind="_newTagCode" />
+                                    <button class="btn btn-success btn-sm" @onclick="SaveNewTag">Save Tag</button>
+                                    <button class="btn btn-outline-secondary btn-sm" @onclick="() => _assigningTag = false">Cancel</button>
+                                </div>
+                                @if (!string.IsNullOrEmpty(_tagError))
+                                {
+                                    <small class="text-danger">@_tagError</small>
                                 }
                             </div>
                         }
@@ -162,10 +212,14 @@
                             @foreach (var action in animalActions.Where(a => _pinnedIds.Contains(a.AnimalId)))
                             {
                                 <tr class="pinned-row">
-                                    <td><i class="bx bxs-pin text-warning"></i></td>
+                                    <td><i class="bx bxs-pin" style="color:#c8a96e;"></i></td>
                                     <td><strong>#@(action.Animal?.DisplayIdentifier ?? action.AnimalId.ToString())</strong></td>
                                     <td>@(action.Animal?.Gender ?? "-")</td>
-                                    <td><span class="badge bg-secondary">@GetAgeGroup(action.Animal?.BirthYear)</span></td>
+                                    <td>
+                                        <span class="badge @(GetAgeGroup(action.Animal?.BirthYear) == "Calf" ? "hs-badge-calf" : GetAgeGroup(action.Animal?.BirthYear) == "Yearling" ? "bg-info text-dark" : "bg-secondary")">
+                                            @GetAgeGroup(action.Animal?.BirthYear)
+                                        </span>
+                                    </td>
                                     <td>
                                         <select class="form-select form-select-sm status-select"
                                                 @onchange="e => SetStatus(action.AnimalId, e.Value?.ToString())">
@@ -175,10 +229,10 @@
                                     </td>
                                     <td>
                                         <div class="d-flex gap-1">
-                                            <button class="btn btn-sm btn-warning" @onclick="() => TogglePin(action.AnimalId)">
+                                            <button class="btn btn-sm" style="background-color:#c8a96e; color:#fff; border:none;" title="Unpin" @onclick="() => TogglePin(action.AnimalId)">
                                                 <i class="bx bx-pin"></i>
                                             </button>
-                                            <button class="btn btn-sm btn-outline-primary" @onclick="() => OpenAddTreatment(action)">
+                                            <button class="btn btn-sm btn-outline-primary" title="Add Treatment" @onclick="() => OpenAddTreatment(action)">
                                                 <i class="bx bx-plus-medical"></i>
                                             </button>
                                         </div>
@@ -188,17 +242,15 @@
                             @foreach (var action in animalActions.Where(a => !_pinnedIds.Contains(a.AnimalId)))
                             {
                                 var ageGroup = GetAgeGroup(action.Animal?.BirthYear);
-                                var badgeColor = ageGroup switch
-                                {
-                                    "Calf" => "warning text-dark",
-                                    "Yearling" => "info text-dark",
-                                    _ => "secondary"
-                                };
                                 <tr>
                                     <td></td>
                                     <td>#@(action.Animal?.DisplayIdentifier ?? action.AnimalId.ToString())</td>
                                     <td>@(action.Animal?.Gender ?? "-")</td>
-                                    <td><span class="badge bg-@badgeColor">@ageGroup</span></td>
+                                    <td>
+                                        <span class="badge @(ageGroup == "Calf" ? "hs-badge-calf" : ageGroup == "Yearling" ? "bg-info text-dark" : "bg-secondary")">
+                                            @ageGroup
+                                        </span>
+                                    </td>
                                     <td>
                                         <select class="form-select form-select-sm status-select"
                                                 @onchange="e => SetStatus(action.AnimalId, e.Value?.ToString())">
@@ -208,10 +260,10 @@
                                     </td>
                                     <td>
                                         <div class="d-flex gap-1">
-                                            <button class="btn btn-sm btn-outline-secondary" @onclick="() => TogglePin(action.AnimalId)">
+                                            <button class="btn btn-sm btn-outline-secondary" title="Pin" @onclick="() => TogglePin(action.AnimalId)">
                                                 <i class="bx bx-pin"></i>
                                             </button>
-                                            <button class="btn btn-sm btn-outline-primary" @onclick="() => OpenAddTreatment(action)">
+                                            <button class="btn btn-sm btn-outline-primary" title="Add Treatment" @onclick="() => OpenAddTreatment(action)">
                                                 <i class="bx bx-plus-medical"></i>
                                             </button>
                                         </div>
@@ -269,7 +321,7 @@
                         <span class="small fw-semibold">$ Sell</span>
                         <strong>@_statusMap.Count(s => s.Value == "sell")</strong>
                     </div>
-                    <div class="stat-row text-warning">
+                    <div class="stat-row" style="color:#c8a96e;">
                         <span class="small fw-semibold"><i class="bx bxs-pin"></i> Pinned</span>
                         <strong>@_pinnedIds.Count</strong>
                     </div>
@@ -302,7 +354,7 @@
                             <div class="dosage-item mb-2">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <strong>@vaccine.Name</strong>
-                                    <span class="badge bg-primary ms-1">@vaccine.Dose</span>
+                                    <span class="badge ms-1" style="background-color:#e8f0ea; color:#4a7c59;">@vaccine.Dose</span>
                                 </div>
                                 <div class="text-muted" style="font-size:11px">@vaccine.Notes</div>
                             </div>
@@ -378,12 +430,16 @@
     }
 
     .pinned-row {
-        background: #fff8e1 !important;
+        background: #fdf6ec !important;
+    }
+
+    .hs-border-earth {
+        border-color: #c8a96e !important;
     }
 
     .manual-add-banner {
-        background: #fff3cd;
-        border: 1px solid #ffc107;
+        background: #fdf6ec;
+        border: 1px solid #c8a96e;
         border-radius: 8px;
         padding: 10px 14px;
         font-size: 13px;
@@ -406,6 +462,16 @@
         .suggestion-item:hover {
             background: #f0f4f8;
         }
+
+        .suggestion-item.selected {
+            background: #e8f0ea;
+            font-weight: 600;
+        }
+
+    .hs-badge-calf {
+        background-color: #c8a96e;
+        color: #fff;
+    }
 
     .dosage-item strong {
         color: #2d3748;
@@ -458,11 +524,11 @@
 </style>
 
 @code {
+
     private ElementReference scannerInput;
     private string _scanBuffer = "";
     private DateTime _lastKey = DateTime.MinValue;
 
-    // --- Session state ---
     private bool _sessionStarted = false;
     private bool _startingSession = false;
     private bool _loadingPrograms = true;
@@ -473,14 +539,12 @@
     private ProgramRunDTO? _activeRun;
     private List<ProgramTemplateDTO> _availablePrograms = new();
 
-    // --- Scan / list state ---
     private bool _showManualAdd = false;
     private bool _showNewAnimalDialog = false;
     private string _manualSearch = "";
     private AnimalDTO? _selectedManualAnimal;
     private List<AnimalDTO> _manualSuggestions = new();
 
-    // --- Extra treatment state ---
     private bool _showAddTreatmentDialog = false;
     private ProgramRunAnimalDTO? _treatmentTargetAnimal;
     private string _selectedExtraTreatmentCode = string.Empty;
@@ -496,6 +560,12 @@
     private HashSet<Guid> _pinnedIds = new();
     private Dictionary<Guid, string> _statusMap = new();
 
+    private bool _assigningTag = false;
+    private string _newTagCode = string.Empty;
+    private string _tagError = string.Empty;
+    private string _lastUnrecognizedCode = string.Empty;
+    private bool _needsScannerFocus = false;
+
     private List<VaccineDosage> _vaccines = new()
     {
         new() { Name = "Roundworm (Dectomax)",    Dose = "1ml/50kg", Notes = "Subcutaneous injection, max 7.5ml per site" },
@@ -508,20 +578,64 @@
     protected override async Task OnInitializedAsync()
     {
         _allAnimals = await AnimalService.GetAllAsync();
-
         var programs = await ProgramTemplateService.GetAllAsync();
         _availablePrograms = programs.Where(p => p.IsActive).ToList();
-
         var treatments = await TreatmentService.GetAllAsync();
         _availableTreatments = treatments.ToList();
-
         _loadingPrograms = false;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (_sessionStarted)
+        if (_needsScannerFocus)
+        {
+            _needsScannerFocus = false;
             await scannerInput.FocusAsync();
+        }
+    }
+
+    private void OpenAssignTag()
+    {
+        _assigningTag = true;
+        _newTagCode = _lastUnrecognizedCode;
+        _tagError = string.Empty;
+    }
+
+    private async Task SaveNewTag()
+    {
+        _tagError = string.Empty;
+        if (string.IsNullOrWhiteSpace(_newTagCode))
+        {
+            _tagError = "Please enter an RFID code.";
+            return;
+        }
+        try
+        {
+            if (_selectedManualAnimal!.AnimalTag != null)
+            {
+                var oldTag = _selectedManualAnimal.AnimalTag;
+                oldTag.IsCurrent = false;
+                oldTag.UnassignedDate = DateTime.UtcNow;
+                await AnimalTagService.UpdateAsync(oldTag);
+            }
+            var tag = new AnimalTagDTO
+            {
+                AnimalTagId = Guid.NewGuid(),
+                AnimalId = _selectedManualAnimal.AnimalId,
+                RFIDTagCode = _newTagCode.Trim(),
+                AssignedDate = DateTime.UtcNow,
+                IsCurrent = true
+            };
+            var saved = await AnimalTagService.CreateAsync(tag);
+            _selectedManualAnimal.AnimalTag = saved;
+            _allAnimals.First(a => a.AnimalId == _selectedManualAnimal.AnimalId).AnimalTag = saved;
+            _assigningTag = false;
+            _newTagCode = string.Empty;
+        }
+        catch (Exception ex)
+        {
+            _tagError = $"Failed to save tag: {ex.Message}";
+        }
     }
 
     private void OnProgramSelected(ChangeEventArgs e)
@@ -534,24 +648,20 @@
     private async Task StartSession()
     {
         if (string.IsNullOrEmpty(_selectedProgramCode)) return;
-
         _startingSession = true;
         LiveSession.StartSession();
-
         try
         {
-            _activeProgram = _availablePrograms
-                .FirstOrDefault(p => p.ProgramTemplateCode == _selectedProgramCode);
-
+            _activeProgram = _availablePrograms.FirstOrDefault(p => p.ProgramTemplateCode == _selectedProgramCode);
             _activeRun = await ProgramRunService.CreateAsync(new ProgramRunDTO
             {
                 ProgramTemplateCode = _selectedProgramCode,
                 RunDate = DateTime.UtcNow,
                 Notes = $"Started at {DateTime.Now:yyyy-MM-dd HH:mm}"
             });
-
             _sessionStartTime = DateTime.Now;
             _sessionStarted = true;
+            _needsScannerFocus = true;
         }
         catch (Exception ex)
         {
@@ -582,14 +692,17 @@
     private void HandleKeyDown(KeyboardEventArgs e)
     {
         if (!_sessionStarted) return;
-
         if ((DateTime.Now - _lastKey).TotalMilliseconds > 60)
             _scanBuffer = "";
         _lastKey = DateTime.Now;
         if (e.Key == "Enter")
         {
             if (!string.IsNullOrWhiteSpace(_scanBuffer))
+            {
+                if (_showManualAdd)
+                    DismissManual();
                 _ = AddScanAsync(_scanBuffer.Trim());
+            }
             _scanBuffer = "";
             return;
         }
@@ -602,7 +715,9 @@
         var animal = _allAnimals.FirstOrDefault(a => a.AnimalTag?.RFIDTagCode == rfidCode);
         if (animal == null)
         {
+            _lastUnrecognizedCode = rfidCode;
             _showManualAdd = true;
+            _needsScannerFocus = true;
             await InvokeAsync(StateHasChanged);
             return;
         }
@@ -612,10 +727,12 @@
     private void OnManualSearchInput(ChangeEventArgs e)
     {
         _manualSearch = e.Value?.ToString() ?? "";
+        var alreadyScannedIds = animalActions.Select(a => a.AnimalId).ToHashSet();
         _manualSuggestions = string.IsNullOrWhiteSpace(_manualSearch)
             ? new()
             : _allAnimals
-                .Where(a => a.DisplayIdentifier?.Contains(_manualSearch, StringComparison.OrdinalIgnoreCase) == true)
+                .Where(a => !alreadyScannedIds.Contains(a.AnimalId) &&
+                            a.DisplayIdentifier?.Contains(_manualSearch, StringComparison.OrdinalIgnoreCase) == true)
                 .Take(5)
                 .ToList();
     }
@@ -634,21 +751,30 @@
         DismissManual();
     }
 
+    private void OpenManualAdd()
+    {
+        _lastUnrecognizedCode = string.Empty;
+        _showManualAdd = true;
+        _needsScannerFocus = false;
+    }
+
     private void DismissManual()
     {
         _showManualAdd = false;
         _manualSearch = "";
         _selectedManualAnimal = null;
         _manualSuggestions = new();
+        _assigningTag = false;
+        _newTagCode = string.Empty;
+        _tagError = string.Empty;
+        _needsScannerFocus = true;
     }
 
     private async Task HandleNewAnimalFromDialog(AnimalDTO newAnimal)
     {
         _showNewAnimalDialog = false;
-
         if (!_allAnimals.Any(a => a.AnimalId == newAnimal.AnimalId))
             _allAnimals.Add(newAnimal);
-
         await AddAnimalToList(newAnimal);
     }
 
@@ -675,7 +801,6 @@
             _addTreatmentError = "Please select a treatment.";
             return;
         }
-
         try
         {
             await ProgramRunTreatmentService.CreateAsync(new ProgramRunTreatmentDTO
@@ -686,7 +811,6 @@
                 AddedManually = true,
                 GivenDate = DateTime.UtcNow,
             });
-
             CloseAddTreatment();
         }
         catch (Exception ex)
@@ -705,24 +829,20 @@
             WasHandled = false,
             Animal = null
         };
-
         try
         {
             if (_activeRun == null || _activeRun.ProgramRunId == Guid.Empty)
                 throw new InvalidOperationException("No active program run.");
-
             var saved = await ProgramRunAnimalService.CreateAsync(newEntry);
             saved.Animal = animal;
-
             await ApplyTreatmentsAsync(saved, animal);
-
             animalActions.Insert(0, saved);
+            _needsScannerFocus = true;
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Failed to save animal to program run: {ex.Message}");
         }
-
         await InvokeAsync(StateHasChanged);
     }
 
@@ -731,7 +851,6 @@
         try
         {
             var allRules = await ProgramTemplateRuleService.GetAllAsync();
-
             var matchedRules = allRules.Where(r =>
                 r.ProgramTemplateCode == _selectedProgramCode &&
                 (string.IsNullOrEmpty(r.AnimalTypeCode) || r.AnimalTypeCode == animal.AnimalTypeCode) &&
@@ -739,17 +858,13 @@
                 (!r.MinBirthYear.HasValue || animal.BirthYear >= r.MinBirthYear) &&
                 (!r.MaxBirthYear.HasValue || animal.BirthYear <= r.MaxBirthYear)
             ).ToList();
-
             if (!matchedRules.Any()) return;
-
             var allRuleTreatments = await ProgramTemplateRuleTreatmentService.GetAllAsync();
-
             foreach (var rule in matchedRules)
             {
                 var treatments = allRuleTreatments
                     .Where(t => t.ProgramTemplateRuleId == rule.ProgramTemplateRuleId)
                     .ToList();
-
                 foreach (var treatment in treatments)
                 {
                     await ProgramRunTreatmentService.CreateAsync(new ProgramRunTreatmentDTO
@@ -762,7 +877,6 @@
                     });
                 }
             }
-
             programRunAnimal.WasHandled = true;
             programRunAnimal.Animal = null;
             await ProgramRunAnimalService.UpdateAsync(programRunAnimal);

@@ -11,6 +11,7 @@ namespace HerdSync.Components.Pages.Herd
         [Inject] public IAnimalObservationService AnimalObservationService { get; set; } = default!;
         [Inject] public NavigationManager Nav { get; set; } = default!;
         [Inject] public IAnimalTypeService AnimalTypeService { get; set; } = default!;
+        [Inject] ActivityFeedService ActivityFeed { get; set; } = default!;
         private Dictionary<string, string> _animalTypeNames = new();
         [Inject] public IConditionService ConditionService { get; set; } = default!;
         private List<ConditionDTO> _conditions = new();
@@ -100,6 +101,17 @@ namespace HerdSync.Components.Pages.Herd
             CowCount = HerdList.Count;
             _showDialog = false;
             StateHasChanged();
+
+            if (index < 0) // only fire for new animals, not edits
+            {
+                ActivityFeed.Add(new ActivityFeedService.ActivityEntry
+                {
+                    Text = $"New animal added — #{updatedCow.DisplayIdentifier}",
+                    Timestamp = DateTime.Now,
+                    Color = "#4a7c59",
+                    Type = ActivityFeedService.ActivityType.NewAnimal
+                });
+            }
         }
 
         private void HandleCancel()

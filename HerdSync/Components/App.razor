@@ -22,6 +22,11 @@
 <body>
 <Routes @rendermode="InteractiveServer"/>
     <script src="_framework/blazor.web.js"></script>
+    <script>
+        window.focusElement = (element) => {
+            if (element) element.focus();
+        }
+    </script>
 </body>
 
 </html>

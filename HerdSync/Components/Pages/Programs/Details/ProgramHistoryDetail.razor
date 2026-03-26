@@ -7,6 +7,7 @@
 @inject IProgramRunTreatmentService ProgramRunTreatmentService
 @inject IProgramTemplateService ProgramTemplateService
 @inject NavigationManager Nav
+@inject IAnimalService AnimalService
 
 @if (_loading)
 {
@@ -139,9 +140,15 @@ else
             .FirstOrDefault(t => t.ProgramTemplateCode == _run.ProgramTemplateCode)
             ?.TemplateName ?? _run.ProgramTemplateCode;
 
+        var allAnimals = await AnimalService.GetAllAsync();
+
         _animals = (await ProgramRunAnimalService.GetAllAsync())
             .Where(a => a.ProgramRunId == ProgramRunId)
             .ToList();
+
+        // Populate Animal navigation property
+        foreach (var entry in _animals)
+            entry.Animal = allAnimals.FirstOrDefault(a => a.AnimalId == entry.AnimalId);
 
         _treatments = (await ProgramRunTreatmentService.GetAllAsync())
             .Where(t => _animals.Any(a => a.ProgramRunAnimalId == t.ProgramRunAnimalId))

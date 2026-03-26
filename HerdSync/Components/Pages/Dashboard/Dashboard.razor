@@ -52,13 +52,13 @@
             </HerdSyncCard>
 
             <HerdSyncCard Title="Recent Activity" Icon="bx bx-history" Compact="true" FullHeight="true">
-                @foreach (var item in RecentActivity)
+                @foreach (var item in ActivityFeed.Entries.Take(9))
                 {
                     <div class="db-activity">
                         <span class="db-activity__dot" style="background: @item.Color;"></span>
                         <div class="db-activity__content">
                             <span class="db-activity__text">@item.Text</span>
-                            <span class="db-activity__time">@item.Time</span>
+                            <span class="db-activity__time">@Dashboard.GetRelativeTime(item.Timestamp)</span>
                         </div>
                     </div>
                 }
