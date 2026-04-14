@@ -82,13 +82,21 @@
                 {
                     <div class="hs-nav__group-items">
                         <NavLink class="@("hs-nav__link hs-nav__link--nested" + (LiveSession.IsActive ? " hs-nav__link--disabled" : ""))" href="/crop-planning">
-                            Upcoming Events
+                            Financial & Tax Records
+                            @*Invoices & Receipts, Balance sheets, income statements, cashflow statements*@
                         </NavLink>
                         <NavLink class="@("hs-nav__link hs-nav__link--nested" + (LiveSession.IsActive ? " hs-nav__link--disabled" : ""))" href="/machinery">
-                            Inventory
+                            Labour & HR Records
+                            @*Employment contracts, UIF Registration, COIDA Documents, Health & Safety compliance*@
                         </NavLink>
                         <NavLink class="@("hs-nav__link hs-nav__link--nested" + (LiveSession.IsActive ? " hs-nav__link--disabled" : ""))" href="/sales">
-                            Custom Reporting
+                            Production records
+                        </NavLink>
+                        <NavLink class="@("hs-nav__link hs-nav__link--nested" + (LiveSession.IsActive ? " hs-nav__link--disabled" : ""))" href="/sales">
+                            Regulatory & Legal Documentation
+                        </NavLink>
+                        <NavLink class="@("hs-nav__link hs-nav__link--nested" + (LiveSession.IsActive ? " hs-nav__link--disabled" : ""))" href="/sales">
+                            Equipment & General Management
                         </NavLink>
                     </div>
                 }

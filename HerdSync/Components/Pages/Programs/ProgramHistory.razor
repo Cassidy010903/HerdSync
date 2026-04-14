@@ -1,6 +1,9 @@
 ﻿@page "/programhistory"
 @attribute [Authorize]
 @rendermode @(new InteractiveServerRenderMode(prerender: true))
+@inject ITreatmentService TreatmentService
+@inject IProgramTemplateRuleService ProgramTemplateRuleService
+@inject IProgramTemplateRuleTreatmentService ProgramTemplateRuleTreatmentService
 @using HerdSync.Shared.DTO.Program
 
 <div class="container">

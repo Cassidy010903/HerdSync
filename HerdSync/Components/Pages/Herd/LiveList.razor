@@ -222,9 +222,10 @@
                                     </td>
                                     <td>
                                         <select class="form-select form-select-sm status-select"
-                                                @onchange="e => SetStatus(action.AnimalId, e.Value?.ToString())">
-                                            <option value="keep" selected="@(_statusMap.GetValueOrDefault(action.AnimalId) == "keep")">Keep</option>
-                                            <option value="sell" selected="@(_statusMap.GetValueOrDefault(action.AnimalId) == "sell")">Sell</option>
+                                                @onchange="async e => await SetStatus(action, e.Value?.ToString())">
+                                            <option value="none" selected="@(action.DisposalStatus == "none" || string.IsNullOrEmpty(action.DisposalStatus))">None</option>
+                                            <option value="keep" selected="@(action.DisposalStatus == "keep")">Keep</option>
+                                            <option value="sell" selected="@(action.DisposalStatus == "sell")">Sell</option>
                                         </select>
                                     </td>
                                     <td>
@@ -232,7 +233,7 @@
                                             <button class="btn btn-sm" style="background-color:#c8a96e; color:#fff; border:none;" title="Unpin" @onclick="() => TogglePin(action.AnimalId)">
                                                 <i class="bx bx-pin"></i>
                                             </button>
-                                            <button class="btn btn-sm btn-outline-primary" title="Add Treatment" @onclick="() => OpenAddTreatment(action)">
+                                            <button class="btn btn-sm btn-outline-primary" title="Add Treatment" @onclick="async () => await OpenAddTreatment(action)">
                                                 <i class="bx bx-plus-medical"></i>
                                             </button>
                                         </div>
@@ -253,9 +254,10 @@
                                     </td>
                                     <td>
                                         <select class="form-select form-select-sm status-select"
-                                                @onchange="e => SetStatus(action.AnimalId, e.Value?.ToString())">
-                                            <option value="keep" selected="@(_statusMap.GetValueOrDefault(action.AnimalId) == "keep")">Keep</option>
-                                            <option value="sell" selected="@(_statusMap.GetValueOrDefault(action.AnimalId) == "sell")">Sell</option>
+                                                @onchange="async e => await SetStatus(action, e.Value?.ToString())">
+                                            <option value="none" selected="@(action.DisposalStatus == "none" || string.IsNullOrEmpty(action.DisposalStatus))">None</option>
+                                            <option value="keep" selected="@(action.DisposalStatus == "keep")">Keep</option>
+                                            <option value="sell" selected="@(action.DisposalStatus == "sell")">Sell</option>
                                         </select>
                                     </td>
                                     <td>
@@ -315,11 +317,11 @@
                     <hr class="my-2" />
                     <div class="stat-row text-success">
                         <span class="small fw-semibold">✓ Keep</span>
-                        <strong>@_statusMap.Count(s => s.Value == "keep")</strong>
+                        <strong>@animalActions.Count(a => a.DisposalStatus == "keep")</strong>
                     </div>
                     <div class="stat-row text-danger">
                         <span class="small fw-semibold">$ Sell</span>
-                        <strong>@_statusMap.Count(s => s.Value == "sell")</strong>
+                        <strong>@animalActions.Count(a => a.DisposalStatus == "sell")</strong>
                     </div>
                     <div class="stat-row" style="color:#c8a96e;">
                         <span class="small fw-semibold"><i class="bx bxs-pin"></i> Pinned</span>
@@ -371,14 +373,18 @@
 {
     <HsDialog Visible="true" Title="@("Add Treatment — #" + (_treatmentTargetAnimal.Animal?.DisplayIdentifier ?? ""))">
         <Content>
-            <label class="fw-semibold mb-2 d-block">Select Treatment</label>
-            <select class="form-select" @bind="_selectedExtraTreatmentCode">
-                <option value="">-- Select a treatment --</option>
+            <label class="fw-semibold mb-2 d-block">Select Treatments</label>
+            <div style="max-height: 200px; overflow-y: auto;">
                 @foreach (var t in _availableTreatments)
                 {
-                    <option value="@t.TreatmentCode">@t.TreatmentName</option>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="@t.TreatmentCode"
+                               checked="@_selectedExtraTreatmentCodes.Contains(t.TreatmentCode)"
+                               @onchange="e => ToggleTreatment(t.TreatmentCode, (bool)e.Value!)" />
+                        <label class="form-check-label" for="@t.TreatmentCode">@t.TreatmentName</label>
+                    </div>
                 }
-            </select>
+            </div>
             @if (!string.IsNullOrEmpty(_addTreatmentError))
             {
                 <small class="text-danger mt-1 d-block">@_addTreatmentError</small>
@@ -547,7 +553,7 @@
 
     private bool _showAddTreatmentDialog = false;
     private ProgramRunAnimalDTO? _treatmentTargetAnimal;
-    private string _selectedExtraTreatmentCode = string.Empty;
+    private HashSet<string> _selectedExtraTreatmentCodes = new();
     private string _addTreatmentError = string.Empty;
     private List<TreatmentDTO> _availableTreatments = new();
 
@@ -558,7 +564,6 @@
     private List<ProgramRunAnimalDTO> animalActions = new();
     private List<AnimalDTO> _allAnimals = new();
     private HashSet<Guid> _pinnedIds = new();
-    private Dictionary<Guid, string> _statusMap = new();
 
     private bool _assigningTag = false;
     private string _newTagCode = string.Empty;
@@ -601,6 +606,12 @@
         _tagError = string.Empty;
     }
 
+    private void ToggleTreatment(string code, bool isChecked)
+    {
+        if (isChecked) _selectedExtraTreatmentCodes.Add(code);
+        else _selectedExtraTreatmentCodes.Remove(code);
+    }
+
     private async Task SaveNewTag()
     {
         _tagError = string.Empty;
@@ -629,8 +640,12 @@
             var saved = await AnimalTagService.CreateAsync(tag);
             _selectedManualAnimal.AnimalTag = saved;
             _allAnimals.First(a => a.AnimalId == _selectedManualAnimal.AnimalId).AnimalTag = saved;
+
+            await AddAnimalToList(_selectedManualAnimal);
+
             _assigningTag = false;
             _newTagCode = string.Empty;
+            DismissManual();
         }
         catch (Exception ex)
         {
@@ -682,7 +697,6 @@
         _activeRun = null;
         animalActions = new();
         _pinnedIds = new();
-        _statusMap = new();
         _showManualAdd = false;
         _showNewAnimalDialog = false;
         CloseAddTreatment();
@@ -778,11 +792,14 @@
         await AddAnimalToList(newAnimal);
     }
 
-    private void OpenAddTreatment(ProgramRunAnimalDTO animal)
+    private async Task OpenAddTreatment(ProgramRunAnimalDTO animal)
     {
         _treatmentTargetAnimal = animal;
-        _selectedExtraTreatmentCode = string.Empty;
         _addTreatmentError = string.Empty;
+
+        var existingTreatments = await ProgramRunTreatmentService.GetByProgramRunAnimalIdAsync(animal.ProgramRunAnimalId);
+        _selectedExtraTreatmentCodes = existingTreatments.Select(t => t.TreatmentCode).ToHashSet();
+
         _showAddTreatmentDialog = true;
     }
 
@@ -790,27 +807,34 @@
     {
         _showAddTreatmentDialog = false;
         _treatmentTargetAnimal = null;
-        _selectedExtraTreatmentCode = string.Empty;
+        _selectedExtraTreatmentCodes = new();
         _addTreatmentError = string.Empty;
     }
 
     private async Task SubmitExtraTreatment()
     {
-        if (string.IsNullOrEmpty(_selectedExtraTreatmentCode))
-        {
-            _addTreatmentError = "Please select a treatment.";
-            return;
-        }
         try
         {
-            await ProgramRunTreatmentService.CreateAsync(new ProgramRunTreatmentDTO
+            var existing = await ProgramRunTreatmentService.GetByProgramRunAnimalIdAsync(_treatmentTargetAnimal!.ProgramRunAnimalId);
+            var existingCodes = existing.Select(t => t.TreatmentCode).ToHashSet();
+
+            foreach (var code in _selectedExtraTreatmentCodes.Except(existingCodes))
             {
-                ProgramRunAnimalId = _treatmentTargetAnimal!.ProgramRunAnimalId,
-                TreatmentCode = _selectedExtraTreatmentCode,
-                IsAutoApplied = false,
-                AddedManually = true,
-                GivenDate = DateTime.UtcNow,
-            });
+                await ProgramRunTreatmentService.CreateAsync(new ProgramRunTreatmentDTO
+                {
+                    ProgramRunAnimalId = _treatmentTargetAnimal.ProgramRunAnimalId,
+                    TreatmentCode = code,
+                    IsAutoApplied = false,
+                    AddedManually = true,
+                    GivenDate = DateTime.UtcNow,
+                });
+            }
+
+            foreach (var treatment in existing.Where(t => t.AddedManually && !_selectedExtraTreatmentCodes.Contains(t.TreatmentCode)))
+            {
+                await ProgramRunTreatmentService.SoftDeleteAsync(treatment.ProgramRunTreatmentId);
+            }
+
             CloseAddTreatment();
         }
         catch (Exception ex)
@@ -827,6 +851,7 @@
             ProgramRunId = _activeRun?.ProgramRunId ?? Guid.Empty,
             CreatedDate = DateTime.UtcNow,
             WasHandled = false,
+            DisposalStatus = "none",
             Animal = null
         };
         try
@@ -894,9 +919,13 @@
         else _pinnedIds.Add(animalId);
     }
 
-    private void SetStatus(Guid animalId, string? status)
+    private async Task SetStatus(ProgramRunAnimalDTO action, string? status)
     {
-        if (status != null) _statusMap[animalId] = status;
+        if (status == null) return;
+        action.DisposalStatus = status;
+        action.Animal = null;
+        await ProgramRunAnimalService.UpdateAsync(action);
+        action.Animal = _allAnimals.FirstOrDefault(a => a.AnimalId == action.AnimalId);
     }
 
     private void ToggleDosage() => _dosageOpen = !_dosageOpen;

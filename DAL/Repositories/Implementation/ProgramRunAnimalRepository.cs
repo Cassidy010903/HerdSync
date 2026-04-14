@@ -36,6 +36,7 @@ namespace DAL.Repositories.Implementation
 
             existing.WasHandled = programRunAnimal.WasHandled;
             existing.SkippedReason = programRunAnimal.SkippedReason;
+            existing.DisposalStatus = programRunAnimal.DisposalStatus;
             existing.IsDeleted = programRunAnimal.IsDeleted;
 
             await context.SaveChangesAsync();

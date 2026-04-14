@@ -48,9 +48,9 @@ else
                             </div>
                             <div class="about">
                                 <h5>Family Tree</h5>
-                                <h6 class="mb-2 text-primary">Mother</h6>
+                                <h6 class="mb-2" style="color:#4a7c59;">Mother</h6>
                                 <div>@(_animal.MotherAnimalId.HasValue? _animal.MotherAnimalId.ToString() : "Unknown")</div>
-                                <h6 class="mb-2 text-primary mt-2">Father</h6>
+                                <h6 class="mb-2 mt-2" style="color:#4a7c59;">Father</h6>
                                 <div>@(_animal.FatherAnimalId.HasValue? _animal.FatherAnimalId.ToString() : "Unknown")</div>
                             </div>
                         </div>
@@ -63,7 +63,7 @@ else
                     <div class="card-body">
                         <div class="row gutters">
                             <div class="col-xl-12">
-                                <h6 class="mb-2 text-primary">Biographical Information</h6>
+                                <h6 class="mb-2" style="color:#4a7c59;">Biographical Information</h6>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
@@ -105,7 +105,7 @@ else
 
                         <div class="row gutters mt-3">
                             <div class="col-xl-12">
-                                <h6 class="mb-2 text-primary">Medical Information</h6>
+                                <h6 class="mb-2" style="color:#4a7c59;">Medical Information</h6>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
@@ -165,16 +165,16 @@ else
                             {
                                 <tr>
                                     <td>@item.GivenDate.ToString("dd MMM yyyy")</td>
-                                    <td><span class="badge bg-primary">@item.TreatmentName</span></td>
+                                    <td><span class="badge" style="background-color:#4a7c59; color:#fff;">@item.TreatmentName</span></td>
                                     <td>@item.ProgramName</td>
                                     <td>
                                         @if (item.AddedManually)
                                         {
-                                            <span class="badge bg-warning text-dark">Manual</span>
+                                            <span class="badge" style="background-color:#c8a96e; color:#fff;">Manual</span>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-success">Program</span>
+                                            <span class="badge" style="background-color:#4a7c59; color:#fff;">Program</span>
                                         }
                                     </td>
                                 </tr>
@@ -228,18 +228,17 @@ else
                                     <td>
                                         @if (!string.IsNullOrEmpty(obs.Flag))
                                         {
-                                            var flagColor = obs.Flag switch
+                                            var flagStyle = obs.Flag switch
                                             {
-                                                "URGENT" => "danger",
-                                                "HIGH" => "warning text-dark",
-                                                "MEDIUM" => "info text-dark",
-                                                _ => "secondary"
+                                                "URGENT" => "background-color:#dc3545; color:#fff;",
+                                                "HIGH" => "background-color:#c8a96e; color:#fff;",
+                                                "MEDIUM" => "background-color:#4a7c59; color:#fff;",
+                                                _ => "background-color:#6c757d; color:#fff;"
                                             };
-                                            <span class="badge bg-@flagColor">@obs.Flag</span>
+                                            <span class="badge" style="@flagStyle">@obs.Flag</span>
                                         }
                                         else
                                         {
-
                                             <span class="text-muted">-</span>
                                         }
                                     </td>

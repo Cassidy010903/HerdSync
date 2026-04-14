@@ -13,5 +13,7 @@ namespace BLL.Services
         Task<ProgramRunTreatmentDTO> UpdateAsync(ProgramRunTreatmentDTO programRunTreatmentDTO);
 
         Task SoftDeleteAsync(Guid programRunTreatmentId);
+
+        Task<IEnumerable<ProgramRunTreatmentDTO>> GetByProgramRunAnimalIdAsync(Guid programRunAnimalId);
     }
 }

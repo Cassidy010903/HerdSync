@@ -1,13 +1,18 @@
 ﻿@page "/programhistory/{ProgramRunId:guid}"
 @attribute [Authorize]
 @rendermode @(new InteractiveServerRenderMode(prerender: true))
+@using HerdSync.Shared.DTO.Animal
 @using HerdSync.Shared.DTO.Program
+@using HerdSync.Shared.DTO.Treatment
 @inject IProgramRunService ProgramRunService
 @inject IProgramRunAnimalService ProgramRunAnimalService
 @inject IProgramRunTreatmentService ProgramRunTreatmentService
 @inject IProgramTemplateService ProgramTemplateService
 @inject NavigationManager Nav
 @inject IAnimalService AnimalService
+@inject ITreatmentService TreatmentService
+@inject IProgramTemplateRuleService ProgramTemplateRuleService
+@inject IProgramTemplateRuleTreatmentService ProgramTemplateRuleTreatmentService
 
 @if (_loading)
 {
@@ -38,26 +43,26 @@ else
     <div class="row g-3 mb-4">
         <div class="col-sm-3">
             <div class="card text-center py-3">
-                <div class="fs-2 fw-bold text-primary">@_animals.Count</div>
+                <div class="fs-2 fw-bold" style="color:#4a7c59;">@_animals.Count</div>
                 <div class="text-muted small">Animals Scanned</div>
             </div>
         </div>
         <div class="col-sm-3">
             <div class="card text-center py-3">
-                <div class="fs-2 fw-bold text-success">@_animals.Count(a => a.WasHandled)</div>
+                <div class="fs-2 fw-bold" style="color:#4a7c59;">@_animals.Count(a => a.WasHandled)</div>
                 <div class="text-muted small">Treated</div>
             </div>
         </div>
         <div class="col-sm-3">
             <div class="card text-center py-3">
-                <div class="fs-2 fw-bold text-warning">@_animals.Count(a => !a.WasHandled)</div>
+                <div class="fs-2 fw-bold" style="color:#c8a96e;">@_animals.Count(a => !a.WasHandled)</div>
                 <div class="text-muted small">Untreated</div>
             </div>
         </div>
         <div class="col-sm-3">
             <div class="card text-center py-3">
-                <div class="fs-2 fw-bold text-info">@_treatments.Count</div>
-                <div class="text-muted small">Treatments Applied</div>
+                <div class="fs-2 fw-bold" style="color:#4a7c59;">@_treatments.Select(t => t.TreatmentCode).Distinct().Count()</div>
+                <div class="text-muted small">Treatment Types</div>
             </div>
         </div>
     </div>
@@ -65,7 +70,7 @@ else
     <div class="card">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="mb-0"><i class="bx bx-list-ul me-1"></i>Animals in this Run</h6>
-            <button class="btn btn-outline-primary btn-sm" disabled title="Coming soon">
+            <button class="btn btn-sm" style="background-color:#4a7c59; color:#fff; border:none;" @onclick="OpenAddAnimalDialog">
                 <i class="bx bx-plus me-1"></i>Add Animal
             </button>
         </div>
@@ -78,6 +83,7 @@ else
                         <th>Age Group</th>
                         <th>Treatments Given</th>
                         <th>Status</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -95,7 +101,7 @@ else
                                 {
                                     @foreach (var t in animalTreatments)
                                     {
-                                        <span class="badge bg-primary me-1">@t.TreatmentCode</span>
+                                        <span class="badge me-1" style="background-color:#4a7c59; color:#fff;">@GetTreatmentName(t.TreatmentCode)</span>
                                     }
                                 }
                                 else
@@ -106,12 +112,17 @@ else
                             <td>
                                 @if (animal.WasHandled)
                                 {
-                                    <span class="badge bg-success">Treated</span>
+                                    <span class="badge" style="background-color:#4a7c59; color:#fff;">Treated</span>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-warning text-dark">Untreated</span>
+                                    <span class="badge" style="background-color:#c8a96e; color:#fff;">Untreated</span>
                                 }
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-secondary" style="border-color:#4a7c59; color:#4a7c59;" @onclick="async () => await OpenEditAnimalDialog(animal)">
+                                    <i class="bx bx-edit"></i>
+                                </button>
                             </td>
                         </tr>
                     }
@@ -119,6 +130,108 @@ else
             </table>
         </div>
     </div>
+    @* Add Animal Dialog *@
+    <HsDialog Visible="_showAddAnimalDialog" Title="Add Animal to Run">
+        <Content>
+            <label class="fw-semibold mb-2 d-block">Search Animal</label>
+            <input type="text" class="form-control mb-2" placeholder="Search by animal number..."
+                   value="@_animalSearch" @oninput="OnAnimalSearchInput" />
+
+            @if (_animalSuggestions.Any())
+            {
+                <div class="list-group mb-3" style="max-height: 150px; overflow-y: auto;">
+                    @foreach (var animal in _animalSuggestions)
+                    {
+                        <button type="button"
+                                class="list-group-item list-group-item-action @(_selectedAnimal?.AnimalId == animal.AnimalId ? "active" : "")"
+                                @onclick="async () => await SelectAnimal(animal)">
+                            <strong>#@animal.DisplayIdentifier</strong>
+                            @if (animal.BirthYear.HasValue)
+                            {
+                                <span class="text-muted ms-1">— @animal.BirthYear</span>
+                            }
+                        </button>
+                    }
+                </div>
+            }
+
+            @if (_selectedAnimal != null)
+            {
+                <hr />
+                <label class="fw-semibold mb-2 d-block">Treatments</label>
+                <div style="max-height: 200px; overflow-y: auto;">
+                    @foreach (var t in _treatmentLookup)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="add-@t.TreatmentCode"
+                                   checked="@_selectedTreatmentCodes.Contains(t.TreatmentCode)"
+                                   @onchange="e => ToggleAddTreatment(t.TreatmentCode, (bool)e.Value!)" />
+                            <label class="form-check-label" for="add-@t.TreatmentCode">@t.TreatmentName</label>
+                        </div>
+                    }
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(_addAnimalError))
+            {
+                <div class="text-danger mt-2">@_addAnimalError</div>
+            }
+        </Content>
+        <Buttons>
+            <button class="btn" style="background-color:#6c757d; color:#fff;" @onclick="() => _showAddAnimalDialog = false">Cancel</button>
+            <button class="btn" style="background-color:#4a7c59; color:#fff;" @onclick="SubmitAddAnimal" disabled="@(_selectedAnimal == null)">Add</button>
+        </Buttons>
+    </HsDialog>
+
+    @* Edit Animal Dialog *@
+    <HsDialog Visible="_showEditAnimalDialog" Title="@($"Edit — #{_editingAnimal?.Animal?.DisplayIdentifier ?? ""}")">
+        <Content>
+            <div class="mb-3">
+                <label class="fw-semibold d-block mb-1">Was Handled</label>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" @bind="_editWasHandled" />
+                    <label class="form-check-label">@(_editWasHandled ? "Yes" : "No")</label>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="fw-semibold d-block mb-1">Disposal Status</label>
+                <select class="form-select" @bind="_editDisposalStatus">
+                    <option value="none">None</option>
+                    <option value="keep">Keep</option>
+                    <option value="sell">Sell</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="fw-semibold d-block mb-1">Skipped Reason</label>
+                <input type="text" class="form-control" @bind="_editSkippedReason" placeholder="Optional..." />
+            </div>
+
+            <hr />
+            <label class="fw-semibold mb-2 d-block">Treatments</label>
+            <div style="max-height: 200px; overflow-y: auto;">
+                @foreach (var t in _treatmentLookup)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="edit-@t.TreatmentCode"
+                               checked="@_editTreatmentCodes.Contains(t.TreatmentCode)"
+                               @onchange="e => ToggleEditTreatment(t.TreatmentCode, (bool)e.Value!)" />
+                        <label class="form-check-label" for="edit-@t.TreatmentCode">@t.TreatmentName</label>
+                    </div>
+                }
+            </div>
+
+            @if (!string.IsNullOrEmpty(_editAnimalError))
+            {
+                <div class="text-danger mt-2">@_editAnimalError</div>
+            }
+        </Content>
+        <Buttons>
+            <button class="btn" style="background-color:#6c757d; color:#fff;" @onclick="() => _showEditAnimalDialog = false">Cancel</button>
+            <button class="btn" style="background-color:#4a7c59; color:#fff;" @onclick="SubmitEditAnimal">Save</button>
+        </Buttons>
+    </HsDialog>
 }
 
 @code {
@@ -129,6 +242,23 @@ else
     private string _templateName = "";
     private List<ProgramRunAnimalDTO> _animals = new();
     private List<ProgramRunTreatmentDTO> _treatments = new();
+    private List<TreatmentDTO> _treatmentLookup = new();
+    private List<AnimalDTO> _allAnimals = new();
+
+    private bool _showAddAnimalDialog = false;
+    private string _animalSearch = "";
+    private List<AnimalDTO> _animalSuggestions = new();
+    private AnimalDTO? _selectedAnimal = null;
+    private HashSet<string> _selectedTreatmentCodes = new();
+    private string _addAnimalError = "";
+
+    private bool _showEditAnimalDialog = false;
+    private ProgramRunAnimalDTO? _editingAnimal = null;
+    private HashSet<string> _editTreatmentCodes = new();
+    private bool _editWasHandled = false;
+    private string _editDisposalStatus = "none";
+    private string _editSkippedReason = "";
+    private string _editAnimalError = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -146,7 +276,6 @@ else
             .Where(a => a.ProgramRunId == ProgramRunId)
             .ToList();
 
-        // Populate Animal navigation property
         foreach (var entry in _animals)
             entry.Animal = allAnimals.FirstOrDefault(a => a.AnimalId == entry.AnimalId);
 
@@ -154,7 +283,196 @@ else
             .Where(t => _animals.Any(a => a.ProgramRunAnimalId == t.ProgramRunAnimalId))
             .ToList();
 
+        _treatmentLookup = (await TreatmentService.GetAllAsync()).ToList();
+        _allAnimals = allAnimals.ToList();
+
         _loading = false;
+    }
+
+    private string GetTreatmentName(string code)
+    {
+        return _treatmentLookup.FirstOrDefault(t => t.TreatmentCode == code)?.TreatmentName ?? code;
+    }
+
+    // === ADD ANIMAL ===
+    private async Task OpenAddAnimalDialog()
+    {
+        _showAddAnimalDialog = true;
+        _animalSearch = "";
+        _animalSuggestions = new();
+        _selectedAnimal = null;
+        _selectedTreatmentCodes = new();
+        _addAnimalError = "";
+    }
+
+    private void OnAnimalSearchInput(ChangeEventArgs e)
+    {
+        _animalSearch = e.Value?.ToString() ?? "";
+        var existingIds = _animals.Select(a => a.AnimalId).ToHashSet();
+        _animalSuggestions = string.IsNullOrWhiteSpace(_animalSearch)
+            ? new()
+            : _allAnimals
+                .Where(a => !existingIds.Contains(a.AnimalId) &&
+                            (a.DisplayIdentifier?.Contains(_animalSearch, StringComparison.OrdinalIgnoreCase) == true))
+                .Take(5)
+                .ToList();
+    }
+
+    private async Task SelectAnimal(AnimalDTO animal)
+    {
+        _selectedAnimal = animal;
+        _animalSearch = $"#{animal.DisplayIdentifier}";
+        _animalSuggestions = new();
+
+        _selectedTreatmentCodes = await GetAutoTreatmentsForAnimal(animal);
+    }
+
+    private async Task<HashSet<string>> GetAutoTreatmentsForAnimal(AnimalDTO animal)
+    {
+        var codes = new HashSet<string>();
+        var allRules = await ProgramTemplateRuleService.GetAllAsync();
+        var matchedRules = allRules.Where(r =>
+            r.ProgramTemplateCode == _run!.ProgramTemplateCode &&
+            (string.IsNullOrEmpty(r.AnimalTypeCode) || r.AnimalTypeCode == animal.AnimalTypeCode) &&
+            (string.IsNullOrEmpty(r.Gender) || r.Gender == animal.Gender) &&
+            (!r.MinBirthYear.HasValue || animal.BirthYear >= r.MinBirthYear) &&
+            (!r.MaxBirthYear.HasValue || animal.BirthYear <= r.MaxBirthYear)
+        ).ToList();
+
+        if (!matchedRules.Any()) return codes;
+
+        var allRuleTreatments = await ProgramTemplateRuleTreatmentService.GetAllAsync();
+        foreach (var rule in matchedRules)
+        {
+            var treatments = allRuleTreatments
+                .Where(t => t.ProgramTemplateRuleId == rule.ProgramTemplateRuleId)
+                .ToList();
+            foreach (var t in treatments)
+                codes.Add(t.TreatmentCode);
+        }
+        return codes;
+    }
+
+    private void ToggleAddTreatment(string code, bool isChecked)
+    {
+        if (isChecked) _selectedTreatmentCodes.Add(code);
+        else _selectedTreatmentCodes.Remove(code);
+    }
+
+    private async Task SubmitAddAnimal()
+    {
+        if (_selectedAnimal == null)
+        {
+            _addAnimalError = "Please select an animal.";
+            return;
+        }
+        try
+        {
+            var newEntry = new ProgramRunAnimalDTO
+            {
+                AnimalId = _selectedAnimal.AnimalId,
+                ProgramRunId = ProgramRunId,
+                CreatedDate = DateTime.UtcNow,
+                WasHandled = _selectedTreatmentCodes.Any(),
+                DisposalStatus = "none"
+            };
+            var saved = await ProgramRunAnimalService.CreateAsync(newEntry);
+            saved.Animal = _selectedAnimal;
+
+            foreach (var code in _selectedTreatmentCodes)
+            {
+                await ProgramRunTreatmentService.CreateAsync(new ProgramRunTreatmentDTO
+                {
+                    ProgramRunAnimalId = saved.ProgramRunAnimalId,
+                    TreatmentCode = code,
+                    IsAutoApplied = false,
+                    AddedManually = true,
+                    GivenDate = DateTime.UtcNow
+                });
+            }
+
+            _animals.Add(saved);
+
+            _treatments = (await ProgramRunTreatmentService.GetAllAsync())
+                .Where(t => _animals.Any(a => a.ProgramRunAnimalId == t.ProgramRunAnimalId))
+                .ToList();
+
+            _showAddAnimalDialog = false;
+        }
+        catch (Exception ex)
+        {
+            _addAnimalError = ex.Message;
+        }
+    }
+
+    private async Task OpenEditAnimalDialog(ProgramRunAnimalDTO animal)
+    {
+        _editingAnimal = animal;
+        _editWasHandled = animal.WasHandled;
+        _editDisposalStatus = animal.DisposalStatus ?? "none";
+        _editSkippedReason = animal.SkippedReason ?? "";
+        _editAnimalError = "";
+
+        var existingTreatments = _treatments
+            .Where(t => t.ProgramRunAnimalId == animal.ProgramRunAnimalId)
+            .Select(t => t.TreatmentCode)
+            .ToHashSet();
+        _editTreatmentCodes = existingTreatments;
+
+        _showEditAnimalDialog = true;
+    }
+
+    private void ToggleEditTreatment(string code, bool isChecked)
+    {
+        if (isChecked) _editTreatmentCodes.Add(code);
+        else _editTreatmentCodes.Remove(code);
+    }
+
+    private async Task SubmitEditAnimal()
+    {
+        if (_editingAnimal == null) return;
+        try
+        {
+            _editingAnimal.WasHandled = _editWasHandled;
+            _editingAnimal.DisposalStatus = _editDisposalStatus;
+            _editingAnimal.SkippedReason = string.IsNullOrWhiteSpace(_editSkippedReason) ? null : _editSkippedReason;
+            var animalRef = _editingAnimal.Animal;
+            _editingAnimal.Animal = null;
+            await ProgramRunAnimalService.UpdateAsync(_editingAnimal);
+            _editingAnimal.Animal = animalRef;
+
+            var existing = _treatments
+                .Where(t => t.ProgramRunAnimalId == _editingAnimal.ProgramRunAnimalId)
+                .ToList();
+            var existingCodes = existing.Select(t => t.TreatmentCode).ToHashSet();
+
+            foreach (var code in _editTreatmentCodes.Except(existingCodes))
+            {
+                await ProgramRunTreatmentService.CreateAsync(new ProgramRunTreatmentDTO
+                {
+                    ProgramRunAnimalId = _editingAnimal.ProgramRunAnimalId,
+                    TreatmentCode = code,
+                    IsAutoApplied = false,
+                    AddedManually = true,
+                    GivenDate = DateTime.UtcNow
+                });
+            }
+
+            foreach (var treatment in existing.Where(t => !_editTreatmentCodes.Contains(t.TreatmentCode)))
+            {
+                await ProgramRunTreatmentService.SoftDeleteAsync(treatment.ProgramRunTreatmentId);
+            }
+
+            _treatments = (await ProgramRunTreatmentService.GetAllAsync())
+                .Where(t => _animals.Any(a => a.ProgramRunAnimalId == t.ProgramRunAnimalId))
+                .ToList();
+
+            _showEditAnimalDialog = false;
+        }
+        catch (Exception ex)
+        {
+            _editAnimalError = ex.Message;
+        }
     }
 
     private string GetAgeGroup(int? birthYear)
