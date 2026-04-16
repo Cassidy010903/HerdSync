@@ -116,6 +116,7 @@ builder.Services.AddScoped<ITreatmentService, TreatmentService>();
 builder.Services.AddScoped<ITreatmentCategoryService, TreatmentCategoryService>();
 builder.Services.AddScoped<ITreatmentProductService, TreatmentProductService>();
 builder.Services.AddScoped<IConditionService, ConditionService>();
+builder.Services.AddSingleton<ActivityFeedService>();
 
 var app = builder.Build();
 

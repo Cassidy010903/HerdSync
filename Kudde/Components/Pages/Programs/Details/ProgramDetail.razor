@@ -34,11 +34,11 @@ else
                 <span class="badge bg-secondary me-1">@_template.ProgramTemplateCode</span>
                 @if (_template.IsActive)
                 {
-                    <span class="badge bg-success">Active</span>
+                    <span class="badge" style="background-color:#4a7c59; color:#fff;">Active</span>
                 }
                 else
                 {
-                    <span class="badge bg-secondary">Inactive</span>
+                    <span class="badge" style="background-color:#c8a96e; color:#fff;">Inactive</span>
                 }
             </small>
         </div>
@@ -86,7 +86,7 @@ else
                                         @foreach (var t in treatments)
                                         {
                                             var treatmentName = _treatmentNames.TryGetValue(t.TreatmentCode, out var tn) ? tn : t.TreatmentCode;
-                                            <span class="badge bg-primary me-1 mb-1">
+                                            <span class="badge me-1 mb-1" style="background-color:#4a7c59; color:#fff;">
                                                 @treatmentName
                                                 @if (t.IsMandatory)
                                                 {
@@ -133,10 +133,10 @@ else
                     <h6 class="mb-0"><i class="bx bx-cog me-1"></i>Actions</h6>
                 </div>
                 <div class="card-body d-flex flex-column gap-2">
-                    <button class="btn btn-outline-primary btn-sm" disabled title="Coming soon">
+                    <button class="btn btn-sm" style="border:1px solid #4a7c59; color:#4a7c59; background:transparent;" disabled title="Coming soon">
                         <i class="bx bx-pencil me-1"></i>Edit Program
                     </button>
-                    <button class="btn btn-outline-danger btn-sm" disabled title="Coming soon">
+                    <button class="btn btn-sm" style="border:1px solid #c8a96e; color:#c8a96e; background:transparent;" disabled title="Coming soon">
                         <i class="bx bx-trash me-1"></i>Delete Program
                     </button>
                 </div>

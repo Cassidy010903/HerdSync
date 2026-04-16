@@ -103,7 +103,7 @@ else
                                 <tr>
                                     <td>
                                         <img src="/HerdSync_Cow.png" alt="" class="avatar-sm rounded-circle me-2" />
-                                        <a href="#" class="text-body">#@cow.DisplayIdentifier</a>
+                                        <span class="text-body">#@cow.DisplayIdentifier</span>
                                     </td>
                                     <td>@(_animalTypeNames.GetValueOrDefault(cow.AnimalTypeCode ?? "", cow.AnimalTypeCode ?? "-"))</td>
                                     <td>@cow.BirthYear</td>
@@ -122,22 +122,22 @@ else
                                     <td>
                                         <ul class="list-inline mb-0">
                                             <li class="list-inline-item">
-                                                <a class="px-2 text-primary" style="cursor:pointer" @onclick="() => EditDialog(cow.AnimalId)">
+                                                <a class="px-2 text-primary" style="cursor:pointer" title="Edit Animal" @onclick="() => EditDialog(cow.AnimalId)">
                                                     <i class="bx bx-pencil font-size-18"></i>
                                                 </a>
                                             </li>
                                             <li class="list-inline-item">
-                                                <a class="px-2 text-info" style="cursor:pointer" @onclick='() => Nav.NavigateTo("/cowprofile/" + cow.AnimalId)'>
+                                                <a class="px-2 text-info" style="cursor:pointer" title="View Profile" @onclick='() => Nav.NavigateTo("/cowprofile/" + cow.AnimalId)'>
                                                     <i class="bx bx-show font-size-18"></i>
                                                 </a>
                                             </li>
                                             <li class="list-inline-item">
-                                                <a class="px-2 text-success" style="cursor:pointer" @onclick="() => OpenObservationDialog(cow)">
+                                                <a class="px-2 text-success" style="cursor:pointer" title="Add Observation" @onclick="() => OpenObservationDialog(cow)">
                                                     <i class="bx bx-search-alt font-size-18"></i>
                                                 </a>
                                             </li>
                                             <li class="list-inline-item">
-                                                <a href="javascript:void(0);" class="px-2 text-danger">
+                                                <a href="javascript:void(0);" class="px-2 text-danger" title="Delete Animal">
                                                     <i class="bx bx-trash-alt font-size-18"></i>
                                                 </a>
                                             </li>

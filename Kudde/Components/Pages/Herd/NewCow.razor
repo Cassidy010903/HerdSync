@@ -1,5 +1,10 @@
 ﻿@using Kudde.Shared.DTO.Animal
-
+@if (animalTypes == null || !animalTypes.Any())
+{
+    <p>Loading...</p>
+}
+else
+{
 <HsDialog Visible="true" Title="@(ExistingCow != Guid.Empty ? "Edit Animal" : "Add New Animal")">
     <Content>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
@@ -16,6 +21,8 @@
                     <span class="input-group-text">#</span>
                     <input type="text" @bind="species.DisplayIdentifier" class="form-control" placeholder="Display Identifier" required />
                 </div>
+                <label class="mt-2">RFID Tag Code</label>
+                <input type="text" @bind="species.AnimalTag!.RFIDTagCode" class="form-control" placeholder="Scan or enter RFID tag" />
                 <label class="mt-2">Birth Year</label>
                 <input type="text" @bind="species.BirthYear" class="form-control" placeholder="Birth Year" />
                 <label class="mt-2">Weight</label>
@@ -59,9 +66,15 @@
                 <input type="date" @bind="species.LastPregnancyDate" class="form-control" />
             </div>
         </div>
+        @if (!string.IsNullOrEmpty(_errorMessage))
+        {
+                <HsAlert Variant="HsAlert.AlertVariant.Error" Message="@_errorMessage" />
+        }
     </Content>
+
     <Buttons>
         <HsButton Text="Cancel" Variant="HsButton.ButtonVariant.Secondary" OnClick="Cancel" />
         <HsButton Text="OK" Variant="HsButton.ButtonVariant.Teal" OnClick="Submit" />
     </Buttons>
 </HsDialog>
+}

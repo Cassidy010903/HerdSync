@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DAL.Models.Animal
 {
     [Table("AnimalType")]
-    public class AnimalTypeModel : BaseEntity
+    public class AnimalTypeModel
     {
         [Key, MaxLength(6)]
         public string AnimalTypeCode { get; set; }
@@ -14,5 +14,11 @@ namespace DAL.Models.Animal
         public string AnimalTypeName { get; set; }
 
         public string? PlaceholderImage { get; set; }
+
+        public string CreatedBy { get; set; } = "SYSTEM";
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+        public string? ModifiedBy { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+        public bool IsDeleted { get; set; } = false;
     }
 }

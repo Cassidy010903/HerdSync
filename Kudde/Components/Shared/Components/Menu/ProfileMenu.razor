@@ -26,9 +26,12 @@
                             @context.User.FindFirst("RoleCode")?.Value
                         </div>
                     </div>
-                    <button class="hs-appbar-menu__item" @onclick='() => { Nav.NavigateTo("/farm-profile"); CloseProfileMenu(); }'>
-                        <i class="bx bx-building me-2"></i> Farm Profile
-                    </button>
+                    @if (context.User.FindFirst("IsSystemAdmin")?.Value != "true")
+                    {
+                        <button class="hs-appbar-menu__item" @onclick='() => { Nav.NavigateTo("/farm-profile"); CloseProfileMenu(); }'>
+                            <i class="bx bx-building me-2"></i> Farm Profile
+                        </button>
+                    }
                     <button class="hs-appbar-menu__item" @onclick='() => { Nav.NavigateTo("/user-profile"); CloseProfileMenu(); }'>
                         <i class="bx bx-user me-2"></i> User Profile
                     </button>

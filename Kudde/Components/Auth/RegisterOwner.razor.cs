@@ -13,6 +13,7 @@ namespace Kudde.Components.Auth
         [Inject] IAuthService AuthService { get; set; }
         [Inject] NavigationManager Navigation { get; set; }
         [Inject] LoginSessionStore LoginSessionStore { get; set; }
+        [Inject] ActivityFeedService ActivityFeed { get; set; } = default!;
 
         private RegisterOwnerDTO _dto = new();
         private string _confirmPassword;
@@ -60,6 +61,13 @@ namespace Kudde.Components.Auth
 
             var principal = BuildPrincipal(result);
             var token = LoginSessionStore.Store(principal);
+            ActivityFeed.Add(new ActivityFeedService.ActivityEntry
+            {
+                Text = $"New user joined — {result.DisplayName}",
+                Timestamp = DateTime.Now,
+                Color = "#3a7fa8",
+                Type = ActivityFeedService.ActivityType.NewUser
+            });
             Navigation.NavigateTo($"/auth/complete?token={token}", forceLoad: true);
         }
 

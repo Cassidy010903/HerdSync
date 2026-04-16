@@ -11,5 +11,6 @@ namespace Kudde.Shared.DTO.Program
         public AnimalDTO? Animal { get; set; }
         public bool WasHandled { get; set; }
         public string? SkippedReason { get; set; }
+        public string? DisposalStatus { get; set; }
     }
 }

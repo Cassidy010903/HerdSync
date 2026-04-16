@@ -45,5 +45,10 @@ namespace BLL.Services.Implementation
             await repository.SoftDeleteAsync(programRunTreatmentId);
             logger.LogInformation("Soft deleted program run treatment with ID {ProgramRunTreatmentId}", programRunTreatmentId);
         }
+        public async Task<IEnumerable<ProgramRunTreatmentDTO>> GetByProgramRunAnimalIdAsync(Guid programRunAnimalId)
+        {
+            var entities = await repository.GetByProgramRunAnimalIdAsync(programRunAnimalId);
+            return mapper.Map<IEnumerable<ProgramRunTreatmentDTO>>(entities);
+        }
     }
 }

@@ -17,6 +17,8 @@ namespace DAL.Models.Program.ProgramRun
 
         [MaxLength(200)]
         public string? SkippedReason { get; set; }
+        [MaxLength(10)]
+        public string? DisposalStatus { get; set; }
 
         // Navigation
         [ForeignKey("ProgramRunId")]

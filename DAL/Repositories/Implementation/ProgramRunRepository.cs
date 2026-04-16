@@ -11,6 +11,7 @@ namespace DAL.Repositories.Implementation
         {
             return await context.ProgramRuns
                 .Where(p => !p.IsDeleted)
+                .OrderByDescending(p => p.RunDate)
                 .ToListAsync();
         }
 

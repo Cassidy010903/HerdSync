@@ -44,5 +44,11 @@ namespace DAL.Repositories.Implementation
             await context.SaveChangesAsync();
             logger.LogInformation("Soft deleted program run treatment with ID {ProgramRunTreatmentId}", programRunTreatmentId);
         }
+        public async Task<IEnumerable<ProgramRunTreatmentModel>> GetByProgramRunAnimalIdAsync(Guid programRunAnimalId)
+        {
+            return await context.ProgramRunTreatments
+                .Where(t => t.ProgramRunAnimalId == programRunAnimalId && !t.IsDeleted)
+                .ToListAsync();
+        }
     }
 }

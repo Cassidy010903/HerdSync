@@ -13,5 +13,6 @@ namespace DAL.Repositories
         Task<ProgramRunTreatmentModel> UpdateAsync(ProgramRunTreatmentModel programRunTreatment);
 
         Task SoftDeleteAsync(Guid programRunTreatmentId);
+        Task<IEnumerable<ProgramRunTreatmentModel>> GetByProgramRunAnimalIdAsync(Guid programRunAnimalId);
     }
 }
