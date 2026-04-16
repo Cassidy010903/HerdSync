@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using DAL.Models.Calendar;
 using DAL.Repositories;
-using HerdSync.Shared.DTO.Calendar;
+using Kudde.Shared.DTO.Calendar;
 using Microsoft.Extensions.Logging;
 
 namespace BLL.Services.Implementation

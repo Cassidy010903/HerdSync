@@ -1,15 +1,15 @@
 ﻿//using DAL.Configuration.Database;
 //using DAL.Models;
-//using HerdSync.Shared.Enums.Data;
+//using Kudde.Shared.Enums.Data;
 //using Microsoft.EntityFrameworkCore;
 
 //namespace DAL.Services.Implementation
 //{
 //    public class ProgramRepository : IProgramRepository
 //    {
-//        private readonly HerdsyncDBContext _db;
+//        private readonly KuddeDBContext _db;
 
-//        public ProgramRepository(HerdsyncDBContext db) => _db = db;
+//        public ProgramRepository(KuddeDBContext db) => _db = db;
 
 //        public async Task<prg_Program> CreateAsync(
 //            string name,

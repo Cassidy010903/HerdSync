@@ -1,4 +1,4 @@
-﻿using HerdSync.Shared.DTO.Authentication;
+﻿using Kudde.Shared.DTO.Authentication;
 
 namespace BLL.Services.Authorization
 {

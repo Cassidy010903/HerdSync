@@ -1,4 +1,4 @@
-﻿using HerdSync.Shared.DTO.Treatment;
+﻿using Kudde.Shared.DTO.Treatment;
 
 namespace BLL.Services
 {

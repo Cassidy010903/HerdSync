@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DAL.Repositories.Implementation
 {
-    public class FarmRepository(HerdsyncDBContext context, ILogger<FarmRepository> logger) : IFarmRepository
+    public class FarmRepository(KuddeDBContext context, ILogger<FarmRepository> logger) : IFarmRepository
     {
         public async Task<IEnumerable<FarmModel>> GetAllAsync()
         {

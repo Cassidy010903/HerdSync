@@ -1,0 +1,343 @@
+﻿@page "/cowprofile/{AnimalId:guid}"
+@attribute [Authorize]
+@using Kudde.Shared.DTO.Animal
+@using Kudde.Shared.DTO.Program
+@using Kudde.Shared.DTO.Treatment
+@inject IAnimalService AnimalService
+@inject IProgramRunAnimalService ProgramRunAnimalService
+@inject IProgramRunTreatmentService ProgramRunTreatmentService
+@inject IProgramRunService ProgramRunService
+@inject IProgramTemplateService ProgramTemplateService
+@inject IAnimalObservationService AnimalObservationService
+@inject ITreatmentService TreatmentService
+@inject IConditionService ConditionService
+@inject NavigationManager Nav
+
+@if (_loading)
+{
+    <HerdLoader />
+}
+else if (_animal == null)
+{
+    <div class="text-center text-muted mt-5">
+        <i class="bx bx-error" style="font-size: 48px;"></i>
+        <p class="mt-2">Animal not found.</p>
+    </div>
+}
+else
+{
+    <div class="container">
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <button class="btn btn-outline-secondary btn-sm" @onclick='() => Nav.NavigateTo("/herd")'>
+                <i class="bx bx-arrow-back me-1"></i>Back
+            </button>
+            <h4 class="mb-0">#@_animal.DisplayIdentifier</h4>
+        </div>
+
+        <div class="row gutters">
+            <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="account-settings">
+                            <div class="user-profile">
+                                <div class="user-avatar">
+                                    <img src="/HerdSync_Cow.png" alt="Animal">
+                                </div>
+                                <h5 class="user-name">#@_animal.DisplayIdentifier</h5>
+                                <h6 class="user-email">@_animal.AnimalTypeCode</h6>
+                            </div>
+                            <div class="about">
+                                <h5>Family Tree</h5>
+                                <h6 class="mb-2 text-primary">Mother</h6>
+                                <div>@(_animal.MotherAnimalId.HasValue? _animal.MotherAnimalId.ToString() : "Unknown")</div>
+                                <h6 class="mb-2 text-primary mt-2">Father</h6>
+                                <div>@(_animal.FatherAnimalId.HasValue? _animal.FatherAnimalId.ToString() : "Unknown")</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="row gutters">
+                            <div class="col-xl-12">
+                                <h6 class="mb-2 text-primary">Biographical Information</h6>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Animal Number</label>
+                                    <input type="text" class="form-control" value="@_animal.DisplayIdentifier" disabled />
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Animal Type</label>
+                                    <input type="text" class="form-control" value="@_animal.AnimalTypeCode" disabled />
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Birth Year</label>
+                                    <input type="text" class="form-control" value="@(_animal.BirthYear?.ToString() ?? "-")" disabled />
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Weight</label>
+                                    <input type="text" class="form-control" value="@(_animal.Weight.HasValue ? $"{_animal.Weight:0.##} kg" : "-")" disabled />
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Gender</label>
+                                    <input type="text" class="form-control" value="@(_animal.Gender == "M" ? "Male" : _animal.Gender == "F" ? "Female" : "Unknown")" disabled />
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Branded</label>
+                                    <input type="text" class="form-control" value="@(_animal.IsBranded ? "Yes" : "No")" disabled />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row gutters mt-3">
+                            <div class="col-xl-12">
+                                <h6 class="mb-2 text-primary">Medical Information</h6>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Last Pregnancy</label>
+                                    <input type="text" class="form-control" value="@(_animal.LastPregnancyDate?.ToString("dd MMM yyyy") ?? "-")" disabled />
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Total Pregnancies</label>
+                                    <input type="text" class="form-control" value="@(_animal.TotalPregnancies?.ToString() ?? "-")" disabled />
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Total Calves</label>
+                                    <input type="text" class="form-control" value="@(_animal.TotalCalves?.ToString() ?? "-")" disabled />
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Medical Notes</label>
+                                    <input type="text" class="form-control" value="@(_animal.MedicalNote ?? "-")" disabled />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Treatment History -->
+        <div class="card mt-4">
+            <div class="card-header py-3">
+                <h6 class="mb-0"><i class="bx bx-plus-medical me-1"></i>Treatment History</h6>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="small text-uppercase bg-light text-muted">
+                        <tr>
+                            <th>Date</th>
+                            <th>Treatment</th>
+                            <th>Program</th>
+                            <th>Source</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!_treatmentHistory.Any())
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">No treatment history found.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var item in _treatmentHistory)
+                            {
+                                <tr>
+                                    <td>@item.GivenDate.ToString("dd MMM yyyy")</td>
+                                    <td><span class="badge bg-primary">@item.TreatmentName</span></td>
+                                    <td>@item.ProgramName</td>
+                                    <td>
+                                        @if (item.AddedManually)
+                                        {
+                                            <span class="badge bg-warning text-dark">Manual</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">Program</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Observation History -->
+        <div class="card mt-4 mb-4">
+            <div class="card-header py-3">
+                <h6 class="mb-0"><i class="bx bx-notepad me-1"></i>Observation History</h6>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="small text-uppercase bg-light text-muted">
+                        <tr>
+                            <th>Date</th>
+                            <th>Condition</th>
+                            <th>Flag</th>
+                            <th>Value</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!_observationHistory.Any())
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">No observations recorded.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var obs in _observationHistory)
+                            {
+                                <tr>
+                                    <td>@obs.ObservationDate.ToString("dd MMM yyyy")</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(obs.ConditionCode))
+                                        {
+                                            <span class="badge bg-secondary">@(_conditionNames.GetValueOrDefault(obs.ConditionCode, obs.ConditionCode))</span>
+                                        }
+                                        else
+                                        {
+
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(obs.Flag))
+                                        {
+                                            var flagColor = obs.Flag switch
+                                            {
+                                                "URGENT" => "danger",
+                                                "HIGH" => "warning text-dark",
+                                                "MEDIUM" => "info text-dark",
+                                                _ => "secondary"
+                                            };
+                                            <span class="badge bg-@flagColor">@obs.Flag</span>
+                                        }
+                                        else
+                                        {
+
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (obs.NumericValue.HasValue)
+                                        {
+                                            <span>@obs.NumericValue</span>
+                                        }
+                                        else if (!string.IsNullOrEmpty(obs.TextValue))
+                                        {
+                                            <span>@obs.TextValue</span>
+                                        }
+                                        else
+                                        {
+
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>@(obs.Notes ?? "-")</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public Guid AnimalId { get; set; }
+    private bool _loading = true;
+    private AnimalDTO? _animal;
+
+    private Dictionary<string, string> _treatmentNames = new();
+    private Dictionary<string, string> _conditionNames = new();
+
+    private class TreatmentHistoryItem
+    {
+        public string TreatmentName { get; set; } = "";
+        public DateTime GivenDate { get; set; }
+        public string ProgramName { get; set; } = "";
+        public bool AddedManually { get; set; }
+    }
+
+    private List<TreatmentHistoryItem> _treatmentHistory = new();
+    private List<AnimalObservationDTO> _observationHistory = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var all = await AnimalService.GetAllAsync();
+        _animal = all.FirstOrDefault(a => a.AnimalId == AnimalId);
+        if (_animal == null) { _loading = false; return; }
+
+        // Load lookup dictionaries
+        var treatments = await TreatmentService.GetAllAsync();
+        _treatmentNames = treatments.ToDictionary(t => t.TreatmentCode, t => t.TreatmentName);
+
+        var conditions = await ConditionService.GetAllAsync();
+        _conditionNames = conditions.ToDictionary(c => c.ConditionCode, c => c.ConditionName);
+
+        // Treatment history
+        var allRunAnimals = await ProgramRunAnimalService.GetAllAsync();
+        var thisAnimalRuns = allRunAnimals.Where(a => a.AnimalId == AnimalId).ToList();
+
+        var allTreatments = await ProgramRunTreatmentService.GetAllAsync();
+        var thisTreatments = allTreatments
+            .Where(t => thisAnimalRuns.Any(r => r.ProgramRunAnimalId == t.ProgramRunAnimalId))
+            .ToList();
+
+        var allRuns = await ProgramRunService.GetAllAsync();
+        var allTemplates = await ProgramTemplateService.GetAllAsync();
+        var templateNames = allTemplates.ToDictionary(t => t.ProgramTemplateCode, t => t.TemplateName);
+
+        foreach (var treatment in thisTreatments)
+        {
+            var runAnimal = thisAnimalRuns.FirstOrDefault(r => r.ProgramRunAnimalId == treatment.ProgramRunAnimalId);
+            var run = runAnimal != null ? allRuns.FirstOrDefault(r => r.ProgramRunId == runAnimal.ProgramRunId) : null;
+            var programName = run != null && templateNames.TryGetValue(run.ProgramTemplateCode, out var name) ? name : "Unknown";
+
+            _treatmentHistory.Add(new TreatmentHistoryItem
+            {
+                TreatmentName = _treatmentNames.GetValueOrDefault(treatment.TreatmentCode, treatment.TreatmentCode),
+                GivenDate = treatment.GivenDate,
+                ProgramName = programName,
+                AddedManually = treatment.AddedManually
+            });
+        }
+
+        _treatmentHistory = _treatmentHistory.OrderByDescending(t => t.GivenDate).ToList();
+
+        // Observation history
+        var allObservations = await AnimalObservationService.GetAllAsync();
+        _observationHistory = allObservations
+            .Where(o => o.AnimalId == AnimalId)
+            .OrderByDescending(o => o.ObservationDate)
+            .ToList();
+
+        _loading = false;
+    }
+}

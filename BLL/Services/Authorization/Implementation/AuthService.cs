@@ -4,7 +4,7 @@ using DAL.Configuration.Database;
 using DAL.Models.Authentication;
 using DAL.Models.Farm;
 using DAL.Repositories;
-using HerdSync.Shared.DTO.Authentication;
+using Kudde.Shared.DTO.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
@@ -14,12 +14,12 @@ namespace BLL.Services.Authorization.Implementation
 {
     public class AuthService : IAuthService
     {
-        private readonly HerdsyncDBContext _context;
+        private readonly KuddeDBContext _context;
         private readonly IFarmInviteRepository _inviteRepository;
         private readonly ILogger<AuthService> _logger;
 
         public AuthService(
-            HerdsyncDBContext context,
+            KuddeDBContext context,
             IFarmInviteRepository inviteRepository,
             ILogger<AuthService> logger)
         {

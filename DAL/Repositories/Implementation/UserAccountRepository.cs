@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DAL.Repositories.Implementation
 {
-    public class UserAccountRepository(HerdsyncDBContext context, ILogger<UserAccountRepository> logger) : IUserAccountRepository
+    public class UserAccountRepository(KuddeDBContext context, ILogger<UserAccountRepository> logger) : IUserAccountRepository
     {
         public async Task<IEnumerable<UserAccountModel>> GetAllAsync()
         {

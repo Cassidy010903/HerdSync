@@ -6,18 +6,18 @@ using DAL.Models.Farm;
 using DAL.Models.Program.ProgramRun;
 using DAL.Models.Program.ProgramTemplate;
 using DAL.Models.Treatment;
-using HerdSync.Shared.DTO.Animal;
-using HerdSync.Shared.DTO.Authentication;
-using HerdSync.Shared.DTO.Calendar;
-using HerdSync.Shared.DTO.Farm;
-using HerdSync.Shared.DTO.Program;
-using HerdSync.Shared.DTO.Treatment;
+using Kudde.Shared.DTO.Animal;
+using Kudde.Shared.DTO.Authentication;
+using Kudde.Shared.DTO.Calendar;
+using Kudde.Shared.DTO.Farm;
+using Kudde.Shared.DTO.Program;
+using Kudde.Shared.DTO.Treatment;
 
 namespace BLL.Mappings
 {
-    public class HerdSyncMappingProfile : Profile
+    public class KuddeMappingProfile : Profile
     {
-        public HerdSyncMappingProfile()
+        public KuddeMappingProfile()
         {
             CreateMap<AnimalModel, AnimalDTO>().ReverseMap();
             CreateMap<AnimalEventTypeModel, AnimalEventTypeDTO>().ReverseMap();

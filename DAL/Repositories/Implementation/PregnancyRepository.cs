@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DAL.Repositories.Implementation
 {
-    public class PregnancyRepository(HerdsyncDBContext context, ILogger<PregnancyRepository> logger) : IPregnancyRepository
+    public class PregnancyRepository(KuddeDBContext context, ILogger<PregnancyRepository> logger) : IPregnancyRepository
     {
         public async Task<IEnumerable<PregnancyModel>> GetAllAsync()
         {

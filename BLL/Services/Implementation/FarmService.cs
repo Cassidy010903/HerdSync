@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using DAL.Models.Farm;
 using DAL.Repositories;
-using HerdSync.Shared.DTO.Farm;
+using Kudde.Shared.DTO.Farm;
 using Microsoft.Extensions.Logging;
 
 namespace BLL.Services.Implementation

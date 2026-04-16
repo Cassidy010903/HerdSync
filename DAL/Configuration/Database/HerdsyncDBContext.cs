@@ -9,9 +9,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Configuration.Database
 {
-    public class HerdsyncDBContext : DbContext
+    public class KuddeDBContext : DbContext
     {
-        public HerdsyncDBContext(DbContextOptions<HerdsyncDBContext> options) : base(options)
+        public KuddeDBContext(DbContextOptions<KuddeDBContext> options) : base(options)
         {
         }
 

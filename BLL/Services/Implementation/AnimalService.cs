@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using DAL.Repositories;
-using HerdSync.Shared.DTO.Animal;
+using Kudde.Shared.DTO.Animal;
 using Microsoft.Extensions.Logging;
 
 namespace BLL.Services.Implementation

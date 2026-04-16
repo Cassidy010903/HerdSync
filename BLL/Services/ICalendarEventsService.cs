@@ -1,4 +1,4 @@
-﻿using HerdSync.Shared.DTO.Calendar;
+﻿using Kudde.Shared.DTO.Calendar;
 using System;
 using System.Collections.Generic;
 using System.Linq;

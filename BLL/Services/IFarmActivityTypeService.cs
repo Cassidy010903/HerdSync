@@ -1,4 +1,4 @@
-﻿using HerdSync.Shared.DTO.Farm;
+﻿using Kudde.Shared.DTO.Farm;
 
 namespace BLL.Services
 {

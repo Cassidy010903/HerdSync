@@ -1,0 +1,143 @@
+﻿@page "/"
+@attribute [Authorize]
+@rendermode @(new InteractiveServerRenderMode(prerender: true))
+
+<PageTitle>Kudde</PageTitle>
+<PageHeader Title="Dashboard"
+            Subtitle="@DateTime.Now.ToString("dddd, dd MMMM yyyy")"
+            SubtitleInline="false" />
+<div class="container-fluid db-dashboard">
+    <div class="row g-3 mb-4">
+        <SummaryCard Title="Total Stock" Icon="fas fa-cow" BorderHex="@KuddeColors.Primary" Value="@StockCount.ToString()" />
+        <SummaryCard Title="Pregnancies" Icon="fas fa-child" BorderHex="@KuddeColors.PrimaryLight" Value="@PregnancyCount.ToString()" />
+        <SummaryCard Title="Next Program" Icon="fas fa-calendar-alt" BorderHex="@KuddeColors.Primary" Value="@NextEventDate" />
+        <SummaryCard Title="Flagged Stock" Icon="fas fa-flag" BorderHex="@KuddeColors.FlagHigh" Value="0" />
+    </div>
+
+    <div class="row align-items-stretch db-fluid-row mb-4">
+        <div class="col-xl-8 col-lg-7 d-flex flex-column">
+            <KuddeCard Title="Farm Calendar" Icon="bx bx-calendar" Elevated="true" FullHeight="true">
+                <div style="min-height: 420px;">
+                    <HerdCalendar Entries="@calendarEntries"
+                                  MaxEntriesPerDay="3"
+                                  OnEntryAdded="AddCalendarEntry"
+                                  OnEntryUpdated="UpdateCalendarEntry"
+                                  OnEntryDeleted="DeleteCalendarEntry" />
+                </div>
+            </KuddeCard>
+        </div>
+
+        <div class="col-xl-4 col-lg-5 d-flex flex-column db-right-col">
+            <KuddeCard Title="Upcoming Events" Icon="bx bx-time-five" Compact="true">
+                @if (!UpcomingEvents.Any())
+                {
+                    <p class="db-empty-msg">No upcoming events scheduled.</p>
+                }
+                else
+                {
+                    @foreach (var ev in UpcomingEvents)
+                    {
+                        <div class="db-event">
+                            <div class="db-event__date">
+                                <span class="db-event__day">@ev.Start.ToString("dd")</span>
+                                <span class="db-event__month">@ev.Start.ToString("MMM")</span>
+                            </div>
+                            <div class="db-event__info">
+                                <span class="db-event__title">@ev.Title</span>
+                                <span class="db-event__relative">@GetRelativeDate(ev.Start)</span>
+                            </div>
+                        </div>
+                    }
+                }
+            </KuddeCard>
+
+            <KuddeCard Title="Recent Activity" Icon="bx bx-history" Compact="true" FullHeight="true">
+                @foreach (var item in RecentActivity)
+                {
+                    <div class="db-activity">
+                        <span class="db-activity__dot" style="background: @item.Color;"></span>
+                        <div class="db-activity__content">
+                            <span class="db-activity__text">@item.Text</span>
+                            <span class="db-activity__time">@item.Time</span>
+                        </div>
+                    </div>
+                }
+            </KuddeCard>
+        </div>
+    </div>
+
+    <div class="row db-fluid-row mb-4">
+        <div class="col-lg-6">
+            <KuddeCard Title="Herd Snapshot" Icon="bx bx-bar-chart-alt-2">
+                <p class="db-section-label">Age Groups</p>
+                <div class="db-bar-row">
+                    <span class="db-bar-label">Calves (0–1yr)</span>
+                    <div class="db-bar-wrap"><div class="db-bar db-bar--calf" style="width: @GetPercent(CalfCount)%"></div></div>
+                    <span class="db-bar-count">@CalfCount</span>
+                </div>
+                <div class="db-bar-row">
+                    <span class="db-bar-label">Yearlings (1–2yr)</span>
+                    <div class="db-bar-wrap"><div class="db-bar db-bar--yearling" style="width: @GetPercent(YearlingCount)%"></div></div>
+                    <span class="db-bar-count">@YearlingCount</span>
+                </div>
+                <div class="db-bar-row">
+                    <span class="db-bar-label">Adults (2+yr)</span>
+                    <div class="db-bar-wrap"><div class="db-bar db-bar--adult" style="width: @GetPercent(AdultCount)%"></div></div>
+                    <span class="db-bar-count">@AdultCount</span>
+                </div>
+                <hr class="my-3" />
+                <p class="db-section-label">Gender Split</p>
+                <div class="db-bar-row">
+                    <span class="db-bar-label">♂ Male</span>
+                    <div class="db-bar-wrap"><div class="db-bar db-bar--male" style="width: @GetPercent(MaleCount)%"></div></div>
+                    <span class="db-bar-count">@MaleCount</span>
+                </div>
+                <div class="db-bar-row">
+                    <span class="db-bar-label">♀ Female</span>
+                    <div class="db-bar-wrap"><div class="db-bar db-bar--female" style="width: @GetPercent(FemaleCount)%"></div></div>
+                    <span class="db-bar-count">@FemaleCount</span>
+                </div>
+            </KuddeCard>
+        </div>
+
+        <div class="col-lg-6">
+            <KuddeCard Title="Observations" Icon="bx bx-note" FullHeight="true">
+                <div class="db-notes">
+                    @if (!_observations.Any())
+                    {
+                        <p class="db-empty-msg">No observations recorded.</p>
+                    }
+                    else
+                    {
+                        @foreach (var obs in _observations)
+                        {
+                            <div class="db-note">
+                                <span class="db-activity__dot" style="background: @GetObservationColor(obs.Flag);"></span>
+                                <div class="db-activity__content">
+                                    <span class="db-activity__text">
+                                        <strong>@obs.AnimalTag</strong>
+                                        @if (!string.IsNullOrWhiteSpace(obs.ConditionCode))
+                                        {
+                                            <span> — @obs.ConditionCode</span>
+                                        }
+                                        @if (!string.IsNullOrWhiteSpace(obs.TextValue))
+                                        {
+                                            <span>: @obs.TextValue</span>
+                                        }
+                                        @if (!string.IsNullOrWhiteSpace(obs.Notes))
+                                        {
+                                            <span> · @obs.Notes</span>
+                                        }
+                                    </span>
+                                    <span class="db-activity__time">@obs.ObservationDate.ToString("dd MMM yyyy")</span>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </KuddeCard>
+        </div>
+
+    </div>
+
+</div>

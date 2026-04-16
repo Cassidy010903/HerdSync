@@ -11,7 +11,7 @@
 //{
 //    public class SessionRepository : ISessionRepository
 //    {
-//        private readonly HerdsyncDBContext _db;
+//        private readonly KuddeDBContext _db;
 //        private readonly ReadMappingService _reads;
 //        private readonly ISpeciesRepository _age;
 //        private readonly ILogger<SessionRepository> _log;
@@ -22,7 +22,7 @@
 //        public event Action<ast_Animal_Session_Treatment>? OnAnimalAction;
 
 //        public SessionRepository(
-//            HerdsyncDBContext db,
+//            KuddeDBContext db,
 //            ReadMappingService reads,
 //            ISpeciesRepository age,
 //            ILogger<SessionRepository> log)

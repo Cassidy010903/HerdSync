@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DAL.Repositories.Implementation
 {
-    public class CalendarEventRepository(HerdsyncDBContext context, ILogger<CalendarEventRepository> logger) : ICalendarEventRepository
+    public class CalendarEventRepository(KuddeDBContext context, ILogger<CalendarEventRepository> logger) : ICalendarEventRepository
     {
         public async Task<IEnumerable<CalendarEventModel>> GetAllAsync()
             => await context.CalendarEvents.Where(c => !c.IsDeleted).ToListAsync();

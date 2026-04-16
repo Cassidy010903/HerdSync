@@ -1,0 +1,163 @@
+﻿@page "/programhistory/{ProgramRunId:guid}"
+@attribute [Authorize]
+@rendermode @(new InteractiveServerRenderMode(prerender: true))
+@using Kudde.Shared.DTO.Program
+@inject IProgramRunService ProgramRunService
+@inject IProgramRunAnimalService ProgramRunAnimalService
+@inject IProgramRunTreatmentService ProgramRunTreatmentService
+@inject IProgramTemplateService ProgramTemplateService
+@inject NavigationManager Nav
+
+@if (_loading)
+{
+    <HerdLoader />
+}
+else if (_run == null)
+{
+    <div class="text-center text-muted mt-5">
+        <i class="bx bx-error" style="font-size: 48px;"></i>
+        <p class="mt-2">Program run not found.</p>
+    </div>
+}
+else
+{
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <button class="btn btn-outline-secondary btn-sm" @onclick='() => Nav.NavigateTo("/programhistory")'>
+            <i class="bx bx-arrow-back me-1"></i>Back
+        </button>
+        <div>
+            <h4 class="mb-0">@_templateName</h4>
+            <small class="text-muted">
+                <i class="bx bx-calendar me-1"></i>@_run.RunDate.ToString("dd MMMM yyyy")
+                <span class="ms-2 badge bg-secondary">@_run.ProgramTemplateCode</span>
+            </small>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-sm-3">
+            <div class="card text-center py-3">
+                <div class="fs-2 fw-bold text-primary">@_animals.Count</div>
+                <div class="text-muted small">Animals Scanned</div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card text-center py-3">
+                <div class="fs-2 fw-bold text-success">@_animals.Count(a => a.WasHandled)</div>
+                <div class="text-muted small">Treated</div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card text-center py-3">
+                <div class="fs-2 fw-bold text-warning">@_animals.Count(a => !a.WasHandled)</div>
+                <div class="text-muted small">Untreated</div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card text-center py-3">
+                <div class="fs-2 fw-bold text-info">@_treatments.Count</div>
+                <div class="text-muted small">Treatments Applied</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="mb-0"><i class="bx bx-list-ul me-1"></i>Animals in this Run</h6>
+            <button class="btn btn-outline-primary btn-sm" disabled title="Coming soon">
+                <i class="bx bx-plus me-1"></i>Add Animal
+            </button>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="small text-uppercase bg-light text-muted">
+                    <tr>
+                        <th>Animal</th>
+                        <th>Gender</th>
+                        <th>Age Group</th>
+                        <th>Treatments Given</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var animal in _animals)
+                    {
+                        var animalTreatments = _treatments
+                        .Where(t => t.ProgramRunAnimalId == animal.ProgramRunAnimalId)
+                        .ToList();
+                        <tr>
+                            <td><strong>#@(animal.Animal?.DisplayIdentifier ?? animal.AnimalId.ToString())</strong></td>
+                            <td>@(animal.Animal?.Gender ?? "-")</td>
+                            <td><span class="badge bg-secondary">@GetAgeGroup(animal.Animal?.BirthYear)</span></td>
+                            <td>
+                                @if (animalTreatments.Any())
+                                {
+                                    @foreach (var t in animalTreatments)
+                                    {
+                                        <span class="badge bg-primary me-1">@t.TreatmentCode</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">None</span>
+                                }
+                            </td>
+                            <td>
+                                @if (animal.WasHandled)
+                                {
+                                    <span class="badge bg-success">Treated</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">Untreated</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public Guid ProgramRunId { get; set; }
+
+    private bool _loading = true;
+    private ProgramRunDTO? _run;
+    private string _templateName = "";
+    private List<ProgramRunAnimalDTO> _animals = new();
+    private List<ProgramRunTreatmentDTO> _treatments = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _run = await ProgramRunService.GetByIdAsync(ProgramRunId);
+        if (_run == null) { _loading = false; return; }
+
+        var templates = await ProgramTemplateService.GetAllAsync();
+        _templateName = templates
+            .FirstOrDefault(t => t.ProgramTemplateCode == _run.ProgramTemplateCode)
+            ?.TemplateName ?? _run.ProgramTemplateCode;
+
+        _animals = (await ProgramRunAnimalService.GetAllAsync())
+            .Where(a => a.ProgramRunId == ProgramRunId)
+            .ToList();
+
+        _treatments = (await ProgramRunTreatmentService.GetAllAsync())
+            .Where(t => _animals.Any(a => a.ProgramRunAnimalId == t.ProgramRunAnimalId))
+            .ToList();
+
+        _loading = false;
+    }
+
+    private string GetAgeGroup(int? birthYear)
+    {
+        if (birthYear == null) return "Unknown";
+        return (DateTime.Today.Year - birthYear.Value) switch
+        {
+            <= 1 => "Calf",
+            <= 2 => "Yearling",
+            _ => "Adult"
+        };
+    }
+}

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 namespace DAL.Repositories.Implementation
 {
-    public class AnimalObservationRepository(HerdsyncDBContext context, ILogger<AnimalObservationRepository> logger) : IAnimalObservationRepository
+    public class AnimalObservationRepository(KuddeDBContext context, ILogger<AnimalObservationRepository> logger) : IAnimalObservationRepository
     {
         public async Task<IEnumerable<AnimalObservationModel>> GetAllAsync()
         {

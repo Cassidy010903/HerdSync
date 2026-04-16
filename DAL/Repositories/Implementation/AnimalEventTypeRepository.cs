@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DAL.Repositories.Implementation
 {
-    public class AnimalEventTypeRepository(HerdsyncDBContext context, ILogger<AnimalEventTypeRepository> logger) : IAnimalEventTypeRepository
+    public class AnimalEventTypeRepository(KuddeDBContext context, ILogger<AnimalEventTypeRepository> logger) : IAnimalEventTypeRepository
     {
         public async Task<IEnumerable<AnimalEventTypeModel>> GetAllAsync()
         {

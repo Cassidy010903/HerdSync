@@ -1,5 +1,5 @@
 ﻿//using DAL.Models;
-//using HerdSync.Shared.Enums.Data;
+//using Kudde.Shared.Enums.Data;
 
 //namespace DAL.Services
 //{

@@ -1,0 +1,727 @@
+﻿@page "/newprogram"
+@attribute [Authorize]
+@using Kudde.Shared.DTO.Program
+@using Kudde.Shared.DTO.Treatment
+@using Kudde.Shared.DTO.Animal
+@inject IProgramTemplateService ProgramTemplateService
+@inject IProgramTemplateRuleService ProgramTemplateRuleService
+@inject IProgramTemplateRuleTreatmentService ProgramTemplateRuleTreatmentService
+@inject ITreatmentService TreatmentService
+@inject IAnimalTypeService AnimalTypeService
+@inject ICalendarEventService CalendarEventService
+@inject NavigationManager NavigationManager
+@rendermode @(new InteractiveServerRenderMode(prerender: true))
+
+<PageTitle>New Program</PageTitle>
+
+@if (_loading)
+{
+    <HerdLoader />
+}
+else
+{
+    <PageHeader Title="New Program"
+                Subtitle="Set up new treatment program"
+                SubtitleInline="false" />
+
+
+    <div class="row">
+        <div class="col-lg-8">
+
+            @if (string.IsNullOrEmpty(SelectedAnimalTypeCode))
+            {
+                <div class="card mb-4">
+                    <div class="card-body text-center py-5">
+                        <p class="text-muted mb-0">Please select an animal type in the sidebar to begin adding rules.</p>
+                    </div>
+                </div>
+            }
+            else
+            {
+                @foreach (var rule in Rules)
+                {
+                    <div class="card mb-4">
+                        <div class="card-body">
+
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="fw-semibold" style="font-size: 16px; color: #4a7c59;">@GetRuleSummary(rule)</span>
+                                @if (Rules.Count > 1)
+                                {
+                                    <button class="btn btn-sm btn-outline-danger" @onclick="@(() => RemoveRule(rule))">
+                                        <i class="bx bx-trash"></i>
+                                    </button>
+                                }
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="hs-outlined-select">
+                                    <select @bind="rule.AgeGroupString">
+                                        <option value="">All Ages</option>
+                                        <option value="CurrentYear">Current Year Calves (@CurrentYear)</option>
+                                        <option value="PreviousYear">Previous Year (@(CurrentYear - 1))</option>
+                                        <option value="YearBeforeThat">Year Before That (@(CurrentYear - 2))</option>
+                                        <option value="Adults">Adults (born @(CurrentYear - 3) or earlier)</option>
+                                    </select>
+                                    <label>Age Group</label>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <label class="form-label fw-semibold d-block mb-1">Gender</label>
+                                    <label class="hs-checkbox">
+                                        <input type="checkbox"
+                                               checked="@rule.IncludeMale"
+                                               @onchange="e => rule.IncludeMale = (bool)e.Value!" />
+                                        <span class="hs-checkbox__box"></span>
+                                        Male
+                                    </label>
+                                    <label class="hs-checkbox">
+                                        <input type="checkbox"
+                                               checked="@rule.IncludeFemale"
+                                               @onchange="e => rule.IncludeFemale = (bool)e.Value!" />
+                                        <span class="hs-checkbox__box"></span>
+                                        Female
+                                    </label>
+                                </div>
+                            </div>
+
+                            <HsDivider Class="my-3" />
+
+                            <label class="form-label fw-semibold d-block mb-2">Treatments</label>
+                            <div class="row">
+                                @foreach (var treatment in AvailableTreatments)
+                                {
+                                    var isChecked = rule.SelectedTreatments.Any(t => t.TreatmentCode == treatment.TreatmentCode);
+                                    <div class="col-lg-4 mb-2">
+                                        <label class="hs-checkbox">
+                                            <input type="checkbox"
+                                                   checked="@isChecked"
+                                                   @onchange="e => ToggleTreatment(rule, treatment, (bool)e.Value!)" />
+                                            <span class="hs-checkbox__box"></span>
+                                            @treatment.TreatmentName
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+                }
+
+                <div class="d-flex justify-content-center gap-2 mt-4">
+                    <HsButton Text="Add Rule"
+                              Icon="bx bx-plus"
+                              Variant="HsButton.ButtonVariant.Outline"
+                              OnClick="AddRule" />
+                    <HsButton Text="@(_submitting ? "Saving..." : "Save Program")"
+                              Icon="@(_submitting ? "" : "bx bx-save")"
+                              Variant="HsButton.ButtonVariant.Teal"
+                              OnClick="Submit"
+                              Disabled="@_submitting">
+                    </HsButton>
+                </div>
+            }
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="hs-outlined-input">
+                        <input type="text"
+                               placeholder=" "
+                               disabled="@AutoGenerateName"
+                               @bind="Template.TemplateName"
+                               @bind:event="oninput"
+                               @onblur="ValidateProgramName" />
+                        <label>Program name</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="hs-outlined-select">
+                        <select @bind="SelectedAnimalTypeCode">
+                            <option value="">Select Animal Type</option>
+                            @foreach (var animalType in AvailableAnimalTypes)
+                            {
+                                <option value="@animalType.AnimalTypeCode">@animalType.AnimalTypeName</option>
+                            }
+                        </select>
+                        <label>Select Animal Type</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="hs-outlined-select">
+                        <select @bind="SelectedFrequencyString">
+                            <option value="OnceOff">Once-off</option>
+                            <option value="Monthly">Monthly</option>
+                            <option value="Quarterly">Quarterly</option>
+                            <option value="BiYearly">Bi-yearly</option>
+                            <option value="Yearly">Yearly</option>
+                        </select>
+                        <label>Repeat Frequency</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="h6">Settings</h3>
+                    <ul class="list-group list-group-flush mx-n2">
+                        <li class="list-group-item px-0 d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <h6 class="mb-0">Auto generate name</h6>
+                                <small>Name will be auto generated on save.</small>
+                            </div>
+                            <label class="hs-switch">
+                                <input type="checkbox" @bind="AutoGenerateName" />
+                                <span class="hs-switch__track"></span>
+                            </label>
+                        </li>
+                        <li class="list-group-item px-0 d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <h6 class="mb-0">Active</h6>
+                                <small>Available for program runs.</small>
+                            </div>
+                            <label class="hs-switch">
+                                <input type="checkbox" @bind="Template.IsActive" />
+                                <span class="hs-switch__track"></span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="hs-outlined-input">
+                        <textarea rows="3" placeholder=" " @bind="_programNotes"></textarea>
+                        <label>Add notes...</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="h6 mb-3">Program Summary</h3>
+                    @if (string.IsNullOrEmpty(SelectedAnimalTypeCode))
+                    {
+                        <p class="text-muted mb-0" style="font-size: 12px;">No animal type selected.</p>
+                    }
+                    else
+                    {
+                        <p class="fw-semibold mb-2" style="font-size: 14px;">
+                            @(AvailableAnimalTypes.FirstOrDefault(a => a.AnimalTypeCode == SelectedAnimalTypeCode)?.AnimalTypeName)
+                            · @GetFrequencyLabel(SelectedFrequency)
+                        </p>
+                        <HsDivider Class="mb-2" />
+                        @foreach (var rule in Rules.Where(r => r.SelectedTreatments.Any() || r.AgeGroup.HasValue))
+                        {
+                            <div class="mb-2">
+                                <p class="fw-semibold mb-1" style="font-size: 14px;">@GetRuleSummary(rule)</p>
+                                @if (rule.SelectedTreatments.Any())
+                                {
+                                    <p class="mb-0" style="font-size: 12px; color: rgba(0,0,0,0.6);">
+                                        @string.Join(", ", rule.SelectedTreatments.Select(t =>
+                                        AvailableTreatments.FirstOrDefault(x => x.TreatmentCode == t.TreatmentCode)?.TreatmentName ?? t.TreatmentCode
+                                                ))
+                    </p>
+                                        }
+                                else
+                                {
+                                    <p class="mb-0 text-danger" style="font-size: 12px;">No treatments selected</p>
+                                }
+                            </div>
+                            <HsDivider Class="mb-2" />
+                        }
+                    }
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(_errorMessage))
+            {
+                <HsAlert Message="@_errorMessage" Variant="HsAlert.AlertVariant.Error" />
+            }
+        </div>
+    </div>
+}
+
+<style>
+    /* Outlined select with floating label */
+    .hs-outlined-select {
+        position: relative;
+        margin-bottom: 8px;
+    }
+
+        .hs-outlined-select select {
+            width: 100%;
+            padding: 14px 12px 6px 12px;
+            border: 1px solid rgba(0,0,0,0.23);
+            border-radius: 4px;
+            font-size: 14px;
+            background: transparent;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23666' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            cursor: pointer;
+            color: rgba(0,0,0,0.87);
+            line-height: 1.5;
+        }
+
+            .hs-outlined-select select:focus {
+                outline: none;
+                border-color: #4a7c59;
+                border-width: 2px;
+            }
+
+        .hs-outlined-select label {
+            position: absolute;
+            top: -9px;
+            left: 10px;
+            font-size: 12px;
+            color: rgba(0,0,0,0.6);
+            background: #fff;
+            padding: 0 4px;
+            pointer-events: none;
+        }
+
+        .hs-outlined-select select:focus + label {
+            color: #4a7c59;
+        }
+
+    /* Outlined input with floating label */
+    .hs-outlined-input {
+        position: relative;
+        margin-bottom: 8px;
+    }
+
+        .hs-outlined-input input,
+        .hs-outlined-input textarea {
+            width: 100%;
+            padding: 14px 12px 6px 12px;
+            border: 1px solid rgba(0,0,0,0.23);
+            border-radius: 4px;
+            font-size: 14px;
+            background: transparent;
+            color: rgba(0,0,0,0.87);
+            line-height: 1.5;
+            resize: vertical;
+        }
+
+            .hs-outlined-input input:focus,
+            .hs-outlined-input textarea:focus {
+                outline: none;
+                border-color: #4a7c59;
+                border-width: 2px;
+            }
+
+        .hs-outlined-input label {
+            position: absolute;
+            top: -9px;
+            left: 10px;
+            font-size: 12px;
+            color: rgba(0,0,0,0.6);
+            background: #fff;
+            padding: 0 4px;
+            pointer-events: none;
+        }
+
+        .hs-outlined-input input:focus + label,
+        .hs-outlined-input textarea:focus + label {
+            color: #4a7c59;
+        }
+
+        .hs-outlined-input input:disabled {
+            background: #f5f5f5;
+            color: rgba(0,0,0,0.38);
+            cursor: not-allowed;
+        }
+
+    /* MudBlazor-style checkboxes */
+    .hs-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        font-size: 14px;
+        color: rgba(0,0,0,0.54);
+        margin-bottom: 8px;
+        user-select: none;
+    }
+
+        .hs-checkbox input[type="checkbox"] {
+            display: none;
+        }
+
+    .hs-checkbox__box {
+        width: 20px;
+        height: 20px;
+        min-width: 20px;
+        border: 2px solid rgba(0,0,0,0.26);
+        border-radius: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.15s, border-color 0.15s;
+        background: transparent;
+    }
+
+    .hs-checkbox input[type="checkbox"]:checked + .hs-checkbox__box {
+        background: #4a7c59;
+        border-color: #4a7c59;
+    }
+
+        .hs-checkbox input[type="checkbox"]:checked + .hs-checkbox__box::after {
+            content: '';
+            display: block;
+            width: 5px;
+            height: 9px;
+            border: 2px solid #fff;
+            border-top: none;
+            border-left: none;
+            transform: rotate(45deg) translateY(-1px);
+        }
+
+    .hs-checkbox:hover .hs-checkbox__box {
+        border-color: rgba(0,0,0,0.38);
+    }
+
+    .hs-switch {
+        position: relative;
+        display: inline-block;
+        width: 44px;
+        height: 24px;
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+        .hs-switch input[type="checkbox"] {
+            display: none;
+        }
+
+    .hs-switch__track {
+        position: absolute;
+        inset: 0;
+        border-radius: 34px;
+        background: rgba(0,0,0,0.26);
+        transition: background 0.2s;
+    }
+
+        .hs-switch__track::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fff;
+            top: 3px;
+            left: 3px;
+            transition: transform 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+    .hs-switch input[type="checkbox"]:checked + .hs-switch__track {
+        background: #4a7c59;
+    }
+
+        .hs-switch input[type="checkbox"]:checked + .hs-switch__track::after {
+            transform: translateX(20px);
+        }
+</style>
+
+@code {
+    private bool _loading    = true;
+    private bool _submitting = false;
+    private string _errorMessage = string.Empty;
+    private string _programNotes = string.Empty;
+    private string _programNameError = string.Empty;
+
+    private static readonly int CurrentYear = DateTime.Now.Year;
+
+    private string SelectedFrequencyString
+    {
+        get => SelectedFrequency.ToString();
+        set => SelectedFrequency = Enum.TryParse<ProgramFrequency>(value, out var f) ? f : ProgramFrequency.OnceOff;
+    }
+
+    public enum AgeGroup
+    {
+        CurrentYear,
+        PreviousYear,
+        YearBeforeThat,
+        Adults
+    }
+
+    public enum ProgramFrequency
+    {
+        OnceOff,
+        Monthly,
+        Quarterly,
+        BiYearly,
+        Yearly
+    }
+
+    private ProgramTemplateDTO Template         { get; set; } = new() { IsActive = true };
+    private bool               AutoGenerateName { get; set; } = false;
+    private string             SelectedAnimalTypeCode { get; set; } = string.Empty;
+    private ProgramFrequency   SelectedFrequency      { get; set; } = ProgramFrequency.OnceOff;
+
+    private List<AnimalTypeDTO> AvailableAnimalTypes { get; set; } = new();
+    private List<TreatmentDTO>  AvailableTreatments  { get; set; } = new();
+    private List<RuleViewModel> Rules                { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var animalTypes = await AnimalTypeService.GetAllAsync();
+        AvailableAnimalTypes = animalTypes.ToList();
+
+        var treatments = await TreatmentService.GetAllAsync();
+        AvailableTreatments = treatments.ToList();
+
+        Rules.Add(new RuleViewModel());
+        _loading = false;
+    }
+
+    private async Task ValidateProgramName()
+    {
+        if (string.IsNullOrWhiteSpace(Template.TemplateName)) return;
+
+        var existing = await ProgramTemplateService.GetAllAsync();
+        var duplicate = existing.Any(p => p.TemplateName.Equals(Template.TemplateName.Trim(), StringComparison.OrdinalIgnoreCase));
+        _programNameError = duplicate ? "A program with this name already exists." : string.Empty;
+    }
+
+    private void AddRule()  => Rules.Add(new RuleViewModel());
+
+    private void RemoveRule(RuleViewModel rule)
+    {
+        if (Rules.Count > 1)
+            Rules.Remove(rule);
+    }
+
+    private void ToggleTreatment(RuleViewModel rule, TreatmentDTO treatment, bool selected)
+    {
+        if (selected)
+        {
+            if (!rule.SelectedTreatments.Any(t => t.TreatmentCode == treatment.TreatmentCode))
+            {
+                rule.SelectedTreatments.Add(new ProgramTemplateRuleTreatmentDTO
+                {
+                    TreatmentCode = treatment.TreatmentCode,
+                    IsMandatory   = true
+                });
+            }
+        }
+        else
+        {
+            var existing = rule.SelectedTreatments
+                .FirstOrDefault(t => t.TreatmentCode == treatment.TreatmentCode);
+            if (existing != null)
+                rule.SelectedTreatments.Remove(existing);
+        }
+    }
+
+    private (int? Min, int? Max) ResolveYearRange(AgeGroup? group) => group switch
+    {
+        AgeGroup.CurrentYear    => (CurrentYear,     CurrentYear),
+        AgeGroup.PreviousYear   => (CurrentYear - 1, CurrentYear - 1),
+        AgeGroup.YearBeforeThat => (CurrentYear - 2, CurrentYear - 2),
+        AgeGroup.Adults         => (null,             CurrentYear - 3),
+        _                       => (null, null)
+    };
+
+    private string GetAgeGroupLabel(AgeGroup? group) => group switch
+    {
+        AgeGroup.CurrentYear    => $"Current Year Calves ({CurrentYear})",
+        AgeGroup.PreviousYear   => $"Previous Year ({CurrentYear - 1})",
+        AgeGroup.YearBeforeThat => $"Year Before That ({CurrentYear - 2})",
+        AgeGroup.Adults         => $"Adults (born {CurrentYear - 3} or earlier)",
+        _                       => "All Ages"
+    };
+
+    private string GetFrequencyLabel(ProgramFrequency frequency) => frequency switch
+    {
+        ProgramFrequency.OnceOff   => "Once-off",
+        ProgramFrequency.Monthly   => "Monthly",
+        ProgramFrequency.Quarterly => "Quarterly",
+        ProgramFrequency.BiYearly  => "Bi-yearly",
+        ProgramFrequency.Yearly    => "Yearly",
+        _                          => "Once-off"
+    };
+
+    private string GetRuleSummary(RuleViewModel rule)
+    {
+        var agePart    = GetAgeGroupLabel(rule.AgeGroup);
+        var genderPart = (rule.IncludeMale, rule.IncludeFemale) switch
+        {
+            (true,  false) => "Male",
+            (false, true)  => "Female",
+            (true,  true)  => "Male & Female",
+            _              => "No gender selected"
+        };
+        return $"{agePart} · {genderPart}";
+    }
+
+    private async Task Submit()
+    {
+        _errorMessage = string.Empty;
+
+        if (!string.IsNullOrEmpty(_programNameError))
+        {
+            _errorMessage = "Please fix validation errors before saving.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(Template.TemplateName) && !AutoGenerateName)
+        {
+            _errorMessage = "Please enter a program name or enable auto-generate.";
+            return;
+        }
+
+        if (string.IsNullOrEmpty(SelectedAnimalTypeCode))
+        {
+            _errorMessage = "Please select an animal type.";
+            return;
+        }
+
+        if (Rules.Any(r => !r.IncludeMale && !r.IncludeFemale))
+        {
+            _errorMessage = "All rules must have at least one gender selected.";
+            return;
+        }
+
+        if (Rules.Any(r => !r.SelectedTreatments.Any()))
+        {
+            _errorMessage = "All rules must have at least one treatment selected.";
+            return;
+        }
+
+        try
+        {
+            _submitting = true;
+
+            var templateCode = DateTime.Now.ToString("yyMMddHHmm");
+            var programName = AutoGenerateName ? templateCode : Template.TemplateName;
+
+            var templateToSave = new ProgramTemplateDTO
+            {
+                ProgramTemplateCode = templateCode,
+                TemplateName = programName,
+                Description = string.IsNullOrWhiteSpace(_programNotes) ? programName : _programNotes,
+                IsActive = Template.IsActive,
+                Frequency = SelectedFrequency.ToString()
+            };
+
+            var createdTemplate = await ProgramTemplateService.CreateAsync(templateToSave);
+
+            foreach (var ruleVm in Rules)
+            {
+                var (minYear, maxYear) = ResolveYearRange(ruleVm.AgeGroup);
+
+                var ruleDto = new ProgramTemplateRuleDTO
+                {
+                    ProgramTemplateCode = createdTemplate.ProgramTemplateCode,
+                    AnimalTypeCode      = SelectedAnimalTypeCode,
+                    Gender              = (ruleVm.IncludeMale, ruleVm.IncludeFemale) switch
+                    {
+                        (true,  false) => "M",
+                        (false, true)  => "F",
+                        _              => null
+                    },
+                    MinBirthYear = minYear,
+                    MaxBirthYear = maxYear
+                };
+
+                var createdRule = await ProgramTemplateRuleService.CreateAsync(ruleDto);
+
+                foreach (var treatment in ruleVm.SelectedTreatments)
+                {
+                    await ProgramTemplateRuleTreatmentService.CreateAsync(new ProgramTemplateRuleTreatmentDTO
+                    {
+                        ProgramTemplateRuleId = createdRule.ProgramTemplateRuleId,
+                        TreatmentCode         = treatment.TreatmentCode,
+                        IsMandatory           = true
+                    });
+                }
+            }
+
+            await CreateCalendarEvents(createdTemplate.ProgramTemplateCode);
+            NavigationManager.NavigateTo("/programs");
+        }
+        catch (Exception ex)
+        {
+            var inner = ex.InnerException?.Message ?? ex.Message;
+            _errorMessage = $"Failed to save program: {inner}";
+        }
+        finally
+        {
+            _submitting = false;
+        }
+    }
+
+    private async Task CreateCalendarEvents(string templateCode)
+{
+    var dates = new List<DateTime>();
+    var from  = DateTime.Today;
+
+    switch (SelectedFrequency)
+    {
+        case ProgramFrequency.OnceOff:
+            break;
+
+        case ProgramFrequency.Monthly:
+            for (int i = 1; i <= 12; i++)
+                dates.Add(from.AddMonths(i));
+            break;
+
+        case ProgramFrequency.Quarterly:
+            dates.Add(from.AddMonths(3));
+            dates.Add(from.AddMonths(6));
+            dates.Add(from.AddMonths(9));
+            dates.Add(from.AddMonths(12));
+            break;
+
+        case ProgramFrequency.BiYearly:
+            dates.Add(from.AddMonths(6));
+            dates.Add(from.AddMonths(12));
+            break;
+
+        case ProgramFrequency.Yearly:
+            dates.Add(from.AddYears(1));
+            break;
+    }
+
+    foreach (var date in dates)
+    {
+        await CalendarEventService.CreateAsync(new CalendarEventDTO
+        {
+            CalendarEventId = Guid.NewGuid(),
+            Title           = templateCode,
+            EventDate       = date,
+            Color           = "primary",
+            Description     = $"Scheduled program run for {templateCode}"
+        });
+    }
+}
+
+    private class RuleViewModel
+    {
+        public AgeGroup? AgeGroup { get; set; }
+        public bool IncludeMale { get; set; }
+        public bool IncludeFemale { get; set; }
+        public List<ProgramTemplateRuleTreatmentDTO> SelectedTreatments { get; set; } = new();
+
+        public string AgeGroupString
+        {
+            get => AgeGroup?.ToString() ?? "";
+            set => AgeGroup = string.IsNullOrEmpty(value)
+                ? null
+                : Enum.TryParse<AgeGroup>(value, out var g) ? g : null;
+        }
+    }
+}

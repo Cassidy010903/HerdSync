@@ -11,9 +11,9 @@ namespace DAL.Repositories.Implementation
 {
     public class FarmInviteRepository : IFarmInviteRepository
     {
-        private readonly HerdsyncDBContext _context;
+        private readonly KuddeDBContext _context;
 
-        public FarmInviteRepository(HerdsyncDBContext context)
+        public FarmInviteRepository(KuddeDBContext context)
         {
             _context = context;
         }

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DAL.Repositories.Implementation
 {
-    public class ProgramRunObservationRepository(HerdsyncDBContext context, ILogger<ProgramRunObservationRepository> logger) : IProgramRunObservationRepository
+    public class ProgramRunObservationRepository(KuddeDBContext context, ILogger<ProgramRunObservationRepository> logger) : IProgramRunObservationRepository
     {
         public async Task<IEnumerable<ProgramRunObservationModel>> GetAllAsync()
         {

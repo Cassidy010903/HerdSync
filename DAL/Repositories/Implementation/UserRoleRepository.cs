@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DAL.Repositories.Implementation
 {
-    public class UserRoleRepository(HerdsyncDBContext context, ILogger<UserRoleRepository> logger) : IUserRoleRepository
+    public class UserRoleRepository(KuddeDBContext context, ILogger<UserRoleRepository> logger) : IUserRoleRepository
     {
         public async Task<IEnumerable<UserRoleModel>> GetAllAsync()
         {

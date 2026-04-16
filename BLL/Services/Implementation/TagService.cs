@@ -1,7 +1,7 @@
 ﻿//using AutoMapper;
 //using DAL.Models;
 //using DAL.Services;
-//using HerdSync.Shared.DTO;
+//using Kudde.Shared.DTO;
 //using Microsoft.Extensions.Logging;
 
 //namespace BLL.Services.Implementation

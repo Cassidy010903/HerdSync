@@ -1,0 +1,195 @@
+﻿@page "/farm-profile"
+@attribute [Authorize]
+@rendermode @(new InteractiveServerRenderMode(prerender: true))
+@using Kudde.Shared.DTO.Authentication
+@using Kudde.Shared.DTO.Farm
+
+<PageTitle>Farm Profile</PageTitle>
+
+@if (_loading)
+{
+    <HerdLoader />
+}
+else
+{
+    <PageHeader Title="Farm Profile" />
+
+    <div class="container-fluid px-0">
+
+        <div class="card hs-card mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="card-title mb-0">Farm Details</h6>
+                    @if (!_editingFarm)
+                    {
+                        <HsButton Text="Edit" Icon="bx bx-pencil" Variant="HsButton.ButtonVariant.Outline" OnClick="() => _editingFarm = true" />
+                    }
+                </div>
+                @if (_editingFarm)
+                {
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Farm Name</label>
+                            <input class="hs-input" @bind="_farmEdit.FarmName" />
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(_farmError))
+                    {
+                        <HsAlert Variant="HsAlert.AlertVariant.Error" Message="@_farmError" class="mt-3" />
+                    }
+                    <div class="d-flex gap-2 mt-3">
+                        <HsButton Text="Save" Variant="HsButton.ButtonVariant.Teal" OnClick="SaveFarm" />
+                        <HsButton Text="Cancel" Variant="HsButton.ButtonVariant.Secondary" OnClick="() => _editingFarm = false" />
+                    </div>
+                }
+                else
+                {
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-1" style="font-size: 12px;">FARM NAME</p>
+                            <p class="mb-0 fw-medium">@_farm?.FarmName</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-muted mb-1" style="font-size: 12px;">FARM ID</p>
+                            <p class="mb-0 fw-medium" style="font-size: 13px; color: #888;">@_farm?.FarmId</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="card hs-card mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="card-title mb-0">Farm Users</h6>
+                    <HsButton Text="Add User" Icon="bx bx-plus" Variant="HsButton.ButtonVariant.Outline" OnClick="OpenAddUserDialog" />
+                </div>
+                <div class="table-responsive">
+                    <table class="table project-list-table table-nowrap align-middle table-borderless">
+                        <thead>
+                            <tr>
+                                <th>Display Name</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th style="width: 80px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var fu in _farmUsers)
+                            {
+                                var user = _users.FirstOrDefault(u => u.UserId == fu.UserId);
+                                var role = _roles.FirstOrDefault(r => r.RoleCode == fu.RoleCode);
+                                <tr>
+                                    <td>@(user?.DisplayName ?? "-")</td>
+                                    <td>@(user?.Username ?? "-")</td>
+                                    <td>@(user?.Email ?? "-")</td>
+                                    <td><span class="badge bg-info text-dark">@(role?.RoleName ?? fu.RoleCode)</span></td>
+                                    <td>
+                                        @if (fu.IsActive)
+                                        {
+                                            <span class="badge bg-success">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Inactive</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a class="px-2 text-danger" style="cursor:pointer" @onclick="() => ConfirmRemoveUser(fu)">
+                                            <i class="bx bx-trash-alt font-size-18"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card hs-card mb-4">
+            <div class="card-body">
+                <h6 class="card-title mb-3">Farm Activity History</h6>
+                <div class="table-responsive">
+                    <table class="table project-list-table table-nowrap align-middle table-borderless">
+                        <thead>
+                            <tr>
+                                <th>Activity Type</th>
+                                <th>Activity Date</th>
+                                <th>Quantity</th>
+                                <th>Reference</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (!_activities.Any())
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-muted text-center py-4">No activity recorded.</td>
+                                </tr>
+                            }
+                            @foreach (var act in _activities)
+                            {
+                                var actType = _activityTypes.FirstOrDefault(t => t.FarmActivityTypeCode == act.FarmActivityTypeCode);
+                                <tr>
+                                    <td>@(actType?.ActivityTypeName ?? act.FarmActivityTypeCode)</td>
+                                    <td>@act.ActivityDate.ToString("dd MMM yyyy")</td>
+                                    <td>@(act.Quantity?.ToString() ?? "-")</td>
+                                    <td>@(act.ReferenceNumber ?? "-")</td>
+                                    <td>@(act.Notes ?? "-")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (_showAddUserDialog)
+{
+    <HsDialog Visible="true" Title="Add User to Farm">
+        <Content>
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label">Username</label>
+                    <input class="hs-input" @bind="_newUserUsername" placeholder="Enter username" />
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Role</label>
+                    <select class="hs-outlined-select" @bind="_newUserRoleCode">
+                        <option value="">-- Select Role --</option>
+                        @foreach (var role in _roles)
+                        {
+                            <option value="@role.RoleCode">@role.RoleName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            @if (!string.IsNullOrEmpty(_addUserError))
+            {
+                <HsAlert Variant="HsAlert.AlertVariant.Error" Message="@_addUserError" class="mt-3" />
+            }
+        </Content>
+        <Buttons>
+            <HsButton Text="Cancel" Variant="HsButton.ButtonVariant.Secondary" OnClick="() => _showAddUserDialog = false" />
+            <HsButton Text="Add" Variant="HsButton.ButtonVariant.Teal" OnClick="AddUser" />
+        </Buttons>
+    </HsDialog>
+}
+
+@if (_showRemoveUserDialog && _removingUser != null)
+{
+    <HsDialog Visible="true" Title="Remove User">
+        <Content>
+            <p>Are you sure you want to remove this user from the farm?</p>
+        </Content>
+        <Buttons>
+            <HsButton Text="Cancel" Variant="HsButton.ButtonVariant.Secondary" OnClick="() => _showRemoveUserDialog = false" />
+            <HsButton Text="Remove" Variant="HsButton.ButtonVariant.Danger" OnClick="RemoveUser" />
+        </Buttons>
+    </HsDialog>
+}

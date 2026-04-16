@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using HerdSync.Shared.DTO.Animal;
+using Kudde.Shared.DTO.Animal;
 
 namespace BLL.Validators
 {

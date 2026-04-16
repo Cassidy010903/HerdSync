@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using DAL.Models.Authentication;
 using DAL.Repositories;
-using HerdSync.Shared.DTO.Authentication;
+using Kudde.Shared.DTO.Authentication;
 using Microsoft.Extensions.Logging;
 
 namespace BLL.Services.Implementation

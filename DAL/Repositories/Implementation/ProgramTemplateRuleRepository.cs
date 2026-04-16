@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DAL.Repositories.Implementation
 {
-    public class ProgramTemplateRuleRepository(HerdsyncDBContext context, ILogger<ProgramTemplateRuleRepository> logger) : IProgramTemplateRuleRepository
+    public class ProgramTemplateRuleRepository(KuddeDBContext context, ILogger<ProgramTemplateRuleRepository> logger) : IProgramTemplateRuleRepository
     {
         public async Task<IEnumerable<ProgramTemplateRuleModel>> GetAllAsync()
         {

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DAL.Repositories.Implementation
 {
-    public class TreatmentCategoryRepository(HerdsyncDBContext context, ILogger<TreatmentCategoryRepository> logger) : ITreatmentCategoryRepository
+    public class TreatmentCategoryRepository(KuddeDBContext context, ILogger<TreatmentCategoryRepository> logger) : ITreatmentCategoryRepository
     {
         public async Task<IEnumerable<TreatmentCategoryModel>> GetAllAsync()
         {

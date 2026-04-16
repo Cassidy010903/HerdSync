@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DAL.Repositories.Implementation
 {
-    public class AnimalTagRepository(HerdsyncDBContext context, ILogger<AnimalTagRepository> logger) : IAnimalTagRepository
+    public class AnimalTagRepository(KuddeDBContext context, ILogger<AnimalTagRepository> logger) : IAnimalTagRepository
     {
         public async Task<IEnumerable<AnimalTagModel>> GetAllAsync()
         {

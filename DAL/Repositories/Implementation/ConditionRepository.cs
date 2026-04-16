@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DAL.Repositories.Implementation
 {
-    public class ConditionRepository(HerdsyncDBContext context, ILogger<ConditionRepository> logger) : IConditionRepository
+    public class ConditionRepository(KuddeDBContext context, ILogger<ConditionRepository> logger) : IConditionRepository
     {
         public async Task<IEnumerable<ConditionModel>> GetAllAsync()
         {
